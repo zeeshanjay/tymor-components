@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tymor Technologies - Parallax</title>
+  
+  <!-- imagesLoaded library for preloading images -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/5.0.0/imagesloaded.pkgd.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Righteous&display=swap");
+
+    *,
+    *::after,
+    *::before {
+      box-sizing: border-box;
+    }
+
+    :root {
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      --color-text: #dc6e25;
+      --color-bg: #efded3;
+      --color-link: #000;
+      --color-link-hover: #dc6e25;
+      --aspect-ratio: 1/1.5;
+      --imgwidthmax: 500px;
+      --size-title: 10rem;
+      --font-weight-title: 400;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      font-size: 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .scroll {
+      --color-text: #905348;
+      --color-bg: #120605;
+      --color-link: #8f8f76;
+      --color-link-hover: #fff;
+      font-size: 1rem;
+      --imgwidthmax: 400px;
+      --color-description: #7e605b;
+      --font-title: "Dancing Script", serif;
+      --size-title: 6vw;
+      --imgwidthmax: 600px;
+    }
+
+    body::-webkit-scrollbar {
+      width: 0.25em;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: #120605;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      border-radius: 20px;
+      background: #8d5146;
+    }
+
+    body::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--color-link);
+      outline: none;
+    }
+
+    a:hover,
+    a:focus {
+      color: var(--color-link-hover);
+      outline: none;
+    }
+
+    /* Scroll-to-Top */
+    .scrollToTopBtn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: fixed;
+      width: 100px;
+      bottom: 20px;
+      right: 0px;
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(200px);
+      transition: all 0.5s ease;
+      filter: invert(35%) sepia(12%) saturate(1922%) hue-rotate(321deg)
+        brightness(96%) contrast(88%);
+    }
+
+    .showBtn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .page {
+      display: grid;
+      padding: 5vw;
+      max-width: 1200px;
+      margin: 0 auto;
+      grid-template-columns: 100%;
+      grid-template-areas: "header" "grid";
+      will-change: transform;
+    }
+
+    .page__title {
+      grid-area: header;
+      margin: 0 0 0.5rem;
+      font-family: "Righteous", cursive;
+      font-size: var(--size-title);
+      font-weight: 400;
+    }
+
+    .arrow {
+      width: 60px;
+      height: 80px;
+      position: absolute;
+      top: 1%;
+      right: 5%;
+      z-index: 999;
+    }
+
+    .arrow path {
+      stroke: var(--color-text);
+      stroke-width: 2px;
+      fill: transparent;
+      animation: down 2s infinite;
+    }
+
+    @keyframes down {
+      0% {
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      75% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .arrow path.a1 {
+      animation-delay: -1s;
+    }
+    .arrow path.a2 {
+      animation-delay: -0.5s;
+    }
+    .arrow path.a3 {
+      animation-delay: 0s;
+    }
+
+    .content {
+      grid-area: grid;
+      margin: 25vh 0 30vh;
+    }
+
+    .content--padded {
+      padding: 0 10vw;
+    }
+
+    .content__item {
+      --imgwidth: calc(var(--imgwidthmax) * var(--aspect-ratio));
+      width: var(--imgwidth);
+      max-width: 100%;
+      position: relative;
+      will-change: transform;
+      margin-bottom: 30vh;
+      display: grid;
+      grid-template-columns: 50% 50%;
+    }
+
+    .content--center .content__item {
+      margin: 0 auto 60vh;
+    }
+
+    .content__item--expand {
+      width: 100%;
+      grid-template-columns: minmax(0, var(--imgwidth)) 1fr;
+    }
+
+    .content__item--expand:nth-child(even) {
+      grid-template-columns: 1fr minmax(0, var(--imgwidth));
+    }
+
+    .content--alternate .content__item {
+      max-width: 90vw;
+    }
+
+    .content--alternate .content__item:nth-child(even) {
+      margin-left: auto;
+    }
+
+    .content__item-imgwrap {
+      position: relative;
+      --imgwidth: 100%;
+      margin: 0 auto;
+      grid-area: 1 / 1 / 3 / 3;
+      overflow: hidden;
+      width: var(--imgwidth);
+      padding-bottom: calc(var(--imgwidth) / (var(--aspect-ratio)));
+      will-change: transform;
+    }
+
+    .content__item--expand .content__item-imgwrap {
+      grid-area: 1 / 1 / 3 / 2;
+    }
+
+    .content__item--expand:nth-child(even) .content__item-imgwrap {
+      grid-area: 1 / 2 / 3 / 3;
+      justify-self: end;
+    }
+
+    .content__item-img {
+      --overflow: 40px;
+      height: calc(100% + (2 * var(--overflow)));
+      top: calc(-1 * var(--overflow));
+      width: 100%;
+      position: absolute;
+      background-size: cover;
+      background-position: 50% 0%;
+      will-change: transform;
+      opacity: 0.8;
+    }
+
+    .content__item-number {
+      opacity: 0.03;
+      font-size: 25vw;
+      position: absolute;
+      top: -7vw;
+      right: -10vw;
+      line-height: 1;
+    }
+
+    .content__item:nth-child(even) .content__item-number {
+      right: auto;
+      left: -7vw;
+    }
+
+    .content__item-title {
+      position: relative;
+      font-size: var(--size-title);
+      padding: 0 3vw;
+      margin: calc(var(--size-title) * -1 / 2) 0 0 0;
+      align-self: start;
+      line-height: 1;
+      font-family: var(--font-title);
+      font-weight: var(--font-weight-title);
+      color: var(--color-title);
+      will-change: transform;
+      mix-blend-mode: var(--blendmode-title);
+    }
+
+    .credits {
+      text-align: center;
+    }
+
+    .credits a {
+      color: var(--color-text);
+    }
+
+    .credits a:hover {
+      color: #fff;
+    }
+
+    .credits--fixed {
+      position: fixed;
+      bottom: 5vw;
+      margin: 0;
+      left: 5vw;
+      width: 90vw;
+      text-align: right;
+    }
+
+    .credits--fixed::before {
+      content: "";
+      background: currentColor;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 5rem;
+      width: 1px;
+    }
+
+    .content--center .content__item-title {
+      grid-area: 1 / 1 / 3 / 3;
+      margin: auto;
+    }
+
+    .content__item-title--layer {
+      padding: 0;
+      z-index: 10;
+      grid-area: 1 / 1 / 2 / 3;
+      width: 100%;
+      text-align: center;
+    }
+
+    .content__item-description {
+      grid-area: 3 / 1 / 3 / 3;
+      width: 70%;
+      position: relative;
+      margin: 0;
+      padding: 1rem 0 0 0;
+      color: var(--color-description);
+    }
+
+    .content--alternate .content__item-title,
+    .content__item--wide:nth-child(even) .content__item-description {
+      grid-area: 3 / 1 / 4 / 2;
+      justify-self: start;
+    }
+
+    .content--alternate .content__item:nth-child(even) .content__item-title,
+    .content__item--wide .content__item-description {
+      grid-area: 3 / 2 / 4 / 3;
+      justify-self: end;
+      width: auto;
+    }
+
+    .content__item--expand .content__item-description {
+      grid-area: 1 / 2 / 3 / 3;
+      justify-self: start;
+      align-self: start;
+      padding: 0 2rem;
+      width: 250px;
+      font-size: 0.9rem;
+    }
+
+    .content__item--expand:nth-child(even) .content__item-description {
+      grid-area: 1 / 1 / 3 / 2;
+      justify-self: end;
+      text-align: right;
+    }
+
+    @media screen and (min-width: 53em) {
+      .page--layout-2 {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: "header header" "...  meta" "grid grid";
+      }
+    }
+
+    @media screen and (max-width: 40em) {
+      .content__item--expand .content__item-imgwrap,
+      .content__item--expand:nth-child(even) .content__item-imgwrap {
+        grid-area: 1 / 1 / 3 / 3;
+      }
+      .content__item--expand .content__item-description,
+      .content__item--expand:nth-child(even) .content__item-description,
+      .content__item--wide .content__item-description,
+      .content__item--wide:nth-child(even) .content__item-description {
+        grid-area: 3 / 1 / 4 / 3;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: left;
+      }
+      .content__item--wide .content__item-description {
+        padding: 1rem;
+      }
+      .content--alternate .content__item-title,
+      .content--alternate .content__item:nth-child(even) .content__item-title {
+        grid-area: 1 / 1 / 4 / 2;
+      }
+    }
+  </style>
+</head>
+<body class="scroll loading">
+  <main>
+    <div data-scroll class="page page--layout-2">
+      <h1 class="page__title">#scroll</h1>
+
+      <!--Animated Arrow by @joshgjohnson-->
+      <svg class="arrow">
+        <path class="a1" d="M0 0 L30 22 L60 0"></path>
+        <path class="a2" d="M0 20 L30 42 L60 20"></path>
+        <path class="a3" d="M0 40 L30 62 L60 40"></path>
+      </svg>
+
+      <div class="content content--alternate content--padded">
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 700/525">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(holobox.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Holobox</h2>
+          <p class="content__item-description">
+            Elite holographic display solutions. Transforming physical products into immersive 3D experiences.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 700/460">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(holobox3d.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Holobox 3D</h2>
+          <p class="content__item-description">
+            Advanced 3D holographic technology for stunning visual presentations and product showcases.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/450">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(holoboxing.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Interactive</h2>
+          <p class="content__item-description">
+            Interactive holographic displays that respond to user input and create engaging experiences.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/500">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(img.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Display</h2>
+          <p class="content__item-description">
+            High-quality holographic display systems for retail, events, and corporate presentations.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/455">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(img2.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Technology</h2>
+          <p class="content__item-description">
+            Cutting-edge holographic technology bringing the future of display to your fingertips.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/470">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(newimg.png);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Innovation</h2>
+          <p class="content__item-description">
+            Innovative holographic solutions for modern brand experiences and product showcases.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/460">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(leo_holobox.jpg);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Leo Holobox</h2>
+          <p class="content__item-description">
+            Premium holographic display units designed for luxury brands and high-end showcases.
+          </p>
+        </div>
+
+        <div class="content__item content__item--expand" style="--aspect-ratio: 600/460">
+          <div class="content__item-imgwrap">
+            <div class="content__item-img" style="
+              background-image: url(leo_holobox1.jpg);
+            "></div>
+          </div>
+          <h2 class="content__item-title">Experience</h2>
+          <p class="content__item-description">
+            Immersive holographic experiences that captivate audiences and elevate brand presence.
+          </p>
+        </div>
+
+        <p class="credits">
+          <a href="https://codepen.io/DivineBlow" target="_blank"><i class="fab fa-codepen"></i> DivineBlow <i class="fab fa-codepen"></i></a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+
+  <button class="scrollToTopBtn">
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512.001 512.001;" xml:space="preserve">
+      <path d="M403.015,296.471L264.5,108.591c-4.22-5.725-12.778-5.725-16.999,0l-138.515,187.88
+	c-5.14,6.972-0.162,16.826,8.499,16.826h277.03C403.177,313.297,408.155,303.443,403.015,296.471z" />
+      <path d="M413.693,288.598L275.18,100.718c-4.471-6.066-11.641-9.688-19.178-9.688s-14.707,3.621-19.178,9.688
+	L156.992,209h-34.146L256.001,28.39l136.335,184.924c4.348,5.898,12.653,7.154,18.552,2.806c5.898-4.348,7.154-12.655,2.805-18.552
+	L275.18,9.688C270.708,3.621,263.537,0,256.001,0s-14.707,3.621-19.178,9.688L98.308,197.568c-5.365,7.279-6.166,16.813-2.09,24.884
+	c4.077,8.071,12.226,13.083,21.268,13.083h19.943l-39.121,53.063c-5.365,7.279-6.166,16.813-2.09,24.884
+	c4.077,8.071,12.226,13.083,21.268,13.083h45.236V483.23c0,15.864,12.907,28.771,28.771,28.771h129.015
+	c15.864,0,28.771-12.907,28.771-28.771v-88.805c0-15.864-12.907-28.771-28.771-28.771h-78.976c-7.326,0-13.268,5.94-13.268,13.268
+	c0,7.328,5.941,13.268,13.268,13.268h78.976c1.233,0,2.236,1.003,2.236,2.236v88.805c0,1.233-1.003,2.236-2.236,2.236H191.493
+	c-1.233,0-2.236-1.003-2.236-2.236V326.565h205.257c9.042,0,17.191-5.014,21.268-13.083
+	C419.86,305.411,419.059,295.877,413.693,288.598z M122.846,300.03L256.001,119.42l133.154,180.61L122.846,300.03L122.846,300.03z" />
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+      <g>
+      </g>
+    </svg>
+  </button>
+
+  <script>
+    // Scroll-to-Top
+    let scrollToTopBtn = document.querySelector(".scrollToTopBtn");
+    let rootElement = document.documentElement;
+
+    function handleScroll() {
+      // Do something on scroll
+      let scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
+      if (rootElement.scrollTop / scrollTotal > 0.4) {
+        // Show button
+        scrollToTopBtn.classList.add("showBtn");
+      } else {
+        // Hide button
+        scrollToTopBtn.classList.remove("showBtn");
+      }
+    }
+
+    function scrollToTop() {
+      // Scroll to top logic
+      rootElement.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+    scrollToTopBtn.addEventListener("click", scrollToTop);
+    document.addEventListener("scroll", handleScroll);
+
+    {
+      const MathUtils = {
+        map: (x, a, b, c, d) => ((x - a) * (d - c)) / (b - a) + c,
+        lerp: (a, b, n) => (1 - n) * a + n * b,
+
+        getRandomFloat: (min, max) => (Math.random() * (max - min) + min).toFixed(2)
+      };
+
+      const body = document.body;
+
+      let winsize;
+      const calcWinsize = () =>
+        (winsize = { width: window.innerWidth, height: window.innerHeight });
+      calcWinsize();
+
+      window.addEventListener("resize", calcWinsize);
+
+      let docScroll;
+      let lastScroll;
+      let scrollingSpeed = 0;
+
+      const getPageYScroll = () =>
+        (docScroll = window.pageYOffset || document.documentElement.scrollTop);
+      window.addEventListener("scroll", getPageYScroll);
+
+      class Item {
+        constructor(el) {
+          // the .item element
+          this.DOM = { el: el };
+          this.DOM.image = this.DOM.el.querySelector(".content__item-img");
+          this.DOM.imageWrapper = this.DOM.image.parentNode;
+          // 3d stuff
+          this.DOM.el.style.perspective = "1000px";
+          this.DOM.imageWrapper.style.transformOrigin = "50% 100%";
+          this.ry = MathUtils.getRandomFloat(-0.5, 0.5);
+          this.rz = MathUtils.getRandomFloat(-0.5, 0.5);
+          this.DOM.title = this.DOM.el.querySelector(".content__item-title");
+          this.DOM.title.style.transform = "translate3d(0,0,200px)";
+          this.renderedStyles = {
+            // here we define which property will change as we scroll the page and the item is inside the viewport
+            // in this case we will be:
+            // - translating the inner image
+            // - rotating the item
+            // we interpolate between the previous and current value to achieve a smooth effect
+            innerTranslationY: {
+              previous: 0,
+              current: 0,
+              ease: 0.1,
+
+              setValue: () => {
+                // the maximum value to translate the image is set in a CSS variable (--overflow)
+                const toValue = parseInt(
+                  getComputedStyle(this.DOM.image).getPropertyValue("--overflow"),
+                  10
+                );
+                const fromValue = -1 * toValue;
+                return Math.max(
+                  Math.min(
+                    MathUtils.map(
+                      this.props.top - docScroll,
+                      winsize.height,
+                      -1 * this.props.height,
+                      fromValue,
+                      toValue
+                    ),
+                    toValue
+                  ),
+                  fromValue
+                );
+              }
+            },
+            itemRotation: {
+              previous: 0,
+              current: 0,
+              ease: 0.1,
+              toValue: Number(MathUtils.getRandomFloat(-70, -50)),
+
+              setValue: () => {
+                const toValue = this.renderedStyles.itemRotation.toValue;
+                const fromValue = toValue * -1;
+                const val = MathUtils.map(
+                  this.props.top - docScroll,
+                  winsize.height * 1.5,
+                  -1 * this.props.height,
+                  fromValue,
+                  toValue
+                );
+                return Math.min(Math.max(val, toValue), fromValue);
+              }
+            }
+          };
+
+          this.getSize();
+          this.update();
+
+          this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(
+              (entry) => (this.isVisible = entry.intersectionRatio > 0)
+            );
+          });
+          this.observer.observe(this.DOM.el);
+          this.initEvents();
+        }
+        update() {
+          for (const key in this.renderedStyles) {
+            this.renderedStyles[key].current = this.renderedStyles[
+              key
+            ].previous = this.renderedStyles[key].setValue();
+          }
+          this.layout();
+        }
+        getSize() {
+          const rect = this.DOM.el.getBoundingClientRect();
+          this.props = {
+            // item's height
+            height: rect.height,
+            // offset top relative to the document
+            top: docScroll + rect.top
+          };
+        }
+        initEvents() {
+          window.addEventListener("resize", () => this.resize());
+        }
+        resize() {
+          this.getSize();
+          this.update();
+        }
+        render() {
+          // update the current and interpolated values
+          for (const key in this.renderedStyles) {
+            this.renderedStyles[key].current = this.renderedStyles[key].setValue();
+            this.renderedStyles[key].previous = MathUtils.lerp(
+              this.renderedStyles[key].previous,
+              this.renderedStyles[key].current,
+              this.renderedStyles[key].ease
+            );
+          }
+
+          this.layout();
+        }
+        layout() {
+          // translates the image
+          this.DOM.image.style.transform = `translate3d(0,${this.renderedStyles.innerTranslationY.previous}px,0)`;
+          // rotate the image wrapper
+          this.DOM.imageWrapper.style.transform = `rotate3d(1,${this.ry},${this.rz},${this.renderedStyles.itemRotation.previous}deg)`;
+        }
+      }
+
+      // SmoothScroll
+      class SmoothScroll {
+        constructor() {
+          this.DOM = { main: document.querySelector("main") };
+          // the scrollable element
+          // we translate this element when scrolling (y-axis)
+          this.DOM.scrollable = this.DOM.main.querySelector("div[data-scroll]");
+          // the items on the page
+          this.items = [];
+          this.DOM.content = this.DOM.main.querySelector(".content");
+          [...this.DOM.content.querySelectorAll(".content__item")].forEach((item) =>
+            this.items.push(new Item(item))
+          );
+
+          this.renderedStyles = {
+            translationY: {
+              previous: 0,
+              current: 0,
+              ease: 0.1,
+
+              setValue: () => docScroll
+            }
+          };
+          // set the body's height
+          this.setSize();
+          // set the initial values
+          this.update();
+          // the <main> element's style needs to be modified
+          this.style();
+          // init/bind events
+          this.initEvents();
+          // start the render loop
+          requestAnimationFrame(() => this.render());
+        }
+        update() {
+          // sets the initial value (no interpolation) - translate the scroll value
+          for (const key in this.renderedStyles) {
+            this.renderedStyles[key].current = this.renderedStyles[
+              key
+            ].previous = this.renderedStyles[key].setValue();
+          }
+          // translate the scrollable element
+          this.layout();
+        }
+        layout() {
+          this.DOM.scrollable.style.transform = `translate3d(0,${
+            -1 * this.renderedStyles.translationY.previous
+          }px,0)`;
+        }
+        setSize() {
+          // set the heigh of the body in order to keep the scrollbar on the page
+          body.style.height = `${this.DOM.scrollable.scrollHeight}px`;
+        }
+        style() {
+          this.DOM.main.style.position = "fixed";
+          this.DOM.main.style.width = this.DOM.main.style.height = "100%";
+          this.DOM.main.style.top = this.DOM.main.style.left = 0;
+          this.DOM.main.style.overflow = "hidden";
+        }
+        initEvents() {
+          // on resize reset the body's height
+          window.addEventListener("resize", () => this.setSize());
+        }
+        render() {
+          // Get scrolling speed
+          // Update lastScroll
+          scrollingSpeed = Math.abs(docScroll - lastScroll);
+          lastScroll = docScroll;
+
+          // update the current and interpolated values
+          for (const key in this.renderedStyles) {
+            this.renderedStyles[key].current = this.renderedStyles[key].setValue();
+            this.renderedStyles[key].previous = MathUtils.lerp(
+              this.renderedStyles[key].previous,
+              this.renderedStyles[key].current,
+              this.renderedStyles[key].ease
+            );
+          }
+
+          this.layout();
+
+          // for every item
+          for (const item of this.items) {
+            if (item.isVisible) {
+              if (item.insideViewport) {
+                item.render();
+              } else {
+                item.insideViewport = true;
+                item.update();
+              }
+            } else {
+              item.insideViewport = false;
+            }
+          }
+
+          requestAnimationFrame(() => this.render());
+        }
+      }
+
+      /***********************************/
+      /********** Preload stuff **********/
+
+      // Preload images
+      const preloadImages = () => {
+        return new Promise((resolve, reject) => {
+          imagesLoaded(
+            document.querySelectorAll(".content__item-img"),
+            { background: true },
+            resolve
+          );
+        });
+      };
+
+      preloadImages().then(() => {
+        // Remove the loader
+        document.body.classList.remove("loading");
+        // Get the scroll position and update the lastScroll variable
+        getPageYScroll();
+        lastScroll = docScroll;
+        new SmoothScroll();
+      });
+    }
+  </script>
+</body>
+</html>

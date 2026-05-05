@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tymor Technologies — Hero</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    img { width: 100%; height: auto; }
+    body { overflow: hidden !important; }
+    a:focus, input:focus, input:focus-visible, button:focus, :focus-visible {
+      outline: none; border: none; box-shadow: none;
+    }
+
+    :root {
+      --s1-bg: #060c18;
+      --s2-bg: #0a0618;
+      --s3-bg: #041210;
+      --c1: #00d4ff;
+      --c2: #8b5cf6;
+      --c3: #10ffb1;
+      --silver: #b8c4d8;
+    }
+
+    /* ─── Big background word ─── */
+    h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 400px !important;
+      line-height: 0.9 !important;
+      font-weight: 700;
+      letter-spacing: -14px;
+      margin: 0 !important;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.07) 0%,
+        rgba(255,255,255,0.14) 40%,
+        rgba(255,255,255,0.05) 70%,
+        rgba(255,255,255,0.10) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5s ease-in-out infinite;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes shimmer {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; filter: brightness(1.18); }
+    }
+
+    /* ─── Header ─── */
+    header {
+      padding: 26px 32px 0;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      z-index: 99;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark { width: 28px; height: 28px; flex-shrink: 0; }
+    .logo {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 11px;
+      letter-spacing: 6px;
+      font-weight: 600;
+      color: var(--silver);
+      text-transform: uppercase;
+    }
+
+    /* ─── Central device ─── */
+    .device-wrap {
+      max-width: 300px;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .device-wrap img {
+      filter:
+        drop-shadow(0 0 50px rgba(0,212,255,0.35))
+        drop-shadow(0 20px 50px rgba(0,0,0,0.75));
+      animation: deviceFloat 5s ease-in-out infinite;
+    }
+    @keyframes deviceFloat {
+      0%,100% { transform: translateY(0) rotate(-1.5deg); }
+      50%      { transform: translateY(-18px) rotate(1.5deg); }
+    }
+
+    /* ─── Sections ─── */
+    .section-container-main { width: 100vw; overflow: hidden; position: relative; z-index: -1; }
+    .section-container {
+      width: 300vw;
+      display: flex;
+      position: relative;
+      transition: left 0.65s cubic-bezier(0.65, 0, 0.35, 1);
+      align-items: center;
+    }
+    .section {
+      min-width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .section:nth-child(1) { background: var(--s1-bg); }
+    .section:nth-child(2) { background: var(--s2-bg); }
+    .section:nth-child(3) { background: var(--s3-bg); }
+
+    /* subtle grid overlay */
+    .section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+      background-size: 68px 68px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Tech floating elements ─── */
+    .tech-el { position: absolute; z-index: 5; }
+
+    /* Positions mirror original fruit layout */
+    .pos-bl { bottom: 90px;  left: 60px;  }
+    .pos-tl { top: 22%;      left: 18%;   }
+    .pos-tr { top: 22%;      right: 18%;  }
+    .pos-br { bottom: 90px;  right: 60px; }
+
+    /* Glass data panel */
+    .panel {
+      width: 182px; height: 116px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      backdrop-filter: blur(18px);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 7px;
+      animation: floatA 6s ease-in-out infinite;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .bar { height: 3px; border-radius: 2px; }
+    .bar.b2 { opacity: 0.52; }
+    .bar.b3 { opacity: 0.26; }
+    .dots { display: flex; gap: 5px; margin-top: 3px; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; animation: blink 2.4s ease-in-out infinite; }
+    .dot:nth-child(2) { animation-delay: 0.6s;  opacity: 0.5; }
+    .dot:nth-child(3) { animation-delay: 1.2s;  opacity: 0.3; }
+
+    /* Concentric rings */
+    .rings {
+      width: 138px; height: 138px; border-radius: 50%;
+      border: 1.5px solid;
+      position: relative;
+      animation: floatB 7s ease-in-out infinite;
+    }
+    .rings::before, .rings::after {
+      content: ''; position: absolute; border-radius: 50%; border: 1px solid;
+    }
+    .rings::before { inset: 14px; opacity: 0.45; animation: spin 5s  linear infinite; }
+    .rings::after  { inset: 30px; opacity: 0.22; animation: spin 9s  linear infinite reverse; }
+
+    /* Rotating diamond */
+    .prism {
+      width: 88px; height: 88px;
+      transform: rotate(45deg);
+      border: 1.5px solid;
+      position: relative;
+      animation: floatC 8s ease-in-out infinite;
+    }
+    .prism::before, .prism::after {
+      content: ''; position: absolute; border: 1px solid;
+    }
+    .prism::before { inset: 12px; opacity: 0.42; animation: spin 10s linear infinite; }
+    .prism::after  { inset: 24px; opacity: 0.18; animation: spin 16s linear infinite reverse; }
+
+    /* Badge card */
+    .badge-card {
+      width: 152px; height: 92px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      backdrop-filter: blur(18px);
+      padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+      animation: floatD 6.5s ease-in-out infinite;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    }
+    .badge-row    { display: flex; gap: 8px; align-items: center; }
+    .badge-icon   { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .badge-dot    { width: 9px; height: 9px; border-radius: 50%; }
+    .badge-lines  { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .badge-line   { height: 3px; border-radius: 2px; }
+    .badge-line.l2 { opacity: 0.5; }
+    .badge-bottom { height: 22px; border-radius: 6px; }
+
+    /* Float keyframes */
+    @keyframes floatA { 0%,100% { transform: translateY(0) rotate(-2deg); }   50% { transform: translateY(-14px) rotate(1.5deg); } }
+    @keyframes floatB { 0%,100% { transform: translateY(0) scale(1); }         50% { transform: translateY(-12px) scale(1.04); } }
+    @keyframes floatC { 0%,100% { transform: rotate(45deg) translateY(0); }    50% { transform: rotate(56deg) translateY(-11px); } }
+    @keyframes floatD { 0%,100% { transform: translateY(0) rotate(2deg); }     50% { transform: translateY(-16px) rotate(-1deg); } }
+    @keyframes spin   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes blink  { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
+
+    /* ─── Section 1 accent: cyan ─── */
+    #section1 .bar        { background: linear-gradient(90deg, var(--c1), transparent); }
+    #section1 .dot        { background: var(--c1); }
+    #section1 .rings      { border-color: rgba(0,212,255,0.32); box-shadow: 0 0 35px rgba(0,212,255,0.07); }
+    #section1 .rings::before { border-color: rgba(0,212,255,0.22); }
+    #section1 .rings::after  { border-color: rgba(0,212,255,0.10); }
+    #section1 .prism      { border-color: rgba(0,212,255,0.32); background: rgba(0,212,255,0.02); box-shadow: 0 0 22px rgba(0,212,255,0.07); }
+    #section1 .prism::before { border-color: rgba(0,212,255,0.18); }
+    #section1 .prism::after  { border-color: rgba(0,212,255,0.08); }
+    #section1 .badge-icon { background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.22); }
+    #section1 .badge-dot  { background: var(--c1); }
+    #section1 .badge-line { background: rgba(0,212,255,0.32); }
+    #section1 .badge-bottom { background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.1); }
+
+    /* ─── Section 2 accent: violet ─── */
+    #section2 .bar        { background: linear-gradient(90deg, var(--c2), transparent); }
+    #section2 .dot        { background: var(--c2); }
+    #section2 .rings      { border-color: rgba(139,92,246,0.32); box-shadow: 0 0 35px rgba(139,92,246,0.07); }
+    #section2 .rings::before { border-color: rgba(139,92,246,0.22); }
+    #section2 .rings::after  { border-color: rgba(139,92,246,0.10); }
+    #section2 .prism      { border-color: rgba(139,92,246,0.32); background: rgba(139,92,246,0.02); box-shadow: 0 0 22px rgba(139,92,246,0.07); }
+    #section2 .prism::before { border-color: rgba(139,92,246,0.18); }
+    #section2 .prism::after  { border-color: rgba(139,92,246,0.08); }
+    #section2 .badge-icon { background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.22); }
+    #section2 .badge-dot  { background: var(--c2); }
+    #section2 .badge-line { background: rgba(139,92,246,0.32); }
+    #section2 .badge-bottom { background: rgba(139,92,246,0.04); border: 1px solid rgba(139,92,246,0.1); }
+
+    /* ─── Section 3 accent: mint ─── */
+    #section3 .bar        { background: linear-gradient(90deg, var(--c3), transparent); }
+    #section3 .dot        { background: var(--c3); }
+    #section3 .rings      { border-color: rgba(16,255,177,0.32); box-shadow: 0 0 35px rgba(16,255,177,0.07); }
+    #section3 .rings::before { border-color: rgba(16,255,177,0.22); }
+    #section3 .rings::after  { border-color: rgba(16,255,177,0.10); }
+    #section3 .prism      { border-color: rgba(16,255,177,0.32); background: rgba(16,255,177,0.02); box-shadow: 0 0 22px rgba(16,255,177,0.07); }
+    #section3 .prism::before { border-color: rgba(16,255,177,0.18); }
+    #section3 .prism::after  { border-color: rgba(16,255,177,0.08); }
+    #section3 .badge-icon { background: rgba(16,255,177,0.07); border: 1px solid rgba(16,255,177,0.22); }
+    #section3 .badge-dot  { background: var(--c3); }
+    #section3 .badge-line { background: rgba(16,255,177,0.32); }
+    #section3 .badge-bottom { background: rgba(16,255,177,0.04); border: 1px solid rgba(16,255,177,0.1); }
+
+    /* ─── Section label ─── */
+    .section-label {
+      position: absolute;
+      bottom: 34px; left: 50%;
+      transform: translateX(-50%);
+      font-family: "Space Mono", monospace;
+      font-size: 10px; letter-spacing: 4px;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      z-index: 5; white-space: nowrap;
+    }
+
+    /* ─── Nav buttons ─── */
+    button {
+      position: fixed;
+      top: 50%; right: 30px;
+      z-index: 99;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      height: 50px; width: 50px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.11);
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+    button:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.9);
+    }
+    #prevButton { left: 30px; right: unset; display: none; }
+    .wave { animation: btnGlow 3.5s ease-in-out infinite; }
+    @keyframes btnGlow {
+      0%,100% { box-shadow: 0 0 0 0   rgba(0,212,255,0); }
+      50%      { box-shadow: 0 0 0 10px rgba(0,212,255,0.06); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1550px) { h1 { font-size: 320px !important; } }
+    @media (max-width: 1199px) { h1 { font-size: 260px !important; } }
+    @media (max-width: 991px)  {
+      h1 { font-size: 200px !important; }
+      button { top: 90%; }
+      .pos-tl { left: 8%; } .pos-tr { right: 8%; }
+    }
+    @media (max-width: 767px) {
+      h1 { font-size: 148px !important; }
+      .logo { font-size: 10px; letter-spacing: 4px; }
+      button { height: 42px; width: 42px; font-size: 12px; }
+      .panel { width: 144px; height: 94px; }
+      .rings { width: 104px; height: 104px; }
+      .prism { width: 68px; height: 68px; }
+      .badge-card { width: 122px; height: 78px; }
+      .pos-bl { left: 20px; } .pos-br { right: 20px; }
+    }
+    @media (max-width: 575px) {
+      h1 { font-size: 88px !important; letter-spacing: -5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─ Header ─ -->
+  <header>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="26" height="26" rx="6.5" stroke="rgba(184,196,216,0.28)" stroke-width="1"/>
+        <rect x="6.5" y="6.5" width="15" height="15" rx="3.5" fill="rgba(0,212,255,0.09)" stroke="rgba(0,212,255,0.32)" stroke-width="1"/>
+        <circle cx="14" cy="14" r="3" fill="rgba(0,212,255,0.95)"/>
+        <line x1="1" y1="14" x2="6.5" y2="14" stroke="rgba(0,212,255,0.22)" stroke-width="1"/>
+        <line x1="21.5" y1="14" x2="27" y2="14" stroke="rgba(0,212,255,0.22)" stroke-width="1"/>
+        <line x1="14" y1="1" x2="14" y2="6.5" stroke="rgba(0,212,255,0.22)" stroke-width="1"/>
+        <line x1="14" y1="21.5" x2="14" y2="27" stroke="rgba(0,212,255,0.22)" stroke-width="1"/>
+      </svg>
+      <h2 class="logo">HoloBox</h2>
+    </div>
+  </header>
+
+  <main>
+    <!-- Nav buttons -->
+    <div>
+      <button id="prevButton" class="wave"><i class="fa-solid fa-chevron-left"></i></button>
+      <button id="nextButton" class="wave"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Fixed overlay: big word + central device -->
+    <div class="text">
+      <h1 class="h1">Holo</h1>
+      <div class="device-wrap">
+        <img src="holobox.png" alt="HoloBox Device">
+      </div>
+    </div>
+
+    <!-- Carousel -->
+    <div class="section-container-main">
+      <div class="section-container">
+
+        <!-- ── 01 · Holo (cyan) ── -->
+        <section class="section" id="section1">
+          <div class="tech-el pos-bl">
+            <div class="panel">
+              <div class="bar"></div>
+              <div class="bar b2" style="width:70%"></div>
+              <div class="bar b3" style="width:46%"></div>
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tech-el pos-tl"><div class="rings"></div></div>
+          <div class="tech-el pos-tr"><div class="prism"></div></div>
+          <div class="tech-el pos-br">
+            <div class="badge-card">
+              <div class="badge-row">
+                <div class="badge-icon"><div class="badge-dot"></div></div>
+                <div class="badge-lines">
+                  <div class="badge-line" style="width:56px"></div>
+                  <div class="badge-line l2" style="width:38px"></div>
+                </div>
+              </div>
+              <div class="badge-bottom"></div>
+            </div>
+          </div>
+          <div class="section-label">01 &mdash; Holo Display</div>
+        </section>
+
+        <!-- ── 02 · View (violet) ── -->
+        <section class="section" id="section2">
+          <div class="tech-el pos-bl">
+            <div class="panel">
+              <div class="bar"></div>
+              <div class="bar b2" style="width:70%"></div>
+              <div class="bar b3" style="width:46%"></div>
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tech-el pos-tl"><div class="rings"></div></div>
+          <div class="tech-el pos-tr"><div class="prism"></div></div>
+          <div class="tech-el pos-br">
+            <div class="badge-card">
+              <div class="badge-row">
+                <div class="badge-icon"><div class="badge-dot"></div></div>
+                <div class="badge-lines">
+                  <div class="badge-line" style="width:56px"></div>
+                  <div class="badge-line l2" style="width:38px"></div>
+                </div>
+              </div>
+              <div class="badge-bottom"></div>
+            </div>
+          </div>
+          <div class="section-label">02 &mdash; Holo View</div>
+        </section>
+
+        <!-- ── 03 · Beam (mint) ── -->
+        <section class="section" id="section3">
+          <div class="tech-el pos-bl">
+            <div class="panel">
+              <div class="bar"></div>
+              <div class="bar b2" style="width:70%"></div>
+              <div class="bar b3" style="width:46%"></div>
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tech-el pos-tl"><div class="rings"></div></div>
+          <div class="tech-el pos-tr"><div class="prism"></div></div>
+          <div class="tech-el pos-br">
+            <div class="badge-card">
+              <div class="badge-row">
+                <div class="badge-icon"><div class="badge-dot"></div></div>
+                <div class="badge-lines">
+                  <div class="badge-line" style="width:56px"></div>
+                  <div class="badge-line l2" style="width:38px"></div>
+                </div>
+              </div>
+              <div class="badge-bottom"></div>
+            </div>
+          </div>
+          <div class="section-label">03 &mdash; Holo Beam</div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const h1Texts     = ["Holo", "View", "Beam"];
+    const accentColors = ["#00d4ff", "#8b5cf6", "#10ffb1"];
+
+    // entrance
+    gsap.from(".tech-el", { y: "-100vh", delay: 0.4, stagger: 0.1, duration: 0.9, ease: "power3.out" });
+    // idle drift
+    gsap.to(".tech-el", { x: "random(-10,10)", y: "random(-10,10)", duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: 0.6 });
+
+    const prevBtn          = document.getElementById("prevButton");
+    const nextBtn          = document.getElementById("nextButton");
+    const sectionContainer = document.querySelector(".section-container");
+    let currentIndex = 0;
+    let currentPos   = 0;
+
+    nextBtn.addEventListener("click", () => {
+      if (currentPos > -200) { currentPos -= 100; sectionContainer.style.left = `${currentPos}%`; }
+      currentIndex++;
+      document.querySelector(".h1").innerHTML = h1Texts[currentIndex];
+      gsap.from(".h1",      { y: "18%", opacity: 0, duration: 0.5 });
+      gsap.from(".tech-el", { y: "-100vh", delay: 0.3, duration: 0.7, stagger: 0.08, ease: "power3.out" });
+      gsap.to(".logo",      { color: accentColors[currentIndex], duration: 0.8 });
+
+      if (currentIndex === h1Texts.length - 1) nextBtn.style.display = "none";
+      if (currentIndex > 0) prevBtn.style.display = "block";
+      nextBtn.style.color = accentColors[currentIndex + 1] ?? "rgba(255,255,255,0.45)";
+      prevBtn.style.color = accentColors[currentIndex - 1] ?? "rgba(255,255,255,0.45)";
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPos < 0) { currentPos += 100; sectionContainer.style.left = `${currentPos}%`; }
+      currentIndex--;
+      document.querySelector(".h1").innerHTML = h1Texts[currentIndex];
+      gsap.from(".h1",      { y: "18%", opacity: 0, duration: 0.5 });
+      gsap.from(".tech-el", { y: "100vh", delay: 0.3, duration: 0.7, stagger: 0.08, ease: "power3.out" });
+      gsap.to(".logo",      { color: accentColors[currentIndex], duration: 0.8 });
+
+      nextBtn.style.display = "block";
+      if (currentIndex === 0) prevBtn.style.display = "none";
+      nextBtn.style.color = accentColors[currentIndex + 1] ?? "rgba(255,255,255,0.45)";
+      prevBtn.style.color = accentColors[currentIndex - 1] ?? "rgba(255,255,255,0.45)";
+    });
+  </script>
+</body>
+</html>

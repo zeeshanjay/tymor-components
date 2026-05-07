@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typography & Brand Guidelines - Tymor Technologies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 0%, #a855f7 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .font-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .font-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+        
+        .color-swatch {
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .color-swatch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .color-swatch:hover::before {
+            opacity: 1;
+        }
+        
+        .color-swatch:hover {
+            transform: scale(1.05);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+        
+        .sample-text {
+            line-height: 1.6;
+        }
+        
+        .primary-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .secondary-font {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .accent-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .luxury-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .modern-font {
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-16 px-4">
+        <!-- Header -->
+        <div class="max-w-7xl mx-auto mb-16">
+            <a href="logos.html" class="back-link mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Logos
+            </a>
+            
+            <h1 class="hero-title mb-4">Typography & Brand Guidelines</h1>
+            <p class="text-white text-xl font-light max-w-2xl">Elite font selections and color palettes for Holobox & Tymor Technologies</p>
+        </div>
+        
+        <!-- Typography Section -->
+        <div class="max-w-7xl mx-auto mb-20">
+            <h2 class="section-title mb-8">Typography System</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Primary Font -->
+                <div class="font-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-purple-400 text-sm font-semibold tracking-wider uppercase">Primary</span>
+                        <span class="text-white text-xs">Space Grotesk</span>
+                    </div>
+                    <h3 class="primary-font text-4xl font-bold text-white mb-4">Space Grotesk</h3>
+                    <p class="primary-font text-white sample-text">Modern, geometric sans-serif perfect for technology brands. Clean, readable, and distinctive.</p>
+                    <div class="mt-6 space-y-2">
+                        <p class="primary-font text-white text-sm">Weights: 300, 400, 500, 600, 700</p>
+                        <p class="primary-font text-white text-sm">Best for: Headlines, Navigation, UI Elements</p>
+                    </div>
+                </div>
+                
+                <!-- Secondary Font -->
+                <div class="font-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-blue-400 text-sm font-semibold tracking-wider uppercase">Secondary</span>
+                        <span class="text-white text-xs">Inter</span>
+                    </div>
+                    <h3 class="secondary-font text-4xl font-bold text-white mb-4">Inter</h3>
+                    <p class="secondary-font text-white sample-text">Versatile, highly legible sans-serif. Excellent for body text and interface design.</p>
+                    <div class="mt-6 space-y-2">
+                        <p class="secondary-font text-white text-sm">Weights: 300, 400, 500, 600, 700</p>
+                        <p class="secondary-font text-white text-sm">Best for: Body Text, Forms, Documentation</p>
+                    </div>
+                </div>
+                
+                <!-- Accent Font -->
+                <div class="font-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-pink-400 text-sm font-semibold tracking-wider uppercase">Accent</span>
+                        <span class="text-white text-xs">Playfair Display</span>
+                    </div>
+                    <h3 class="accent-font text-4xl font-bold text-white mb-4">Playfair Display</h3>
+                    <p class="accent-font text-white sample-text">Elegant serif for luxury touch. Perfect for special headings and premium sections.</p>
+                    <div class="mt-6 space-y-2">
+                        <p class="accent-font text-white text-sm">Weights: 400, 500, 600, 700</p>
+                        <p class="accent-font text-white text-sm">Best for: Hero Headlines, Quotes, Premium Content</p>
+                    </div>
+                </div>
+                
+                <!-- Modern Alternative -->
+                <div class="font-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-cyan-400 text-sm font-semibold tracking-wider uppercase">Alternative</span>
+                        <span class="text-white text-xs">Outfit</span>
+                    </div>
+                    <h3 class="modern-font text-4xl font-bold text-white mb-4">Outfit</h3>
+                    <p class="modern-font text-white sample-text">Contemporary geometric sans with personality. Great for modern tech brands.</p>
+                    <div class="mt-6 space-y-2">
+                        <p class="modern-font text-white text-sm">Weights: 300, 400, 500, 600, 700, 800</p>
+                        <p class="modern-font text-white text-sm">Best for: Branding, Marketing, Display</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Color Palette Section -->
+        <div class="max-w-7xl mx-auto mb-20">
+            <h2 class="section-title mb-8">Color Palette</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <!-- Primary Purple -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Primary</p>
+                        <p class="text-white text-2xl font-bold mb-1">#A855F7</p>
+                        <p class="text-white text-xs">Purple 500</p>
+                    </div>
+                </div>
+                
+                <!-- Secondary Blue -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Secondary</p>
+                        <p class="text-white text-2xl font-bold mb-1">#3B82F6</p>
+                        <p class="text-white text-xs">Blue 500</p>
+                    </div>
+                </div>
+                
+                <!-- Accent Cyan -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Accent</p>
+                        <p class="text-white text-2xl font-bold mb-1">#06B6D4</p>
+                        <p class="text-white text-xs">Cyan 500</p>
+                    </div>
+                </div>
+                
+                <!-- Dark Background -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Background</p>
+                        <p class="text-white text-2xl font-bold mb-1">#0F0C29</p>
+                        <p class="text-white text-xs">Dark Navy</p>
+                    </div>
+                </div>
+                
+                <!-- White -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+                    <div class="relative z-10">
+                        <p class="text-gray-900 text-xs font-semibold tracking-wider uppercase mb-2">Text</p>
+                        <p class="text-gray-900 text-2xl font-bold mb-1">#FFFFFF</p>
+                        <p class="text-gray-700 text-xs">Pure White</p>
+                    </div>
+                </div>
+                
+                <!-- Gradient 1 -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Gradient</p>
+                        <p class="text-white text-lg font-bold mb-1">Purple</p>
+                        <p class="text-white text-xs">Hero BG</p>
+                    </div>
+                </div>
+                
+                <!-- Gradient 2 -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Gradient</p>
+                        <p class="text-white text-lg font-bold mb-1">Pink</p>
+                        <p class="text-white text-xs">CTA Buttons</p>
+                    </div>
+                </div>
+                
+                <!-- Gradient 3 -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Gradient</p>
+                        <p class="text-white text-lg font-bold mb-1">Blue</p>
+                        <p class="text-white text-xs">Highlights</p>
+                    </div>
+                </div>
+                
+                <!-- Success Green -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Success</p>
+                        <p class="text-white text-2xl font-bold mb-1">#10B981</p>
+                        <p class="text-white text-xs">Green 500</p>
+                    </div>
+                </div>
+                
+                <!-- Warning Orange -->
+                <div class="color-swatch" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <div class="relative z-10">
+                        <p class="text-white text-xs font-semibold tracking-wider uppercase mb-2">Warning</p>
+                        <p class="text-white text-2xl font-bold mb-1">#F59E0B</p>
+                        <p class="text-white text-xs">Amber 500</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Typography Hierarchy Example -->
+        <div class="max-w-7xl mx-auto mb-20">
+            <h2 class="section-title mb-8">Typography Hierarchy</h2>
+            
+            <div class="font-card">
+                <h1 class="primary-font text-5xl font-bold text-white mb-6">H1 Heading - 48px Bold</h1>
+                <h2 class="primary-font text-4xl font-semibold text-white mb-5">H2 Heading - 36px Semibold</h2>
+                <h3 class="primary-font text-3xl font-medium text-white mb-4">H3 Heading - 30px Medium</h3>
+                <p class="secondary-font text-lg text-white mb-4">Body text - 18px Regular. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p class="secondary-font text-sm text-white">Small text - 14px Light. Additional information and captions.</p>
+            </div>
+        </div>
+        
+        <!-- Usage Example -->
+        <div class="max-w-7xl mx-auto mb-16">
+            <h2 class="section-title mb-8">Sample Usage</h2>
+            
+            <div class="font-card">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="accent-font text-3xl font-bold text-white mb-4">"Innovation Meets Elegance"</h3>
+                        <p class="secondary-font text-white">Hero headline with accent font</p>
+                    </div>
+                    <div>
+                        <h3 class="primary-font text-3xl font-bold text-white mb-4">Cutting-Edge Technology</h3>
+                        <p class="secondary-font text-white">Primary heading with modern font</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-white/10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+                            <span class="primary-font text-white font-bold">HT</span>
+                        </div>
+                        <div>
+                            <p class="primary-font text-white font-semibold">Holobox Technologies</p>
+                            <p class="secondary-font text-white text-sm">Premium Holographic Solutions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-white text-sm">© 2026 Tymor Technologies. Brand Guidelines.</p>
+        </div>
+    </div>
+</body>
+</html>

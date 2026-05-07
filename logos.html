@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Showcase - Tymor Components</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .logo-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+        
+        .logo-image {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+            transition: all 0.3s ease;
+        }
+        
+        .logo-card:hover .logo-image {
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3));
+        }
+        
+        .logo-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            margin-top: 1rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating:nth-child(2) { animation-delay: 0.5s; }
+        .floating:nth-child(3) { animation-delay: 1s; }
+        .floating:nth-child(4) { animation-delay: 1.5s; }
+        .floating:nth-child(5) { animation-delay: 2s; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-16 px-4">
+        <!-- Header -->
+        <div class="max-w-7xl mx-auto mb-16">
+            <div class="flex gap-4 mb-8">
+                <a href="index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Main
+                </a>
+                <a href="typography.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+                    </svg>
+                    Typography & Colors
+                </a>
+            </div>
+            
+            <h1 class="hero-title">Logo Showcase</h1>
+            <p class="hero-subtitle">Premium brand identity designs for your review</p>
+        </div>
+        
+        <!-- Logo Grid -->
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Logo 1 -->
+                <div class="logo-card floating">
+                    <img src="Logos/logo1.png" alt="Logo 1" class="logo-image">
+                    <p class="logo-title">Logo Option 1</p>
+                </div>
+                
+                <!-- Logo 2 -->
+                <div class="logo-card floating">
+                    <img src="Logos/logo2.png" alt="Logo 2" class="logo-image">
+                    <p class="logo-title">Logo Option 2</p>
+                </div>
+                
+                <!-- Logo 3 -->
+                <div class="logo-card floating">
+                    <img src="Logos/logo3.png" alt="Logo 3" class="logo-image">
+                    <p class="logo-title">Logo Option 3</p>
+                </div>
+                
+                <!-- Logo 4 -->
+                <div class="logo-card floating">
+                    <img src="Logos/logo4.png" alt="Logo 4" class="logo-image">
+                    <p class="logo-title">Logo Option 4</p>
+                </div>
+                
+                <!-- Logo 5 -->
+                <div class="logo-card floating">
+                    <img src="Logos/logo5.png" alt="Logo 5" class="logo-image">
+                    <p class="logo-title">Logo Option 5</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="max-w-7xl mx-auto mt-16 text-center">
+            <p class="text-white/60 text-sm">© 2026 Tymor Components. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

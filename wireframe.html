@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tymorv8_Luxury.jsx</title>
+    <style>
+        body {
+            background: #050505;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            font-family: monospace;
+        }
+        a {
+            color: #00FF94;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 20px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .notice {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .notice h3 {
+            color: #00FF94;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html">← Back to Main</a>
+    <h1 style="color: #00FF94;">tymorv8_Luxury.jsx</h1>
+    <p style="color: #888;">$100K Luxury Agency Wireframe v.08 (1,270 lines)</p>
+    
+    <div class="notice">
+        <h3>⚠️ HTML Limitation</h3>
+        <p style="color: #ccc; font-size: 14px;">
+            This is a <strong>React JSX component</strong> that requires React, Framer Motion, and a build environment to run. 
+            It cannot be displayed as a live UI in a static HTML page without a React runtime setup.
+            To view this wireframe as intended, you need to run it in a React environment (Next.js, Vite, or similar).
+        </p>
+    </div>
+    
+    <pre id="code-content">Loading...</pre>
+    <script>
+        fetch('tymorv8_Luxury.jsx')
+            .then(response => response.text())
+            .then(code => {
+                document.getElementById('code-content').textContent = code;
+            })
+            .catch(error => {
+                document.getElementById('code-content').textContent = 'Error loading file: ' + error.message;
+            });
+    </script>
+</body>
+</html>

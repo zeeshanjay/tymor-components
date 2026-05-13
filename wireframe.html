@@ -1,70 +1,3560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tymorv8_Luxury.jsx</title>
-    <style>
-        body {
-            background: #050505;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
-            font-family: monospace;
-        }
-        a {
-            color: #00FF94;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        pre {
-            background: #1a1a1a;
-            padding: 20px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        .notice {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        .notice h3 {
-            color: #00FF94;
-            margin-top: 0;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    /* height:100% on html/body breaks Lenis scroll-limit calc — use min-height instead */
+    html { min-height: 100%; }
+    body { min-height: 100%; background: #000000; font-family: 'Geist', sans-serif; overflow-x: hidden; }
+
+    /* ── infinite scroll keyframes ── */
+    @keyframes col-up   { from{transform:translateY(0)} to{transform:translateY(-50%)} }
+    @keyframes col-down { from{transform:translateY(-50%)} to{transform:translateY(0)} }
+    .anim-up   { animation: col-up   var(--spd) linear infinite; }
+    .anim-down { animation: col-down var(--spd) linear infinite; }
+
+    /* ── navbar text flip ── */
+    .flip {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      flex-direction: column;
+      height: 1.15em;
+      vertical-align: bottom;
+    }
+    .flip .a { display:block; transition: transform 0.44s cubic-bezier(0.16,1,0.3,1); }
+    .flip .b { display:block; position:absolute; left:0; top:0; transform:translateY(115%); transition: transform 0.44s cubic-bezier(0.16,1,0.3,1); }
+    a:hover .flip .a { transform: translateY(-115%); }
+    a:hover .flip .b { transform: translateY(0); }
+
+    /* ── card base – NO :hover rule (GSAP handles it) ── */
+    .card {
+      position: relative;
+      width: 196px;
+      height: 268px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      will-change: transform;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: #0d0d0d;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .card img {
+      width:100%; height:100%; object-fit:cover; display:block;
+      will-change: transform, filter;
+      filter: grayscale(22%) brightness(0.62) saturate(0.78);
+    }
+    .card .shine {
+      position:absolute; inset:0; pointer-events:none;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.06) 0%, transparent 42%, rgba(0,0,0,0.32) 100%);
+    }
+    .card .shimmer {
+      position:absolute; inset:0; pointer-events:none;
+      background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.24) 0%, transparent 52%);
+      opacity:0; transition: opacity 0.4s ease;
+    }
+
+    /* ── column ── */
+    .col-outer {
+      width: 196px;
+      height: 960px;
+      overflow: visible;
+      flex-shrink: 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 13%, black 87%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 13%, black 87%, transparent 100%);
+    }
+    .col-track {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      will-change: transform;
+    }
+
+    /* ── logo marquee ── */
+    @keyframes mq-l { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes mq-r { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+    .mq-outer {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%);
+      mask-image: linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%);
+    }
+    .mq-track { display:flex; align-items:center; width:max-content; will-change:transform; }
+    .mq-l { animation: mq-l var(--mqspd) linear infinite; }
+    .mq-r { animation: mq-r var(--mqspd) linear infinite; }
+    .logo-item {
+      display:flex; align-items:center; justify-content:center;
+      padding: 0 48px; flex-shrink:0; cursor:pointer;
+      will-change: transform;
+    }
+    .logo-item img {
+      height: 24px; width:auto; max-width:108px; object-fit:contain; display:block;
+      filter: brightness(0) invert(1);
+      opacity: 0.28;
+      will-change: opacity, transform;
+    }
+    /* ── services ── */
+    /* outer: clips to rounded frame, moves up/down (translateY only) */
+    /* outer panel — whole thing scales big/small. parent overflow clips it. */
+    .svc-img-panel {
+      position: absolute;
+      inset: 6px 24px;
+      border-radius: 16px;
+      overflow: hidden;
+      transform: translateY(65%) scale(0.44);
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .svc-img-panel img {
+      display:block; width:100%; height:100%; object-fit:cover;
+    }
+    .svc-uline {
+      position:absolute; left:0; top:0;
+      height:1px; width:0%;
+      background:#ffffff;
+      will-change: width;
+    }
+
+    /* ── bold statement ── */
+    .stmt-word {
+      display: inline;
+      color: rgba(255,255,255,0.10);
+      will-change: color;
+    }
+
+    /* ── logos section entry ── */
+    #logos-section {
+      opacity:0; transform:translateY(28px);
+      transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1);
+    }
+    #logos-section.visible { opacity:1; transform:translateY(0); }
+
+    /* ── 3D scene ── */
+    .scene-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .scene-grid {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: flex;
+      gap: 13px;
+      transform: translate(-50%, -46%) rotateX(54deg) rotateZ(-12deg);
+      transform-origin: center center;
+    }
+  </style>
 </head>
 <body>
-    <a href="index.html">← Back to Main</a>
-    <h1 style="color: #00FF94;">tymorv8_Luxury.jsx</h1>
-    <p style="color: #888;">$100K Luxury Agency Wireframe v.08 (1,270 lines)</p>
-    
-    <div class="notice">
-        <h3>⚠️ HTML Limitation</h3>
-        <p style="color: #ccc; font-size: 14px;">
-            This is a <strong>React JSX component</strong> that requires React, Framer Motion, and a build environment to run. 
-            It cannot be displayed as a live UI in a static HTML page without a React runtime setup.
-            To view this wireframe as intended, you need to run it in a React environment (Next.js, Vite, or similar).
-        </p>
+<section style="position:relative;height:100vh;overflow:hidden;background:#000000;">
+
+  <!-- ── NAVBAR ── -->
+  <nav style="position:absolute;left:0;right:0;top:0;z-index:40;padding:20px 40px;">
+    <div style="max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;">
+
+      <!-- Logo -->
+      <a href="index.html" style="text-decoration:none;font-size:12px;font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:rgba(255,255,255,0.88);">
+        <span class="flip"><span class="a">Holobox</span><span class="b">Holobox</span></span>
+      </a>
+
+      <!-- Pill links -->
+      <div style="display:flex;align-items:center;gap:2px;padding:5px 8px;border-radius:100px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,255,255,0.035);backdrop-filter:blur(20px);">
+        <a href="index.html" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Home</span><span class="b">Home</span></span>
+        </a>
+        <a href="#" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Studio</span><span class="b">Studio</span></span>
+        </a>
+        <a href="#" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Projects</span><span class="b">Projects</span></span>
+        </a>
+        <a href="#" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Services</span><span class="b">Services</span></span>
+        </a>
+        <a href="#" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Blog</span><span class="b">Blog</span></span>
+        </a>
+        <a href="#" style="padding:8px 16px;font-size:10.5px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:100px;transition:color 0.2s;">
+          <span class="flip"><span class="a">Contact</span><span class="b">Contact</span></span>
+        </a>
+      </div>
+
+      <!-- CTA -->
+      <a href="#" style="padding:10px 22px;border-radius:100px;border:1px solid rgba(255,255,255,0.13);background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);font-size:10.5px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.82);text-decoration:none;transition:background 0.3s,color 0.3s;" onmouseenter="this.style.background='#fff';this.style.color='#000';" onmouseleave="this.style.background='rgba(255,255,255,0.05)';this.style.color='rgba(255,255,255,0.82)';">
+        <span class="flip"><span class="a">Start</span><span class="b">Start</span></span>
+      </a>
+
     </div>
-    
-    <pre id="code-content">Loading...</pre>
-    <script>
-        fetch('tymorv8_Luxury.jsx')
-            .then(response => response.text())
-            .then(code => {
-                document.getElementById('code-content').textContent = code;
-            })
-            .catch(error => {
-                document.getElementById('code-content').textContent = 'Error loading file: ' + error.message;
-            });
-    </script>
+  </nav>
+
+  <!-- ── CARD GRID ── -->
+  <div class="scene-wrap">
+    <div class="scene-grid" id="grid"></div>
+  </div>
+
+  <!-- ── OVERLAYS / SHADING ── -->
+  <div style="pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.18) 30%,rgba(0,0,0,0.18) 70%,rgba(0,0,0,0.88) 100%);"></div>
+  <div style="pointer-events:none;position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.65) 0%,transparent 22%,transparent 78%,rgba(0,0,0,0.65) 100%);"></div>
+  <div style="pointer-events:none;position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,transparent 0%,rgba(0,0,0,0.28) 100%);"></div>
+
+  <!-- ── HERO TEXT ── -->
+  <div style="position:relative;z-index:10;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;">
+    <p style="margin-bottom:14px;font-size:10px;font-weight:500;letter-spacing:0.40em;text-transform:uppercase;color:rgba(255,255,255,0.72);">Since — 2010™</p>
+    <h1 style="font-size:clamp(68px,11.5vw,185px);font-weight:600;line-height:0.89;letter-spacing:-0.045em;color:#fff;text-shadow:0 0 120px rgba(0,0,0,0.8);">Holobox<br/>Technology</h1>
+    <p style="margin-top:22px;font-size:13px;font-weight:300;letter-spacing:0.12em;color:rgba(255,255,255,0.65);">Crafting bold brands and experiences</p>
+  </div>
+
+</section>
+
+<!-- ─────────────────────────────────────────────────────────────
+     LOGOS STRIP
+──────────────────────────────────────────────────────────────── -->
+<section id="logos-section" style="background:#000000;padding:76px 0 92px;border-top:1px solid rgba(255,255,255,0.045);">
+
+  <!-- label -->
+  <div style="text-align:center;margin-bottom:46px;">
+    <p style="font-size:9.5px;font-weight:500;letter-spacing:0.50em;text-transform:uppercase;color:rgba(255,255,255,0.55);font-family:'Geist',sans-serif;">Trusted by leading innovators</p>
+  </div>
+
+  <!-- Row 1 → -->
+  <div class="mq-outer" id="mq-row1" style="margin-bottom:22px;"></div>
+
+  <!-- Row 2 ← -->
+  <div class="mq-outer" id="mq-row2"></div>
+
+</section>
+
+<!-- ────────────────────────────────────────────────────────────
+     ABOUT SECTION — scrollytelling word reveal
+──────────────────────────────────────────────────────────────── -->
+<div id="about-section" style="height:220vh;background:#000000;border-top:1px solid rgba(255,255,255,0.04);">
+  <div id="about-pin" style="position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;">
+
+    <div style="display:flex;align-items:center;max-width:1400px;width:100%;margin:0 auto;padding:0 80px;">
+
+      <!-- LEFT: word-by-word reveal text -->
+      <div style="flex:1;padding-right:72px;">
+
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.52em;text-transform:uppercase;color:rgba(255,255,255,0.38);font-family:'Geist',sans-serif;margin:0 0 28px 0;">About Us</p>
+
+        <h2 style="font-size:clamp(21px,2.6vw,36px);font-weight:300;line-height:1.58;letter-spacing:0.006em;font-family:'Geist',sans-serif;margin:0;">
+          <span class="abt-word">We </span><span class="abt-word">craft </span><span class="abt-word">bold </span><span class="abt-word">holographic </span><span class="abt-word">experiences </span><span class="abt-word">that </span><span class="abt-word">transform </span><span class="abt-word">how </span><span class="abt-word">brands </span><span class="abt-word">connect </span><span class="abt-word">with </span><span class="abt-word">their </span><span class="abt-word">world </span><span class="abt-word">— </span><span class="abt-word">leaving </span><span class="abt-word">a </span><span class="abt-word">lasting </span><span class="abt-word">impression </span><span class="abt-word">through </span><span class="abt-word">technology </span><span class="abt-word">and </span><span class="abt-word">vision</span>
+        </h2>
+
+      </div>
+
+      <!-- RIGHT: Three.js model -->
+      <div id="about-canvas-wrap" style="width:38%;max-width:480px;flex-shrink:0;aspect-ratio:1/1;">
+        <canvas id="about-canvas" style="width:100%;height:100%;display:block;"></canvas>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+  /* all words start dim */
+  gsap.set('.abt-word', { color:'rgba(255,255,255,0.11)' });
+  /* scrub: each word lights up as user scrolls — no stucking */
+  gsap.to('.abt-word', {
+    color: 'rgba(255,255,255,0.92)',
+    ease: 'none',
+    stagger: { each: 0.60, from: 'start' },
+    scrollTrigger: {
+      trigger:  '#about-section',
+      start:    'top top',
+      end:      'bottom bottom',
+      scrub:    0.45,
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var wrap   = document.getElementById('about-canvas-wrap');
+  var canvas = document.getElementById('about-canvas');
+
+  var W = wrap.offsetWidth || 480;
+  var H = W;
+  canvas.width  = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+
+  var scene    = new THREE.Scene();
+  var camera   = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+  camera.position.set(0, 0, 5.8);
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  /* ── Torus Knot — premium shape with vertex colour gradient ── */
+  var geo = new THREE.TorusKnotGeometry(1.05, 0.30, 256, 24, 2, 3);
+  /* gradient: magenta → cyan → violet across Y axis */
+  var pArr = geo.attributes.position.array;
+  var cArr = new Float32Array(pArr.length);
+  for(var i = 0; i < pArr.length; i += 3){
+    var t  = (pArr[i+1] + 1.5) / 3.0;
+    t = Math.max(0, Math.min(1, t));
+    var c  = new THREE.Color();
+    c.setHSL(0.72 + t * 0.28, 0.92, 0.60);   /* violet → hot pink */
+    cArr[i] = c.r; cArr[i+1] = c.g; cArr[i+2] = c.b;
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(cArr, 3));
+
+  var mat = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    metalness: 0.75,
+    roughness: 0.14,
+  });
+  var mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  /* ── ambient + three orbiting coloured point lights ── */
+  scene.add(new THREE.AmbientLight(0x0a0a0a, 1));
+  var orb = [
+    { light: new THREE.PointLight(0xff33cc, 4.5, 14), a: 0,    y:  1.4 },
+    { light: new THREE.PointLight(0x00ccff, 4.5, 14), a: 2.09, y: -0.8 },
+    { light: new THREE.PointLight(0x9933ff, 4.0, 14), a: 4.19, y:  0.6 },
+  ];
+  orb.forEach(function(o){ scene.add(o.light); });
+
+  /* ── mouse parallax ── */
+  var mx = 0, my = 0;
+  document.addEventListener('mousemove', function(e){
+    mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    /* orbit lights */
+    orb.forEach(function(o){
+      o.a += 0.010;
+      o.light.position.set(Math.cos(o.a) * 3.4, o.y, Math.sin(o.a) * 3.4);
+    });
+    mesh.rotation.y += 0.007 + mx * 0.001;
+    mesh.rotation.x += 0.003 + my * 0.0008;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+
+
+<!-- ────────────────────────────────────────────────────────────
+     EXPERTISE — Lenis + GSAP horizontal scroll
+──────────────────────────────────────────────────────────────── -->
+<div id="exp-outer" style="height:500vh;background:#000000;border-top:1px solid rgba(255,255,255,0.04);">
+  <div id="exp-sticky" style="position:sticky;top:0;height:100vh;overflow:hidden;">
+
+    <!-- gradient progress bar — top edge -->
+    <div id="exp-progress" style="position:absolute;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,#ff33cc,#9933ff,#00ccff);z-index:30;"></div>
+
+    <!-- section label -->
+    <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:22px 80px;z-index:20;border-bottom:1px solid rgba(255,255,255,0.05);pointer-events:none;">
+      <span style="font-size:9px;font-weight:500;letter-spacing:0.50em;text-transform:uppercase;color:rgba(255,255,255,0.38);font-family:'Geist',sans-serif;">The Expertise</span>
+      <span style="font-size:9px;font-weight:300;letter-spacing:0.20em;color:rgba(255,255,255,0.20);font-family:'Geist',sans-serif;">01 — 04</span>
+    </div>
+
+    <!-- horizontal track: 4 full-screen cards -->
+    <div id="exp-track" style="display:flex;height:100%;width:400vw;will-change:transform;">
+
+      <!-- ── CARD 01 ── -->
+      <div class="exp-card" style="width:100vw;height:100vh;flex-shrink:0;display:flex;align-items:center;padding:0 7vw;gap:4vw;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 40%,rgba(255,51,204,0.055) 0%,transparent 65%);pointer-events:none;"></div>
+        <div class="exp-inner" style="max-width:480px;flex:0 0 auto;transform-style:preserve-3d;">
+          <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(110px,15vw,200px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,255,255,0.13);font-family:'Geist',sans-serif;transform:translateY(110%);">01</span></div>
+          <div style="overflow:hidden;margin-bottom:30px;"><h3 class="exp-title" style="font-size:clamp(46px,5.8vw,84px);font-weight:600;line-height:1.02;letter-spacing:-0.035em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Holographic<br/>Displays</h3></div>
+          <p class="exp-desc" style="font-size:15px;font-weight:300;line-height:1.72;color:rgba(255,255,255,0.42);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(18px);">We craft immersive holographic displays that transform physical spaces into breathtaking digital canvases — seen, felt, and remembered long after.</p>
+          <div style="margin-top:38px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(255,51,204,0.8),rgba(153,51,255,0.5));"></div></div>
+        </div>
+        <div class="exp-img-wrap" style="flex:1;max-width:46%;opacity:0;transform:translateX(40px);display:flex;align-items:center;justify-content:flex-end;">
+          <img src="holobox.png" style="width:100%;height:64vh;object-fit:cover;border-radius:14px;display:block;">
+        </div>
+      </div>
+
+      <!-- ── CARD 02 ── -->
+      <div class="exp-card" style="width:100vw;height:100vh;flex-shrink:0;display:flex;align-items:center;padding:0 7vw;gap:4vw;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 35% 60%,rgba(0,204,255,0.055) 0%,transparent 65%);pointer-events:none;"></div>
+        <div class="exp-inner" style="max-width:480px;flex:0 0 auto;transform-style:preserve-3d;">
+          <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(110px,15vw,200px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,255,255,0.13);font-family:'Geist',sans-serif;transform:translateY(110%);">02</span></div>
+          <div style="overflow:hidden;margin-bottom:30px;"><h3 class="exp-title" style="font-size:clamp(46px,5.8vw,84px);font-weight:600;line-height:1.02;letter-spacing:-0.035em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Spatial<br/>Experiences</h3></div>
+          <p class="exp-desc" style="font-size:15px;font-weight:300;line-height:1.72;color:rgba(255,255,255,0.42);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(18px);">From floor to ceiling, we engineer spatial realities that respond to presence — blending architecture, light, and digital intelligence into one living system.</p>
+          <div style="margin-top:38px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(0,204,255,0.8),rgba(0,120,255,0.5));"></div></div>
+        </div>
+        <div class="exp-img-wrap" style="flex:1;max-width:46%;opacity:0;transform:translateX(40px);display:flex;align-items:center;justify-content:flex-end;">
+          <img src="holoboxing.png" style="width:100%;height:64vh;object-fit:cover;border-radius:14px;display:block;">
+        </div>
+      </div>
+
+      <!-- ── CARD 03 ── -->
+      <div class="exp-card" style="width:100vw;height:100vh;flex-shrink:0;display:flex;align-items:center;padding:0 7vw;gap:4vw;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 35%,rgba(153,51,255,0.06) 0%,transparent 65%);pointer-events:none;"></div>
+        <div class="exp-inner" style="max-width:480px;flex:0 0 auto;transform-style:preserve-3d;">
+          <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(110px,15vw,200px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,255,255,0.13);font-family:'Geist',sans-serif;transform:translateY(110%);">03</span></div>
+          <div style="overflow:hidden;margin-bottom:30px;"><h3 class="exp-title" style="font-size:clamp(46px,5.8vw,84px);font-weight:600;line-height:1.02;letter-spacing:-0.035em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Interactive<br/>Installations</h3></div>
+          <p class="exp-desc" style="font-size:15px;font-weight:300;line-height:1.72;color:rgba(255,255,255,0.42);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(18px);">Touch, gesture, motion — our installations invite audiences to become part of the art. Every interaction is engineered to feel effortless and unforgettable.</p>
+          <div style="margin-top:38px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(153,51,255,0.8),rgba(220,51,255,0.5));"></div></div>
+        </div>
+        <div class="exp-img-wrap" style="flex:1;max-width:46%;opacity:0;transform:translateX(40px);display:flex;align-items:center;justify-content:flex-end;">
+          <img src="img.png" style="width:100%;height:64vh;object-fit:cover;border-radius:14px;display:block;">
+        </div>
+      </div>
+
+      <!-- ── CARD 04 ── -->
+      <div class="exp-card" style="width:100vw;height:100vh;flex-shrink:0;display:flex;align-items:center;padding:0 7vw;gap:4vw;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,180,50,0.04) 0%,transparent 60%);pointer-events:none;"></div>
+        <div class="exp-inner" style="max-width:480px;flex:0 0 auto;transform-style:preserve-3d;">
+          <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(110px,15vw,200px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,255,255,0.13);font-family:'Geist',sans-serif;transform:translateY(110%);">04</span></div>
+          <div style="overflow:hidden;margin-bottom:30px;"><h3 class="exp-title" style="font-size:clamp(46px,5.8vw,84px);font-weight:600;line-height:1.02;letter-spacing:-0.035em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Brand<br/>Technology</h3></div>
+          <p class="exp-desc" style="font-size:15px;font-weight:300;line-height:1.72;color:rgba(255,255,255,0.42);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(18px);">We fuse brand identity with cutting-edge technology — creating digital-physical ecosystems where every touchpoint is a statement of precision and vision.</p>
+          <div style="margin-top:38px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(255,180,50,0.8),rgba(255,100,50,0.5));"></div></div>
+        </div>
+        <div class="exp-img-wrap" style="flex:1;max-width:46%;opacity:0;transform:translateX(40px);display:flex;align-items:center;justify-content:flex-end;">
+          <img src="newimg.png" style="width:100%;height:64vh;object-fit:cover;border-radius:14px;display:block;">
+        </div>
+      </div>
+
+    </div><!-- /exp-track -->
+  </div><!-- /exp-sticky -->
+</div><!-- /exp-outer -->
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── Lenis butter-smooth scroll ── */
+  const lenis = new Lenis({
+    duration: 1.10,                               /* slightly snappier — reduces perceived lag */
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smooth: true,
+    smoothTouch: false,                           /* prevent touch-device stalls */
+  });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(time => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+
+  /* Re-measure after all inline scripts have set dynamic heights (e.g. #csi-area) */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      lenis.resize();
+      ScrollTrigger.refresh();
+    }, 120);
+  });
+
+  /* ── horizontal scroll: vertical → translateX ── */
+  const track = document.getElementById('exp-track');
+  const hTween = gsap.to(track, {
+    x: () => -(track.scrollWidth - window.innerWidth),
+    ease: 'none',
+    scrollTrigger: {
+      trigger:  '#exp-outer',
+      start:    'top top',
+      end:      'bottom bottom',
+      scrub:    1,
+      onUpdate: s => {
+        document.getElementById('exp-progress').style.width = (s.progress * 100) + '%';
+      }
+    }
+  });
+
+  /* ── card 0: reveal on section enter (left edge never crosses 85%) ── */
+  const cards = Array.from(document.querySelectorAll('.exp-card'));
+  ScrollTrigger.create({
+    trigger: '#exp-outer',
+    start:   'top 55%',
+    once:    true,
+    onEnter: () => {
+      const c = cards[0];
+      const tl = gsap.timeline();
+      tl.to(c.querySelector('.exp-num'),   { y:'0%',    duration:1.1, ease:'power3.out' }, 0);
+      tl.to(c.querySelector('.exp-title'), { y:'0%',    duration:1.0, ease:'power3.out' }, 0.1);
+      tl.to(c.querySelector('.exp-desc'),  { opacity:1, y:0, duration:0.8, ease:'power2.out' }, 0.26);
+      tl.to(c.querySelector('.exp-line'),    { width:'100%', duration:1.4, ease:'power2.out' }, 0.32);
+      tl.to(c.querySelector('.exp-img-wrap'), { opacity:1, x:0, duration:1.1, ease:'power2.out' }, 0.22);
+    }
+  });
+
+  /* ── cards 1-3: reveal via containerAnimation as they scroll into view ── */
+  cards.forEach((card, i) => {
+    if(i === 0) return;
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger:            card,
+        containerAnimation: hTween,
+        start:              'left 82%',
+        end:                'left 18%',
+        scrub:              0.9,
+      }
+    });
+    tl.to(card.querySelector('.exp-num'),   { y:'0%',    duration:1.0, ease:'power3.out' }, 0);
+    tl.to(card.querySelector('.exp-title'), { y:'0%',    duration:0.9, ease:'power3.out' }, 0.08);
+    tl.to(card.querySelector('.exp-desc'),  { opacity:1, y:0, duration:0.7, ease:'power2.out' }, 0.22);
+    tl.to(card.querySelector('.exp-line'),    { width:'100%', duration:1.2, ease:'power2.out' }, 0.28);
+    tl.to(card.querySelector('.exp-img-wrap'), { opacity:1, x:0, duration:0.9, ease:'power2.out' }, 0.20);
+  });
+
+  /* ── 3D tilt on mouse hover ── */
+  cards.forEach(card => {
+    const inner = card.querySelector('.exp-inner');
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top)  / r.height - 0.5) * -10;
+      const ry = ((e.clientX - r.left) / r.width  - 0.5) *  10;
+      gsap.to(inner, { rotateX:rx, rotateY:ry, transformPerspective:1200, duration:0.45, ease:'power2.out' });
+    });
+    card.addEventListener('mouseleave', () => {
+      gsap.to(inner, { rotateX:0, rotateY:0, duration:1.0, ease:'elastic.out(1,0.45)' });
+    });
+  });
+
+})();
+</script>
+
+<!-- ────────────────────────────────────────────────────────────
+     SOLUTIONS — 8-Industry Bento Grid
+──────────────────────────────────────────────────────────────── -->
+<style>
+.b-card {
+  background: rgba(255,255,255,0.038);
+  backdrop-filter: blur(18px) saturate(1.7);
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  border: 1px solid rgba(255,255,255,0.072);
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  transition: border-color 0.35s ease;
+}
+.b-card:hover { border-color: rgba(255,255,255,0.14); }
+.b-accent { position:absolute;inset:0;pointer-events:none;border-radius:22px; }
+.b-top-line { position:absolute;top:0;left:0;right:0;height:1px;pointer-events:none; }
+.b-inner {
+  position: relative;
+  padding: 36px 40px;
+  height: 100%;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  box-sizing: border-box;
+}
+.b-num {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-family: 'Geist', sans-serif;
+  display: block;
+  margin-bottom: 13px;
+}
+.b-title {
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: #ffffff;
+  font-family: 'Geist', sans-serif;
+  line-height: 1.08;
+}
+.b-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  font-family: 'Geist', sans-serif;
+  line-height: 1.68;
+  margin: 0;
+  max-width: 320px;
+}
+.b-arrow {
+  font-size: 17px;
+  color: rgba(255,255,255,0.16);
+  flex-shrink: 0;
+  font-family: 'Geist', sans-serif;
+  display: block;
+  transition: color 0.3s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  margin-left: auto;
+}
+.b-card:hover .b-arrow { color: rgba(255,255,255,0.6); transform: translate(5px,-3px); }
+</style>
+
+<section id="solutions-section" style="background:#000000;border-top:1px solid rgba(255,255,255,0.04);padding:120px 80px 140px;position:relative;overflow:hidden;">
+
+  <!-- ambient blobs give glassmorphism something to blur against -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+    <div style="position:absolute;top:0;left:8%;width:750px;height:750px;background:radial-gradient(circle,rgba(153,51,255,0.07) 0%,transparent 70%);filter:blur(55px);"></div>
+    <div style="position:absolute;bottom:0;right:6%;width:650px;height:650px;background:radial-gradient(circle,rgba(0,180,255,0.06) 0%,transparent 70%);filter:blur(55px);"></div>
+    <div style="position:absolute;top:45%;left:42%;width:520px;height:520px;background:radial-gradient(circle,rgba(255,50,100,0.045) 0%,transparent 70%);filter:blur(65px);"></div>
+  </div>
+
+  <!-- Section header -->
+  <div style="max-width:1400px;margin:0 auto 68px;position:relative;">
+    <p style="font-size:9px;font-weight:500;letter-spacing:0.52em;text-transform:uppercase;color:rgba(255,255,255,0.38);font-family:'Geist',sans-serif;margin:0 0 20px 0;">Solutions</p>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+      <h2 style="font-size:clamp(32px,4vw,54px);font-weight:600;line-height:1.06;letter-spacing:-0.03em;color:#fff;font-family:'Geist',sans-serif;margin:0;">Industries we<br/>transform.</h2>
+      <p style="font-size:13px;font-weight:300;color:rgba(255,255,255,0.34);font-family:'Geist',sans-serif;line-height:1.68;max-width:280px;margin:0;">Eight verticals. One methodology.<br/>Infinite precision.</p>
+    </div>
+  </div>
+
+  <!-- Bento grid — 3 columns -->
+  <div id="bento-grid" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;position:relative;">
+
+    <!-- 01 Healthcare — span 2 -->
+    <div class="b-card" style="grid-column:span 2;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(0,210,140,0.11) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(0,210,140,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(0,210,140,0.88);">01</span><div class="b-title">Healthcare</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Patient-first digital ecosystems that elevate care, reduce friction, and build lasting trust at every touchpoint.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Retail — span 1 -->
+    <div class="b-card" style="grid-column:span 1;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(255,160,50,0.11) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(255,160,50,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(255,160,50,0.88);">02</span><div class="b-title">Retail</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Omnichannel experiences that convert browsers into lifelong brand advocates.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Hospitality — span 1 -->
+    <div class="b-card" style="grid-column:span 1;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(167,139,250,0.11) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(167,139,250,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(167,139,250,0.88);">03</span><div class="b-title">Hospitality</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Experiences that linger — from first impression to lasting memory.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Marketing — span 2 -->
+    <div class="b-card" style="grid-column:span 2;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(244,63,94,0.10) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(244,63,94,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(244,63,94,0.88);">04</span><div class="b-title">Marketing</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Campaigns that feel alive — data-driven narratives delivered with emotion and precision at scale.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 Finance — span 1 -->
+    <div class="b-card" style="grid-column:span 1;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(59,130,246,0.11) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(59,130,246,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(59,130,246,0.88);">05</span><div class="b-title">Finance</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Trust engineered through precision, transparency, and beautifully clear interfaces.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 Education — span 1 -->
+    <div class="b-card" style="grid-column:span 1;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(6,182,212,0.11) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(6,182,212,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(6,182,212,0.88);">06</span><div class="b-title">Education</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Learning reimagined — engaging, adaptive, and beautifully crafted for every learner.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Events — span 1 -->
+    <div class="b-card" style="grid-column:span 1;min-height:228px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(236,72,153,0.10) 0%,transparent 55%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(236,72,153,0.65),transparent 60%);"></div>
+      <div class="b-inner">
+        <div><span class="b-num" style="color:rgba(236,72,153,0.88);">07</span><div class="b-title">Events</div></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <p class="b-desc">Moments engineered for memory — from intimate gatherings to global spectacles.</p>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 Real Estate — full 3-col banner -->
+    <div class="b-card" style="grid-column:span 3;min-height:190px;">
+      <div class="b-accent" style="background:linear-gradient(135deg,rgba(132,204,22,0.08) 0%,transparent 45%);"></div>
+      <div class="b-top-line" style="background:linear-gradient(90deg,rgba(132,204,22,0.55),transparent 50%);"></div>
+      <div class="b-inner" style="flex-direction:row;align-items:center;gap:48px;">
+        <div style="display:flex;align-items:center;gap:36px;flex-shrink:0;">
+          <span class="b-num" style="color:rgba(132,204,22,0.88);margin:0;">08</span>
+          <div class="b-title">Real Estate</div>
+        </div>
+        <p class="b-desc" style="max-width:460px;flex:1;">Spaces visualised before they exist — immersive walkthrough experiences that close deals and inspire complete confidence.</p>
+        <span class="b-arrow" style="margin:0;">→</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  const bcards = Array.from(document.querySelectorAll('.b-card'));
+
+  /* initial hidden state — tilted back, shifted down, faded */
+  gsap.set(bcards, {
+    y: 65,
+    rotateX: 18,
+    scale: 0.88,
+    opacity: 0,
+    transformPerspective: 1000,
+    transformOrigin: '50% 100%',
+  });
+
+  /* spring-physics entrance, staggered by grid order */
+  ScrollTrigger.batch(bcards, {
+    onEnter: batch => {
+      gsap.to(batch, {
+        y: 0,
+        rotateX: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 1.20,
+        ease: 'elastic.out(1, 0.70)',
+        stagger: { each: 0.085, from: 'start' },
+        onComplete() { gsap.set(this.targets(), { clearProps: 'rotateX,scale,transformOrigin' }); }
+      });
+    },
+    start: 'top 88%',
+    once: true,
+  });
+
+  /* magnetic 3D tilt + translate on hover */
+  bcards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width  - 0.5;
+      const ny = (e.clientY - r.top)  / r.height - 0.5;
+      gsap.to(card, {
+        rotateX:            ny * -9,
+        rotateY:            nx *  9,
+        x:                  nx *  8,
+        y:                  ny *  6,
+        transformPerspective: 1000,
+        duration: 0.40,
+        ease: 'power2.out',
+      });
+    });
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        rotateX: 0, rotateY: 0, x: 0, y: 0,
+        duration: 1.15,
+        ease: 'elastic.out(1, 0.48)',
+      });
+    });
+  });
+
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     CORE TECHNOLOGY — Split-screen sticky 3D + scrolling specs
+════════════════════════════════════════════════════════════ -->
+<style>
+#tech-section{display:flex;align-items:flex-start;min-height:500vh;background:#000000;border-top:1px solid rgba(255,255,255,0.04);}
+#tech-left{width:50%;position:sticky;top:0;height:100vh;flex-shrink:0;overflow:hidden;pointer-events:none;}
+#hb-canvas{width:100%;height:100%;display:block;}
+#tech-right{width:50%;padding:0 8vw 0 5vw;}
+.spec-panel{height:100vh;display:flex;align-items:center;}
+.spec-content{max-width:480px;}
+.spec-label{font:500 9px/1 'Geist',sans-serif;letter-spacing:0.50em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin:0 0 24px;}
+.spec-stat{font:600 clamp(28px,3.5vw,46px)/1 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;margin:0 0 6px;}
+.spec-stat-sub{font:400 9.5px/1 'Geist',sans-serif;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 22px;}
+.spec-heading{font:300 clamp(15px,1.6vw,20px)/1.15 'Geist',sans-serif;letter-spacing:-0.02em;color:rgba(255,255,255,0.88);margin:0 0 13px;}
+.spec-heading--lg{font-size:clamp(19px,2.0vw,27px)!important;font-weight:300!important;letter-spacing:-0.025em!important;margin-bottom:18px!important;}
+.spec-body{font:300 12px/1.82 'Geist',sans-serif;color:rgba(255,255,255,0.33);margin:0 0 26px;}
+.spec-rows{border-top:1px solid rgba(255,255,255,0.07);padding-top:20px;display:flex;flex-direction:column;gap:0;}
+.spec-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.040);}
+.spec-row span:first-child{font:400 11px/1 'Geist',sans-serif;color:rgba(255,255,255,0.32);letter-spacing:0.03em;}
+.spec-row span:last-child{font:500 11px/1 'Geist',sans-serif;color:rgba(255,255,255,0.78);letter-spacing:-0.01em;}
+/* ── left panel 3D stage ── */
+.hb-orbit{position:absolute;border-radius:50%;pointer-events:none;}
+.hb-orbit-1{width:420px;height:420px;border:1px solid rgba(68,200,255,0.20);left:50%;top:50%;margin:-210px 0 0 -210px;animation:hb-s1 9s linear infinite;}
+.hb-orbit-2{width:330px;height:330px;border:1px solid rgba(170,68,255,0.17);left:50%;top:50%;margin:-165px 0 0 -165px;animation:hb-s2 13s linear infinite;}
+@keyframes hb-s1{from{transform:rotateX(72deg) rotateZ(0deg)}to{transform:rotateX(72deg) rotateZ(360deg)}}
+@keyframes hb-s2{from{transform:rotateX(64deg) rotateZ(25deg)}to{transform:rotateX(64deg) rotateZ(-335deg)}}
+#hb-stage{position:absolute;inset:0;z-index:2;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#hb-video,#hb-fallback{width:100%;height:100%;display:block;object-fit:contain;border-radius:0;}
+#hb-fallback{display:block;}
+#hb-video{display:none;}
+.hb-glow{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);}
+#tech-left::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(to right,transparent 78%,#000 100%),linear-gradient(to bottom,#000 0%,transparent 9%,transparent 91%,#000 100%);}
+</style>
+
+<section id="tech-section">
+
+  <!-- LEFT: sticky 3D Holobox -->
+  <div id="tech-left">
+    <!-- ambient light blobs -->
+    <div class="hb-glow" style="width:500px;height:500px;left:50%;top:50%;margin:-250px 0 0 -250px;background:radial-gradient(circle,rgba(68,200,255,0.08) 0%,transparent 70%);"></div>
+    <div class="hb-glow" style="width:360px;height:360px;left:55%;top:45%;margin:-180px 0 0 -180px;background:radial-gradient(circle,rgba(170,68,255,0.06) 0%,transparent 70%);"></div>
+
+    <!-- CSS orbital rings -->
+    <div class="hb-orbit hb-orbit-1"></div>
+    <div class="hb-orbit hb-orbit-2"></div>
+
+    <!-- 3D model — scroll-scrubbed video -->
+    <div id="hb-stage">
+      <video id="hb-video" muted playsinline preload="auto" webkit-playsinline>
+        <source src="model/3dvideo.mp4" type="video/mp4">
+      </video>
+      <img id="hb-fallback" src="holobox.png" alt="Holobox Flex">
+    </div>
+
+    <!-- top-left overlay labels -->
+    <div style="position:absolute;top:44px;left:50px;z-index:7;pointer-events:none;">
+      <p style="font:500 8px/1 'Geist',sans-serif;letter-spacing:0.50em;text-transform:uppercase;color:rgba(255,255,255,0.24);margin:0 0 10px;">Core Technology</p>
+      <div id="hb-model-label" style="font:500 12px/1.4 'Geist',sans-serif;color:rgba(255,255,255,0.48);letter-spacing:-0.01em;min-height:17px;transition:opacity 0.4s;"></div>
+    </div>
+
+    <!-- left-edge scroll progress bar -->
+    <div style="position:absolute;left:0;top:0;width:2px;height:100%;background:rgba(255,255,255,0.04);z-index:7;">
+      <div id="hb-progress" style="width:100%;height:0%;background:linear-gradient(180deg,rgba(100,210,255,0.9),rgba(153,51,255,0.7));transition:height 0.08s linear;"></div>
+    </div>
+
+    <!-- bottom corner meta -->
+    <div style="position:absolute;bottom:42px;left:50px;right:50px;display:flex;justify-content:space-between;pointer-events:none;z-index:7;">
+      <span style="font:300 10.5px/1 'Geist',sans-serif;color:rgba(255,255,255,0.20);letter-spacing:0.08em;">Holobox Flex — Gen II</span>
+      <span id="hb-counter" style="font:500 10px/1 'Geist',sans-serif;color:rgba(255,255,255,0.22);letter-spacing:0.14em;">01 / 05</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: 5 scrolling spec panels -->
+  <div id="tech-right">
+
+    <!-- 0 · Intro -->
+    <div class="spec-panel">
+      <div class="spec-content">
+        <p class="spec-label">The Holobox Flex</p>
+        <h2 class="spec-heading spec-heading--lg">Hardware built<br/>for another era.</h2>
+        <p class="spec-body">Every photon, every render cycle, every interaction — engineered from first principles to deliver presence that defies what screens can do. Scroll to explore the architecture.</p>
+      </div>
+    </div>
+
+    <!-- 1 · Display -->
+    <div class="spec-panel">
+      <div class="spec-content">
+        <div class="spec-stat">4K</div>
+        <p class="spec-stat-sub">120 Hz · Transparent OLED · 27"</p>
+        <h3 class="spec-heading">Display System</h3>
+        <p class="spec-body">A transparent OLED panel at 4K with a 120Hz refresh rate. 160° viewing cone, 1,200 nit peak brightness, no backlight — pure photon emission through crystal-clear glass.</p>
+        <div class="spec-rows">
+          <div class="spec-row"><span>Resolution</span><span>3840 × 2160</span></div>
+          <div class="spec-row"><span>Refresh rate</span><span>120 Hz adaptive</span></div>
+          <div class="spec-row"><span>Peak brightness</span><span>1,200 nit</span></div>
+          <div class="spec-row"><span>Viewing angle</span><span>160°</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 · Neural Engine -->
+    <div class="spec-panel">
+      <div class="spec-content">
+        <div class="spec-stat">32 TOPS</div>
+        <p class="spec-stat-sub">Neural Processing Unit · 4nm Custom Silicon</p>
+        <h3 class="spec-heading">Neural Engine</h3>
+        <p class="spec-body">Custom silicon NPU handles on-device inference at 32 trillion operations per second. No cloud dependency. Full privacy. Zero-latency AI decisions local to the edge.</p>
+        <div class="spec-rows">
+          <div class="spec-row"><span>AI performance</span><span>32 TOPS</span></div>
+          <div class="spec-row"><span>Memory bandwidth</span><span>204 GB/s</span></div>
+          <div class="spec-row"><span>Power envelope</span><span>45W TDP</span></div>
+          <div class="spec-row"><span>Process node</span><span>4nm custom</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · MetaHuman -->
+    <div class="spec-panel">
+      <div class="spec-content">
+        <div class="spec-stat">&lt;16ms</div>
+        <p class="spec-stat-sub">MetaHuman Interaction · 60 fps</p>
+        <h3 class="spec-heading">MetaHuman Engine</h3>
+        <p class="spec-body">Photorealistic AI avatars rendered in real-time. Full lip-sync, gesture recognition, gaze tracking, and emotional intelligence — all under 16 milliseconds, end to end.</p>
+        <div class="spec-rows">
+          <div class="spec-row"><span>Render latency</span><span>&lt;16 ms</span></div>
+          <div class="spec-row"><span>Frame rate</span><span>60 fps sustained</span></div>
+          <div class="spec-row"><span>Emotion states</span><span>128 micro-expressions</span></div>
+          <div class="spec-row"><span>Languages</span><span>40+ real-time</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 · Sensing -->
+    <div class="spec-panel">
+      <div class="spec-content">
+        <div class="spec-stat">8-cam</div>
+        <p class="spec-stat-sub">Sensing Array · 5G mmWave · LiDAR</p>
+        <h3 class="spec-heading">Connectivity & Sensing</h3>
+        <p class="spec-body">8-camera array with LiDAR delivers full spatial awareness — tracking hands, gaze, and bodies simultaneously. 5G mmWave ensures cloud sync at full bandwidth, always.</p>
+        <div class="spec-rows">
+          <div class="spec-row"><span>Cameras</span><span>8 × 4K @ 60fps</span></div>
+          <div class="spec-row"><span>LiDAR range</span><span>0.3 – 5 m</span></div>
+          <div class="spec-row"><span>Wireless</span><span>Wi-Fi 6E · 5G mmWave</span></div>
+          <div class="spec-row"><span>Tracking</span><span>Hands · Gaze · Body</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+/* ── GSAP: spec panel reveal physics ── */
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* initial state */
+  gsap.set('.spec-content', { opacity:0, x:60 });
+  gsap.set('.spec-row',     { opacity:0, y:18 });
+
+  document.querySelectorAll('.spec-panel').forEach(panel => {
+    const content = panel.querySelector('.spec-content');
+    const rows    = panel.querySelectorAll('.spec-row');
+    ScrollTrigger.create({
+      trigger: panel,
+      start:   'top 68%',
+      once:    true,
+      onEnter: () => {
+        const tl = gsap.timeline();
+        tl.to(content, { opacity:1, x:0, duration:1.08, ease:'power3.out' });
+        if(rows.length) tl.to(rows, { opacity:1, y:0, duration:0.72, ease:'power2.out', stagger:0.068 }, 0.30);
+      }
+    });
+  });
+
+  /* panel counter + progress bar driven by section scroll */
+  ScrollTrigger.create({
+    trigger: '#tech-section',
+    start:   'top top',
+    end:     'bottom bottom',
+    onUpdate: s => {
+      const idx = Math.min(4, Math.floor(s.progress * 5));
+      document.getElementById('hb-counter').textContent =
+        String(idx + 1).padStart(2,'0') + ' / 05';
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Holobox: premium RAF scroll-scrub ── */
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  const video    = document.getElementById('hb-video');
+  const fallback = document.getElementById('hb-fallback');
+  const stage    = document.getElementById('hb-stage');
+  const left     = document.getElementById('tech-left');
+
+  let videoReady   = false;
+  let scrollProg   = 0;   /* raw scroll 0→1 */
+  let smoothProg   = 0;   /* lerped value driving currentTime */
+
+  /* ── preload + reveal ── */
+  if(video){
+    video.load();
+
+    let revealed = false;
+    const revealVideo = () => {
+      if(revealed) return;
+      revealed = true;
+      videoReady = true;
+      video.pause();
+      video.currentTime = 0;
+      video.style.display    = 'block';
+      fallback.style.display = 'none';
+    };
+
+    /* fire on first available event */
+    video.addEventListener('loadeddata',     revealVideo);
+    video.addEventListener('canplaythrough', revealVideo);
+    video.addEventListener('loadedmetadata', () => {
+      /* if readyState already has data, reveal immediately */
+      if(video.readyState >= 2) revealVideo();
+    });
+    /* safety net: 2.5s timeout */
+    setTimeout(() => { if(video.readyState >= 1) revealVideo(); }, 2500);
+
+    video.addEventListener('error', () => {
+      video.style.display    = 'none';
+      fallback.style.display = 'block';
+    });
+  }
+
+  /* ── RAF lerp loop: silky currentTime scrub ── */
+  (function scrubRAF(){
+    requestAnimationFrame(scrubRAF);
+    /* also catch readyState in case events were missed */
+    if(!videoReady && video.readyState >= 2) videoReady = true;
+    if(!videoReady || !video.duration) return;
+    /* exponential ease-out towards scroll target */
+    smoothProg += (scrollProg - smoothProg) * 0.40;
+    const t = smoothProg * video.duration;
+    if(Math.abs(t - video.currentTime) > 0.016){
+      video.currentTime = t;
+    }
+  })();
+
+  /* ── scroll driver ── */
+  const LABELS = ['The Holobox Flex','Display System','Neural Engine','MetaHuman Engine','Sensing Array'];
+  ScrollTrigger.create({
+    trigger: '#tech-section',
+    start:   'top top',
+    end:     'bottom bottom',
+    onUpdate: s => {
+      scrollProg = s.progress;
+      document.getElementById('hb-progress').style.height = (s.progress * 100) + '%';
+      const idx = Math.min(4, Math.floor(s.progress * 5));
+      document.getElementById('hb-model-label').textContent = LABELS[idx];
+      document.getElementById('hb-counter').textContent = String(idx+1).padStart(2,'0') + ' / 05';
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const LOGOS = [
+    'Logos/logo1.png','Logos/logo2.png','Logos/logo3.png',
+    'Logos/logo4.png','Logos/logo5.png'
+  ];
+
+  function buildRow(containerId, dir, speed) {
+    const outer = document.getElementById(containerId);
+    const track = document.createElement('div');
+    track.className = 'mq-track mq-' + dir;
+    track.style.setProperty('--mqspd', speed);
+
+    /* 4 complete sets = 20 items per half; duplicate for seamless loop = 40 total */
+    const half = [...LOGOS,...LOGOS,...LOGOS,...LOGOS];
+    [...half,...half].forEach((src) => {
+      const item = document.createElement('div');
+      item.className = 'logo-item';
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.loading = 'lazy';
+      item.appendChild(img);
+
+      /* GSAP hover */
+      item.addEventListener('mouseenter', () => {
+        gsap.killTweensOf([item, img]);
+        gsap.to(item, { scale:1.12, y:-5, duration:0.38, ease:'power2.out' });
+        gsap.to(img,  { opacity:0.92, duration:0.32, ease:'power2.out' });
+      });
+      item.addEventListener('mouseleave', () => {
+        gsap.killTweensOf([item, img]);
+        gsap.to(item, { scale:1, y:0, duration:0.7, ease:'elastic.out(1,0.55)' });
+        gsap.to(img,  { opacity:0.28, duration:0.5, ease:'power2.out' });
+      });
+
+      track.appendChild(item);
+    });
+
+    /* pause entire row on hover */
+    outer.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
+    outer.addEventListener('mouseleave', () => track.style.animationPlayState = 'running');
+
+    outer.appendChild(track);
+  }
+
+  buildRow('mq-row1', 'l', '30s');
+  buildRow('mq-row2', 'r', '46s');
+
+  /* scroll-triggered section entry */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  io.observe(document.getElementById('logos-section'));
+})();
+</script>
+
+<script>
+const POOL = [
+  'holobox.png','img.png','newimg.png','leo_holobox.jpg',
+  'holoboxing.png','img2.png','holobox3d.png','leo_holobox1.jpg'
+];
+
+const COLS = [
+  { spd:'44s', dir:'up',   offset: '7%'  },
+  { spd:'58s', dir:'down', offset:'-9%'  },
+  { spd:'50s', dir:'up',   offset: '4%'  },
+  { spd:'64s', dir:'down', offset:'-6%'  },
+  { spd:'46s', dir:'up',   offset:'11%'  },
+  { spd:'60s', dir:'down', offset:'-3%'  },
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+const grid = document.getElementById('grid');
+
+COLS.forEach((col) => {
+  /* ── outer column wrapper ── */
+  const outer = document.createElement('div');
+  outer.className = 'col-outer';
+  outer.style.transform = `translateY(${col.offset})`;
+
+  /* ── scrolling track ── */
+  const track = document.createElement('div');
+  track.className = `col-track anim-${col.dir}`;
+  track.style.setProperty('--spd', col.spd);
+
+  /* ── cards (×2 for seamless loop) ── */
+  const imgs = shuffle(POOL);
+  [...imgs, ...imgs].forEach((src) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = '';
+    img.loading = 'lazy';
+
+    const shine   = document.createElement('div'); shine.className = 'shine';
+    const shimmer = document.createElement('div'); shimmer.className = 'shimmer';
+
+    card.appendChild(img);
+    card.appendChild(shine);
+    card.appendChild(shimmer);
+
+    /* ── GSAP hover (NO CSS :hover transform conflict) ── */
+    card.addEventListener('mouseenter', () => {
+      gsap.killTweensOf([card, img]);
+      gsap.to(card, {
+        scale: 1.08, y: -16,
+        rotateX: 4, rotateY: -6,
+        duration: 0.55, ease: 'power3.out',
+        transformPerspective: 900,
+        boxShadow: '0 32px 88px rgba(0,0,0,0.80), 0 0 0 1px rgba(255,255,255,0.20)',
+        zIndex: 30,
+      });
+      gsap.to(img, {
+        scale: 1.1,
+        filter: 'grayscale(0%) brightness(1.02) saturate(1.28)',
+        duration: 0.6, ease: 'power3.out',
+      });
+      shimmer.style.opacity = '1';
+    });
+
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width  - 0.5;
+      const ny = (e.clientY - r.top)  / r.height - 0.5;
+      gsap.to(card, {
+        rotateY:  nx * 20,
+        rotateX: -ny * 14,
+        duration: 0.28, ease: 'power2.out',
+        transformPerspective: 900,
+        overwrite: 'auto',
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      gsap.killTweensOf([card, img]);
+      gsap.to(card, {
+        scale: 1, y: 0, rotateX: 0, rotateY: 0,
+        duration: 0.95, ease: 'elastic.out(1, 0.55)',
+        transformPerspective: 900,
+        boxShadow: '0 18px 55px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.04)',
+        zIndex: 1,
+      });
+      gsap.to(img, {
+        scale: 1,
+        filter: 'grayscale(22%) brightness(0.62) saturate(0.78)',
+        duration: 0.7, ease: 'power3.out',
+      });
+      shimmer.style.opacity = '0';
+    });
+
+    track.appendChild(card);
+  });
+
+  /* pause column scroll on hover */
+  outer.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
+  outer.addEventListener('mouseleave', () => track.style.animationPlayState = 'running');
+
+  outer.appendChild(track);
+  grid.appendChild(outer);
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     6-STEP PROCESS — Premium Webflow-Style Row List
+════════════════════════════════════════════════════════════ -->
+<style>
+/* ── section ── */
+#process-section{
+  background:#000;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:140px 0 120px;
+  position:relative;
+}
+
+/* ── header 2-col ── */
+.proc-header{
+  max-width:1300px;margin:0 auto;padding:0 80px 100px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:60px;
+}
+.proc-header-l{}
+.proc-eyebrow{
+  font:500 9px/1 'Geist',sans-serif;letter-spacing:0.52em;
+  text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 24px;display:block;
+}
+.proc-h{
+  font:300 clamp(44px,5.8vw,80px)/1 'Geist',sans-serif;
+  letter-spacing:-0.04em;color:#fff;margin:0;
+}
+.proc-h strong{font-weight:600;}
+.proc-header-r{
+  max-width:400px;flex-shrink:0;padding-bottom:6px;
+}
+.proc-sub{
+  font:300 14px/1.88 'Geist',sans-serif;
+  color:rgba(255,255,255,0.30);margin:0 0 28px;
+}
+.proc-count{
+  font:500 9px/1 'Geist',sans-serif;letter-spacing:0.26em;
+  color:rgba(255,255,255,0.18);text-transform:uppercase;
+}
+
+/* ── top divider ── */
+.proc-divider{
+  max-width:1300px;margin:0 auto;
+  height:1px;
+  background:rgba(255,255,255,0.09);
+  transform-origin:left;
+}
+
+/* ── row ── */
+.proc-row{
+  max-width:1300px;margin:0 auto;padding:0 80px;
+  display:flex;align-items:center;gap:40px;
+  min-height:112px;
+  position:relative;
+  cursor:pointer;
+  transition:background 0.35s ease;
+}
+.proc-row::before{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(255,255,255,0.025);
+  opacity:0;
+  transition:opacity 0.35s ease;
+  pointer-events:none;
+}
+.proc-row:hover::before{opacity:1;}
+
+/* number */
+.pr-num{
+  font:300 68px/1 'Geist',sans-serif;
+  letter-spacing:-0.04em;
+  color:rgba(255,255,255,0.07);
+  flex-shrink:0;width:100px;
+  transition:color 0.35s ease;
+  user-select:none;
+}
+.proc-row:hover .pr-num{color:rgba(255,255,255,0.14);}
+
+/* title block */
+.pr-title-wrap{
+  flex:1;overflow:hidden;
+}
+.pr-tag{
+  display:inline-block;
+  font:500 8px/1 'Geist',sans-serif;letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:100px;padding:5px 11px;
+  margin-bottom:10px;
+}
+.pr-title{
+  font:400 clamp(22px,2.8vw,40px)/1.08 'Geist',sans-serif;
+  letter-spacing:-0.035em;color:#fff;margin:0;
+  transition:letter-spacing 0.45s ease;
+}
+.proc-row:hover .pr-title{letter-spacing:-0.02em;}
+
+/* desc */
+.pr-desc{
+  flex:0 0 340px;
+  font:300 12.5px/1.84 'Geist',sans-serif;
+  color:rgba(255,255,255,0.28);
+  transition:color 0.35s;
+}
+.proc-row:hover .pr-desc{color:rgba(255,255,255,0.42);}
+
+/* arrow */
+.pr-arrow{
+  flex-shrink:0;width:44px;height:44px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.3s,border-color 0.3s,transform 0.45s ease;
+}
+.proc-row:hover .pr-arrow{
+  background:rgba(255,255,255,0.08);
+  border-color:rgba(255,255,255,0.30);
+  transform:rotate(45deg);
+}
+.pr-arrow svg{transition:transform 0.3s;}
+
+/* ── cursor-follow image preview ── */
+#proc-preview{
+  position:fixed;
+  top:0;left:0;
+  width:280px;height:190px;
+  border-radius:16px;overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  z-index:9999;
+  will-change:transform;
+  transform:scale(0.88);
+  box-shadow:0 20px 60px rgba(0,0,0,0.7);
+  transition:opacity 0.30s ease,transform 0.30s ease;
+}
+#proc-preview img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+  transition:opacity 0.20s ease;
+}
+#proc-preview.visible{opacity:1;transform:scale(1);}
+</style>
+
+<!-- cursor preview element (shared) -->
+<div id="proc-preview"><img src="" alt="" id="proc-preview-img"></div>
+
+<section id="process-section">
+
+  <!-- header -->
+  <div class="proc-header">
+    <div class="proc-header-l">
+      <span class="proc-eyebrow">6-Step Process</span>
+      <h2 class="proc-h">How it <strong>Works</strong></h2>
+    </div>
+    <div class="proc-header-r">
+      <p class="proc-sub">Every Holobox deployment follows a precision-engineered methodology — from first discovery session to long-term performance optimisation.</p>
+      <span class="proc-count">06 Steps Total</span>
+    </div>
+  </div>
+
+  <!-- divider + row list -->
+  <div class="proc-divider" id="pdiv-top"></div>
+
+  <div class="proc-row" data-img="holobox.png">
+    <span class="pr-num">01</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">Discovery &amp; Planning</span>
+      <h3 class="pr-title">Consultation</h3>
+    </div>
+    <p class="pr-desc">Discovery session to map your deployment environment, audience profile, and technical requirements before a single component is specified.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+  <div class="proc-row" data-img="holobox3d.png">
+    <span class="pr-num">02</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">Hardware &amp; Structural</span>
+      <h3 class="pr-title">Design &amp; Engineering</h3>
+    </div>
+    <p class="pr-desc">Custom hardware specification, transparent OLED panel configuration, and structural engineering tailored to your exact physical space and brand language.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+  <div class="proc-row" data-img="leo_holobox.jpg">
+    <span class="pr-num">03</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">Neural &amp; Visual AI</span>
+      <h3 class="pr-title">AI Persona Creation</h3>
+    </div>
+    <p class="pr-desc">Photorealistic MetaHuman avatar design, neural voice synthesis, and full knowledge-base programming — your brand's digital representative, built from scratch.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+  <div class="proc-row" data-img="holoboxing.png">
+    <span class="pr-num">04</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">Software &amp; QA</span>
+      <h3 class="pr-title">System Integration</h3>
+    </div>
+    <p class="pr-desc">Full hardware assembly, neural engine software installation, depth-sensor calibration, and rigorous QA validation before any unit leaves the facility.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+  <div class="proc-row" data-img="leo_holobox1.jpg">
+    <span class="pr-num">05</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">On-Site Deployment</span>
+      <h3 class="pr-title">Installation</h3>
+    </div>
+    <p class="pr-desc">On-site structural deployment, precision mounting, local network integration, and full go-live testing with your team present at every checkpoint.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+  <div class="proc-row" data-img="img.png">
+    <span class="pr-num">06</span>
+    <div class="pr-title-wrap">
+      <span class="pr-tag">Analytics &amp; Support</span>
+      <h3 class="pr-title">Growth &amp; Optimisation</h3>
+    </div>
+    <p class="pr-desc">Continuous AI model updates, real-time analytics, content refresh cycles, and 24/7 dedicated support to keep the system at peak performance.</p>
+    <div class="pr-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+  <div class="proc-divider"></div>
+
+</section>
+
+<script>
+/* ── Premium Process Section ── */
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── header reveal ── */
+  gsap.from('.proc-header-l > *', {
+    y:36, opacity:0, stagger:0.10, duration:1.0, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#process-section', start:'top 82%', once:true }
+  });
+  gsap.from('.proc-header-r > *', {
+    y:24, opacity:0, stagger:0.10, duration:0.90, ease:'power3.out', delay:0.15,
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#process-section', start:'top 82%', once:true }
+  });
+
+  /* ── dividers wipe in ── */
+  document.querySelectorAll('.proc-divider').forEach(d => {
+    gsap.fromTo(d,
+      { scaleX:0, transformOrigin:'left center' },
+      { scaleX:1, duration:1.1, ease:'power3.out',
+        scrollTrigger:{ trigger:d, start:'top 92%', once:true }
+      }
+    );
+  });
+
+  /* ── rows slide up ── */
+  gsap.utils.toArray('.proc-row').forEach((row, i) => {
+    gsap.from(row, {
+      y:50, opacity:0,
+      duration:0.80, ease:'power3.out',
+      delay: i * 0.06,
+      scrollTrigger:{ trigger:row, start:'top 88%', once:true }
+    });
+  });
+
+  /* ── cursor-follow image preview ── */
+  const preview  = document.getElementById('proc-preview');
+  const pImg     = document.getElementById('proc-preview-img');
+  let curX = 0, curY = 0;
+  let posX = 0, posY = 0;
+  let raf;
+
+  function lerp(a, b, t){ return a + (b - a) * t; }
+
+  function tick(){
+    posX = lerp(posX, curX, 0.12);
+    posY = lerp(posY, curY, 0.12);
+    gsap.set(preview, { x: posX - 140, y: posY - 95 });
+    raf = requestAnimationFrame(tick);
+  }
+
+  document.addEventListener('mousemove', e => {
+    curX = e.clientX;
+    curY = e.clientY;
+  });
+
+  document.querySelectorAll('.proc-row').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      pImg.style.opacity = '0';
+      pImg.src = row.dataset.img;
+      pImg.onload = () => { pImg.style.opacity = '1'; };
+      if (pImg.complete) pImg.style.opacity = '1';
+      preview.classList.add('visible');
+      if (!raf) tick();
+    });
+    row.addEventListener('mouseleave', () => {
+      preview.classList.remove('visible');
+    });
+  });
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     CASE STUDIES — Physics Stacking Cards
+════════════════════════════════════════════════════════════ -->
+<style>
+/* ── section ── */
+#case-studies{
+  background:#000;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:150px;
+}
+
+/* ── header ── */
+.csi-hdr{
+  max-width:1300px;margin:0 auto;
+  padding:0 80px 96px;
+  display:flex;align-items:flex-end;
+  justify-content:space-between;gap:60px;
+}
+.csi-eyebrow{
+  font:500 9px/1 'Geist',sans-serif;
+  letter-spacing:0.52em;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);margin:0 0 24px;display:block;
+}
+.csi-h{
+  font:300 clamp(44px,5.8vw,80px)/1 'Geist',sans-serif;
+  letter-spacing:-0.04em;color:#fff;margin:0;
+}
+.csi-h strong{font-weight:600;}
+.csi-hdr-r{max-width:380px;flex-shrink:0;padding-bottom:4px;}
+.csi-sub{
+  font:300 14px/1.88 'Geist',sans-serif;
+  color:rgba(255,255,255,0.30);margin:0 0 26px;
+}
+.csi-view-all{
+  display:inline-flex;align-items:center;gap:10px;
+  font:400 9px/1 'Geist',sans-serif;
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.40);text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,0.14);padding-bottom:3px;
+  transition:color 0.3s,border-color 0.3s;
+}
+.csi-view-all:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
+
+/* ── physics scroll area ── */
+#csi-area{position:relative;}
+
+#csi-sticky{
+  position:sticky;top:0;
+  height:100vh;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  perspective:1400px; /* enables rotateX depth on child cards */
+}
+
+/* ── card ── */
+.csi-card{
+  position:absolute;
+  width:calc(100vw - 80px);
+  max-width:1560px;
+  height:88vh;
+  border-radius:24px;
+  overflow:hidden;
+  cursor:pointer;
+  will-change:transform;
+  transform-origin:center bottom;
+}
+/* dark veil — animates over a covered card for depth feel */
+.csi-darken{
+  position:absolute;inset:0;
+  background:#000;
+  opacity:0;
+  z-index:20; /* above image, gradient, and meta */
+  pointer-events:none;
+}
+
+/* year pill */
+.csi-year{
+  position:absolute;
+  top:22px;left:50%;
+  transform:translateX(-50%);
+  z-index:3;
+  background:rgba(255,255,255,0.88);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  color:#111;
+  font:500 11px/1 'Geist',sans-serif;
+  letter-spacing:0.18em;
+  padding:9px 22px;
+  border-radius:100px;
+  white-space:nowrap;
+  pointer-events:none;
+  box-shadow:0 4px 24px rgba(0,0,0,0.25);
+}
+
+/* image */
+.csi-bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;display:block;
+  transition:transform 1.0s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.csi-card:hover .csi-bg{transform:scale(1.04);}
+
+/* gradient overlay */
+.csi-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.18) 38%,
+    rgba(0,0,0,0.04) 65%,
+    transparent 100%
+  );
+}
+
+/* meta row */
+.csi-meta{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:44px 56px;
+  display:flex;align-items:flex-end;
+  justify-content:space-between;
+  z-index:2;
+}
+.csi-info{}
+.csi-client{
+  font:300 10px/1 'Geist',sans-serif;
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.42);
+  display:block;margin:0 0 14px;
+}
+.csi-title{
+  font:300 clamp(32px,5vw,70px)/1 'Geist',sans-serif;
+  letter-spacing:-0.04em;color:#fff;margin:0;
+}
+
+/* arrow button */
+.csi-arrow{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(255,255,255,0.09);
+  border:1px solid rgba(255,255,255,0.20);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;text-decoration:none;
+  transition:background 0.35s,border-color 0.35s,
+             transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+}
+.csi-card:hover .csi-arrow{
+  background:rgba(255,255,255,0.18);
+  border-color:rgba(255,255,255,0.42);
+  transform:rotate(45deg) scale(1.10);
+}
+
+/* progress dots (fixed at bottom of sticky) */
+#csi-dots{
+  position:absolute;bottom:32px;left:50%;
+  transform:translateX(-50%);
+  display:flex;gap:7px;align-items:center;
+  z-index:5;pointer-events:none;
+}
+.csi-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,0.18);
+  transition:background 0.4s,transform 0.4s;
+}
+.csi-dot.on{background:rgba(255,255,255,0.80);transform:scale(1.4);}
+</style>
+
+<section id="case-studies">
+
+  <div class="csi-hdr">
+    <div class="csi-hdr-l">
+      <span class="csi-eyebrow">Case Studies</span>
+      <h2 class="csi-h">Selected <strong>Projects</strong></h2>
+    </div>
+    <div class="csi-hdr-r">
+      <p class="csi-sub">A record of real-world Holobox deployments across retail, hospitality, and corporate environments — each a benchmark in spatial AI.</p>
+      <a class="csi-view-all" href="#">
+        View all projects
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 9L9 1M9 1H2M9 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div id="csi-area">
+    <div id="csi-sticky">
+
+      <!-- dots -->
+      <div id="csi-dots">
+        <span class="csi-dot on"></span>
+        <span class="csi-dot"></span>
+        <span class="csi-dot"></span>
+        <span class="csi-dot"></span>
+      </div>
+
+      <!-- Card 0 — Horizon -->
+      <div class="csi-card">
+        <div class="csi-darken"></div>
+        <span class="csi-year">( 2024 )</span>
+        <img class="csi-bg" src="leo_holobox.jpg" alt="Horizon">
+        <div class="csi-overlay"></div>
+        <div class="csi-meta">
+          <div class="csi-info">
+            <span class="csi-client">Dubai Mall — Retail AI</span>
+            <h3 class="csi-title">Horizon</h3>
+          </div>
+          <a class="csi-arrow" href="project/horizon.html">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 1 — Beyond -->
+      <div class="csi-card">
+        <div class="csi-darken"></div>
+        <span class="csi-year">( 2024 )</span>
+        <img class="csi-bg" src="holoboxing.png" alt="Beyond">
+        <div class="csi-overlay"></div>
+        <div class="csi-meta">
+          <div class="csi-info">
+            <span class="csi-client">London Science Museum — Interactive Guide</span>
+            <h3 class="csi-title">Beyond</h3>
+          </div>
+          <a class="csi-arrow" href="project/beyond.html">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 2 — Elevate -->
+      <div class="csi-card">
+        <div class="csi-darken"></div>
+        <span class="csi-year">( 2023 )</span>
+        <img class="csi-bg" src="leo_holobox1.jpg" alt="Elevate">
+        <div class="csi-overlay"></div>
+        <div class="csi-meta">
+          <div class="csi-info">
+            <span class="csi-client">Singapore HQ — Corporate Lobby AI</span>
+            <h3 class="csi-title">Elevate</h3>
+          </div>
+          <a class="csi-arrow" href="project/elevate.html">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 3 — Origin -->
+      <div class="csi-card">
+        <div class="csi-darken"></div>
+        <span class="csi-year">( 2022 )</span>
+        <img class="csi-bg" src="holobox.png" alt="Origin">
+        <div class="csi-overlay"></div>
+        <div class="csi-meta">
+          <div class="csi-info">
+            <span class="csi-client">Dubai International Airport — Concierge AI</span>
+            <h3 class="csi-title">Origin</h3>
+          </div>
+          <a class="csi-arrow" href="project/origin.html">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   Case Studies — Physics Stacking Cards
+   Deep-scrub GSAP: spring feel via scrub:2, 3D depth on entry
+════════════════════════════════════════════════════════════ */
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  const area   = document.getElementById('csi-area');
+  const cards  = gsap.utils.toArray('#csi-sticky .csi-card');
+  const dots   = gsap.utils.toArray('.csi-dot');
+  const N      = cards.length;
+
+  /* ── set scroll area height ── */
+  /* N cards need N-1 transitions. Each transition = 100vh of scroll.
+     Add 1 extra vh so the last card stays fully visible. */
+  area.style.height = (N + 0.4) * 100 + 'vh';
+  /* Immediately tell ScrollTrigger the page height changed */
+  ScrollTrigger.refresh();
+
+  /* ── initial state ──
+     Card 0 visible. Cards 1-N start BELOW with slight 3D lean.
+     DOM order (0→N) means later cards naturally stack on top —
+     incoming cards cover departing ones with no gap possible.     */
+  gsap.set(cards[0], { y: 0, scale: 1, rotateX: 0 });
+  cards.forEach((c, i) => {
+    if (i === 0) return;
+    gsap.set(c, {
+      y:       '100vh',
+      scale:   1.05,   /* starts slightly zoomed — shrinks into place */
+      rotateX: 4,      /* subtle forward 3D tilt as it rises */
+      transformOrigin: 'center bottom',
+    });
+  });
+
+  /* ── build GSAP timeline ──
+     ONLY incoming-card animations. NO departure y-movement.
+     Departing cards are simply covered by the rising card above them
+     (DOM stacking ensures later cards paint on top).
+     This eliminates every flicker — there is always a card covering
+     the full viewport during any scroll position.                   */
+  const tl = gsap.timeline({ defaults: { ease: 'none' } });
+
+  for (let i = 1; i < N; i++) {
+    const prev   = cards[i - 1];
+    const curr   = cards[i];
+    const darken = prev.querySelector('.csi-darken');
+
+    /* incoming: rise from 100vh, scale + tilt settle to neutral */
+    tl.to(curr, {
+      y:       0,
+      scale:   1,
+      rotateX: 0,
+      duration: 1,
+    }, i - 1);
+
+    /* depth veil on covered card — purely cosmetic, no position change */
+    if (darken) {
+      tl.to(darken, { opacity: 0.55, duration: 1 }, i - 1);
+    }
+  }
+
+  /* ── ScrollTrigger drives the timeline ── */
+  ScrollTrigger.create({
+    trigger:   area,
+    start:     'top top',
+    end:       'bottom bottom',
+    animation: tl,
+    scrub:     1,           /* reduced from 2 — prevents Lenis stall on section boundary */
+    onUpdate(self) {
+      /* update progress dots */
+      const seg = 1 / (N - 1);
+      const active = Math.min(Math.round(self.progress / seg), N - 1);
+      dots.forEach((d, i) => d.classList.toggle('on', i === active));
+    }
+  });
+
+  /* ── header reveal ── */
+  gsap.from('.csi-hdr-l > *', {
+    y: 36, opacity: 0, stagger: 0.10, duration: 1.0, ease: 'power3.out',
+    immediateRender: false,
+    scrollTrigger: { trigger: '#case-studies', start: 'top 82%', once: true }
+  });
+  gsap.from('.csi-hdr-r > *', {
+    y: 22, opacity: 0, stagger: 0.10, duration: 0.90, ease: 'power3.out', delay: 0.15,
+    immediateRender: false,
+    scrollTrigger: { trigger: '#case-studies', start: 'top 82%', once: true }
+  });
+
+  /* ── first card entrance (section scroll-in) ── */
+  gsap.from(cards[0], {
+    y: 60, opacity: 0, scale: 1.03,
+    duration: 1.0, ease: 'power3.out',
+    immediateRender: false,
+    scrollTrigger: { trigger: '#case-studies', start: 'top 75%', once: true }
+  });
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     WHY CHOOSE US — 3-D Fan Carousel + Counter Stats
+════════════════════════════════════════════════════════════ -->
+<style>
+#why-us{background:#000;border-top:1px solid rgba(255,255,255,0.06);padding:160px 0;}
+.why-wrap{max-width:1300px;margin:0 auto;padding:0 80px;}
+.why-hdr{text-align:center;margin-bottom:80px;}
+.why-eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 9px/1 'Geist',sans-serif;letter-spacing:0.44em;text-transform:uppercase;color:rgba(255,255,255,0.52);margin-bottom:28px;}
+.why-h{font:300 clamp(62px,9vw,110px)/0.90 'Geist',sans-serif;letter-spacing:-0.05em;color:#fff;margin:0 0 38px;}
+.why-h em{color:rgba(255,255,255,0.40);font-style:normal;}
+.why-social{display:inline-flex;align-items:center;gap:14px;}
+.why-avs{display:flex;}
+.why-av{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid #000;display:flex;align-items:center;justify-content:center;font:600 8px/1 'Geist',sans-serif;color:rgba(255,255,255,0.65);}
+.why-av+.why-av{margin-left:-10px;}
+.why-rating-txt{font:300 11px/1 'Geist',sans-serif;color:rgba(255,255,255,0.52);}
+.why-body{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;align-items:stretch;}
+/* left panel */
+.why-left{background:rgba(255,255,255,0.038);border:1px solid rgba(255,255,255,0.10);border-radius:24px;padding:44px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:500px;}
+.why-brand{font:600 14px/1 'Geist',sans-serif;color:rgba(255,255,255,0.65);align-self:flex-start;}
+.why-since{font:300 10px/1 'Geist',sans-serif;color:rgba(255,255,255,0.35);letter-spacing:0.14em;}
+/* ── 3-D fan scene ── */
+#why-fan-scene{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  perspective:680px;perspective-origin:50% 50%;
+  width:100%;position:relative;overflow:visible;
+  pointer-events:none;
+}
+#why-fan{
+  position:relative;width:100%;height:290px;
+  transform-style:preserve-3d;
+  pointer-events:none;
+}
+.fan-card{
+  position:absolute;
+  top:50%;left:50%;
+  width:148px;height:208px;
+  margin:-104px 0 0 -74px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.16);
+  box-shadow:0 20px 60px rgba(0,0,0,0.80);
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  pointer-events:none;
+}
+.fan-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+/* right stat cards */
+.why-right{display:flex;flex-direction:column;gap:20px;}
+.why-stat{
+  background:rgba(255,255,255,0.038);border:1px solid rgba(255,255,255,0.10);
+  border-radius:24px;padding:44px 52px 40px;flex:1;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+}
+.why-stat-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px;}
+.why-stat-meta{display:flex;align-items:flex-start;gap:10px;padding-top:6px;}
+.why-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.65);flex-shrink:0;margin-top:4px;}
+.why-stat-lbl{font:400 12px/1.55 'Geist',sans-serif;color:rgba(255,255,255,0.60);}
+.why-stat-num{font:300 clamp(56px,6.5vw,88px)/1 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;white-space:nowrap;flex-shrink:0;}
+.why-stat-divider{height:1px;background:repeating-linear-gradient(to right,rgba(255,255,255,0.14) 0,rgba(255,255,255,0.14) 4px,transparent 4px,transparent 10px);margin-bottom:18px;flex-shrink:0;}
+.why-stat-desc{font:300 13px/1.75 'Geist',sans-serif;color:rgba(255,255,255,0.50);margin:0;flex:1;}
+.why-aster{position:absolute;bottom:22px;right:28px;font-size:20px;color:rgba(255,255,255,0.18);user-select:none;line-height:1;}
+</style>
+
+<section id="why-us">
+  <div class="why-wrap">
+    <div class="why-hdr">
+      <span class="why-eyebrow">+ Spatial AI Excellence</span>
+      <h2 class="why-h">Why Choose<br><em>Holobox</em></h2>
+      <div class="why-social">
+        <div class="why-avs">
+          <div class="why-av">JA</div><div class="why-av">SC</div>
+          <div class="why-av">MT</div><div class="why-av">FH</div>
+        </div>
+        <span class="why-rating-txt">★ 50+ deployments worldwide · 4.9/5</span>
+      </div>
+    </div>
+
+    <div class="why-body">
+
+      <!-- LEFT: 3-D fan carousel -->
+      <div class="why-left">
+        <span class="why-brand">Holobox®</span>
+        <div id="why-fan-scene">
+          <div id="why-fan">
+            <div class="fan-card" style="background:rgba(22,18,14,1)"><img src="holoboxing.png" alt=""></div>
+            <div class="fan-card" style="background:rgba(14,18,22,1)"><img src="leo_holobox.jpg" alt=""></div>
+            <div class="fan-card" style="background:rgba(10,10,10,1)"><img src="leo_holobox1.jpg" alt=""></div>
+            <div class="fan-card" style="background:rgba(14,22,18,1)"><img src="holobox3d.png" alt=""></div>
+            <div class="fan-card" style="background:rgba(18,14,22,1)"><img src="holobox.png" alt=""></div>
+          </div>
+        </div>
+        <span class="why-since">( Since — 2016™ )</span>
+      </div>
+
+      <!-- RIGHT: stat cards -->
+      <div class="why-right">
+        <div class="why-stat">
+          <div class="why-stat-top">
+            <div class="why-stat-meta">
+              <span class="why-dot"></span>
+              <span class="why-stat-lbl">Years of<br>Spatial AI R&D</span>
+            </div>
+            <span class="why-stat-num" data-count="8" data-prefix="+">+0</span>
+          </div>
+          <div class="why-stat-divider"></div>
+          <p class="why-stat-desc">Over eight years refining neural persona architecture, depth-sensor calibration, and real-time language models for public-facing deployment at scale.</p>
+          <span class="why-aster">✦</span>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-top">
+            <div class="why-stat-meta">
+              <span class="why-dot"></span>
+              <span class="why-stat-lbl">System Uptime<br>SLA Guarantee</span>
+            </div>
+            <span class="why-stat-num" data-count="99.7" data-suffix="%" data-dec="1">0%</span>
+          </div>
+          <div class="why-stat-divider"></div>
+          <p class="why-stat-desc">Every Holobox deployment ships with a documented uptime commitment. Across all active global deployments, we have maintained this guarantee without exception.</p>
+          <span class="why-aster">✦</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── entrance animations ── */
+  gsap.from('.why-hdr > *',{y:36,opacity:0,stagger:0.12,duration:1.0,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'#why-us',start:'top 80%',once:true}});
+  gsap.from('.why-left',{x:-70,opacity:0,duration:1.1,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'.why-body',start:'top 75%',once:true}});
+  gsap.from('.why-right',{x:70,opacity:0,duration:1.1,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'.why-body',start:'top 75%',once:true}});
+
+  /* ── stat counters ── */
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target=parseFloat(el.dataset.count),prefix=el.dataset.prefix||'',suffix=el.dataset.suffix||'',decs=parseInt(el.dataset.dec||'0'),proxy={v:0};
+    el.textContent=prefix+(0).toFixed(decs)+suffix;
+    gsap.to(proxy,{v:target,duration:2.8,ease:'power3.out',immediateRender:false,
+      onUpdate(){el.textContent=prefix+proxy.v.toFixed(decs)+suffix;},
+      scrollTrigger:{trigger:el,start:'top 80%',once:true}});
+  });
+
+  /* ══════════════════════════════════════════════
+     3-D FAN CAROUSEL
+     Cards cycle through rotateY angles on a shared
+     arc. Pure GSAP ticker — no CSS animations.
+     Physics: smooth cos() depth-scale + opacity.
+  ══════════════════════════════════════════════ */
+  const fanCards = [...document.querySelectorAll('.fan-card')];
+  const FC = fanCards.length;          /* 5 cards */
+  const SPREAD  = 38;                  /* degrees between adjacent cards */
+  const RADIUS  = 175;                 /* horizontal spread px */
+  const DEPTH   = 90;                  /* max translateZ diff px */
+  const SPEED   = 0.20;                /* deg per gsap tick (~12 fps * 5 = ~60) */
+  const HALF    = SPREAD * FC / 2;     /* 95 — wrap boundary */
+  const TOTAL   = SPREAD * FC;         /* 190 — cycle length */
+
+  /* starting angles: -76, -38, 0, 38, 76 */
+  const baseAngles = fanCards.map((_,i) => (i - Math.floor(FC/2)) * SPREAD);
+
+  let offset = 0;
+  let fanActive = false;
+
+  function fanTick() {
+    if (!fanActive) return;
+    offset += SPEED;
+    if (offset >= TOTAL) offset -= TOTAL;
+
+    fanCards.forEach((card, i) => {
+      /* raw angle for this card */
+      let raw = baseAngles[i] + offset;
+
+      /* wrap into [-HALF, +HALF] */
+      if (raw >  HALF) raw -= TOTAL;
+      if (raw < -HALF) raw += TOTAL;
+
+      const theta   = raw * Math.PI / 180;
+      const cosT    = Math.cos(theta);      /* 1=front, 0=edge, -1=back */
+      const sinT    = Math.sin(theta);
+
+      const x       = sinT * RADIUS;
+      const z       = (cosT - 1) * DEPTH;  /* 0 at front, -2*DEPTH at back */
+      const rotY    = raw;                  /* card faces outward */
+      const scale   = 0.60 + 0.40 * Math.max(0, cosT);
+      /* hard falloff: invisible past edge */
+      const opacity = cosT > 0.05
+                        ? Math.min(1, cosT * 1.25)
+                        : 0;
+
+      gsap.set(card, {
+        x, z, rotateY: rotY, scale, opacity,
+        zIndex: Math.round(Math.max(0, cosT) * 100),
+      });
+    });
+  }
+
+  gsap.ticker.add(fanTick);
+
+  /* only animate when section is visible (performance) */
+  const fanObserver = new IntersectionObserver(entries => {
+    fanActive = entries[0].isIntersecting;
+  }, { threshold: 0.1 });
+  fanObserver.observe(document.getElementById('why-us'));
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     TESTIMONIALS — Dual-direction Marquee, Frosted Glass Cards
+════════════════════════════════════════════════════════════ -->
+<style>
+/* ── section ── */
+#testimonials{
+  background:#000;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:140px 0 160px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* radial spotlight */
+#testimonials::before{
+  content:'';
+  position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:900px;height:700px;
+  background:radial-gradient(ellipse at top,rgba(255,255,255,0.028) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* ── header ── */
+.tst-hdr{
+  max-width:1300px;margin:0 auto;
+  padding:0 80px 90px;
+  display:flex;align-items:flex-end;
+  justify-content:space-between;gap:60px;
+}
+.tst-hdr-l .tst-eyebrow{
+  font:500 9px/1 'Geist',sans-serif;letter-spacing:0.52em;
+  text-transform:uppercase;color:rgba(255,255,255,0.28);
+  display:block;margin:0 0 24px;
+}
+.tst-hdr-l .tst-h{
+  font:300 clamp(44px,5.8vw,80px)/1 'Geist',sans-serif;
+  letter-spacing:-0.04em;color:#fff;margin:0;
+}
+.tst-hdr-l .tst-h strong{font-weight:600;}
+.tst-hdr-r{
+  max-width:360px;flex-shrink:0;padding-bottom:4px;
+}
+.tst-hdr-sub{
+  font:300 14px/1.88 'Geist',sans-serif;
+  color:rgba(255,255,255,0.30);margin:0 0 26px;
+}
+.tst-count{
+  font:500 9px/1 'Geist',sans-serif;letter-spacing:0.26em;
+  text-transform:uppercase;color:rgba(255,255,255,0.16);
+}
+
+/* ── bands wrapper ── */
+.tst-bands{
+  display:flex;flex-direction:column;gap:18px;
+}
+
+/* ── single band ── */
+.tst-band{
+  overflow:hidden;
+  mask-image:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%);
+}
+
+/* ── inner (doubled for seamless loop) ── */
+.tst-inner{
+  display:flex;
+  gap:18px;
+  width:max-content;
+  animation:tst-l 52s linear infinite;
+}
+.tst-band.rev .tst-inner{
+  animation:tst-r 48s linear infinite;
+}
+@keyframes tst-l{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+@keyframes tst-r{
+  from{transform:translateX(-50%);}
+  to{transform:translateX(0);}
+}
+
+/* pause on hover */
+.tst-band:hover .tst-inner{animation-play-state:paused;}
+
+/* ── card ── */
+.tst-card{
+  flex-shrink:0;
+  width:420px;
+  padding:36px 40px 32px;
+  background:rgba(255,255,255,0.038);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  cursor:default;
+  transition:background 0.40s ease,border-color 0.40s ease,transform 0.40s ease,
+             box-shadow 0.40s ease;
+  box-shadow:0 0 0 rgba(255,255,255,0);
+}
+.tst-card:hover{
+  background:rgba(255,255,255,0.072);
+  border-color:rgba(255,255,255,0.16);
+  transform:translateY(-6px);
+  box-shadow:0 24px 60px rgba(0,0,0,0.6),
+             0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* wide variant */
+.tst-card.wide{width:520px;}
+
+/* decorative quotation mark */
+.tst-card::before{
+  content:'\201C'; /* left double quotation */
+  position:absolute;
+  top:-20px;right:24px;
+  font:600 140px/1 'Geist',serif;
+  color:rgba(255,255,255,0.05);
+  pointer-events:none;
+  user-select:none;
+  line-height:1;
+}
+
+/* category tag */
+.tst-tag{
+  display:inline-block;
+  font:500 8px/1 'Geist',sans-serif;letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:100px;padding:5px 11px;
+  margin-bottom:20px;
+}
+
+/* quote text */
+.tst-quote{
+  font:300 13.5px/1.82 'Geist',sans-serif;
+  color:rgba(255,255,255,0.75);
+  margin:0 0 28px;
+  position:relative;z-index:1;
+}
+
+/* divider */
+.tst-divider{
+  height:1px;
+  background:rgba(255,255,255,0.08);
+  margin-bottom:20px;
+}
+
+/* author row */
+.tst-author{
+  display:flex;align-items:center;gap:14px;
+}
+.tst-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.14);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font:500 10px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.55);
+  letter-spacing:0.04em;
+}
+.tst-name{
+  font:500 12px/1 'Geist',sans-serif;
+  color:#fff;margin:0 0 5px;display:block;
+}
+.tst-role{
+  font:300 10px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.32);letter-spacing:0.06em;display:block;
+}
+</style>
+
+<section id="testimonials">
+
+  <div class="tst-hdr">
+    <div class="tst-hdr-l">
+      <span class="tst-eyebrow">Client Testimonials</span>
+      <h2 class="tst-h">Trusted by <strong>Innovators</strong></h2>
+    </div>
+    <div class="tst-hdr-r">
+      <p class="tst-hdr-sub">Operators across retail, culture, and infrastructure share what deploying Holobox technology means for their audiences.</p>
+      <span class="tst-count">6 Verified Clients</span>
+    </div>
+  </div>
+
+  <div class="tst-bands">
+
+    <!-- Band 1 → left scroll -->
+    <div class="tst-band" id="tst-b1">
+      <div class="tst-inner" id="tst-t1">
+
+        <div class="tst-card wide">
+          <span class="tst-tag">Retail AI</span>
+          <p class="tst-quote">"The Holobox unit deployed at our Dubai Mall entrance increased foot-traffic conversion by 34% in the first quarter. Visitors stopped, engaged, and asked questions we had never anticipated."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">JA</div>
+            <div>
+              <span class="tst-name">James Al-Rashid</span>
+              <span class="tst-role">Head of Innovation · Emaar Retail Group</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Museum</span>
+          <p class="tst-quote">"8,000 visitors a day across 12 languages. The neural persona answered exhibit questions with accuracy our staff couldn't always match."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">SC</div>
+            <div>
+              <span class="tst-name">Dr. Sarah Chen</span>
+              <span class="tst-role">Director of Digital Experience · London Science Museum</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Corporate</span>
+          <p class="tst-quote">"Spec to go-live was 6 weeks. The QA documentation was more thorough than any enterprise vendor we have worked with in the past decade."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">MT</div>
+            <div>
+              <span class="tst-name">Michael Torres</span>
+              <span class="tst-role">CTO · Singapore Technologies</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card wide">
+          <span class="tst-tag">Aviation</span>
+          <p class="tst-quote">"Our concierge AI greets passengers in 14 languages before they reach the desk. The retention of brand voice across every language is remarkable — consistent, warm, precisely on-brand."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">FH</div>
+            <div>
+              <span class="tst-name">Fatima Al-Hashimi</span>
+              <span class="tst-role">VP Customer Experience · Emirates Airport Services</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Luxury Retail</span>
+          <p class="tst-quote">"We evaluated four holographic vendors. Holobox was the only one with a documented uptime SLA. 11 months in — zero unplanned outages."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">DK</div>
+            <div>
+              <span class="tst-name">David Kim</span>
+              <span class="tst-role">CEO · Luxe Brand Holdings</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Technology</span>
+          <p class="tst-quote">"Our knowledge base changed three times this year. Each time, the Holobox was current within 48 hours. No rework, no downtime, no manual update calls."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">AP</div>
+            <div>
+              <span class="tst-name">Aisha Patel</span>
+              <span class="tst-role">Head of Marketing · TechFusion Hub</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Band 2 → right scroll (rev) -->
+    <div class="tst-band rev" id="tst-b2">
+      <div class="tst-inner" id="tst-t2">
+
+        <div class="tst-card">
+          <span class="tst-tag">Events</span>
+          <p class="tst-quote">"The unit ran 14 hours continuously across a 3-day expo. Response latency never exceeded 1.8 seconds. Our competitors were genuinely unnerved."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">RN</div>
+            <div>
+              <span class="tst-name">Ryan Nakamura</span>
+              <span class="tst-role">Events Director · Apex Exhibitions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card wide">
+          <span class="tst-tag">Hospitality</span>
+          <p class="tst-quote">"Guests began requesting the AI concierge specifically. It had memorised our dining menus, seasonal events, and local recommendations. The depth of knowledge surpassed our front-desk team's average recall."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">LM</div>
+            <div>
+              <span class="tst-name">Layla Mansoor</span>
+              <span class="tst-role">GM Operations · The Address Hotels</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Healthcare</span>
+          <p class="tst-quote">"Patient wayfinding reduced desk queries by 41%. The avatar communicates with the calm clarity that anxious patients need. This is genuinely transformative UX."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">OB</div>
+            <div>
+              <span class="tst-name">Dr. Omar Bassam</span>
+              <span class="tst-role">Head of Patient Experience · MedCity Dubai</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Finance</span>
+          <p class="tst-quote">"We embedded our compliance FAQs into the persona. It now handles tier-1 regulatory questions more accurately than our junior advisory staff. ROI was clear within 60 days."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">PW</div>
+            <div>
+              <span class="tst-name">Priya Walia</span>
+              <span class="tst-role">Digital Transformation Lead · Gulf Capital</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card wide">
+          <span class="tst-tag">Government</span>
+          <p class="tst-quote">"Deployed across 3 smart city information kiosks. The multilingual support and accessibility features exceeded our technical brief. Citizens actively seek the unit out. We are ordering 12 more."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">KA</div>
+            <div>
+              <span class="tst-name">Khalid Al-Ameri</span>
+              <span class="tst-role">Smart City Director · Abu Dhabi Municipality</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tst-card">
+          <span class="tst-tag">Education</span>
+          <p class="tst-quote">"The campus guide AI handles 600 student queries a day with zero staffing cost. Prospective students rank the Holobox as the most impressive thing about our open days."</p>
+          <div class="tst-divider"></div>
+          <div class="tst-author">
+            <div class="tst-avatar">JC</div>
+            <div>
+              <span class="tst-name">Julia Crawford</span>
+              <span class="tst-role">Registrar · Meridian University</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+/* ── Testimonials: duplicate tracks for seamless marquee + entrance ── */
+(function(){
+  /* duplicate each inner track so the marquee loops seamlessly */
+  document.querySelectorAll('.tst-inner').forEach(inner => {
+    const clone = inner.cloneNode(true);
+    inner.parentElement.appendChild(clone);
+  });
+
+  /* ── section entrance: clip-path reveal ── */
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* header */
+  gsap.from('.tst-hdr-l > *', {
+    y:36, opacity:0, stagger:0.10, duration:1.0, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#testimonials', start:'top 82%', once:true }
+  });
+  gsap.from('.tst-hdr-r > *', {
+    y:22, opacity:0, stagger:0.10, duration:0.90, ease:'power3.out', delay:0.15,
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#testimonials', start:'top 82%', once:true }
+  });
+
+  /* band 1: wipe from left edge */
+  gsap.from('#tst-b1', {
+    clipPath:'inset(0 100% 0 0)',
+    duration:1.20, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#testimonials', start:'top 70%', once:true }
+  });
+
+  /* band 2: wipe from right edge, slight delay */
+  gsap.from('#tst-b2', {
+    clipPath:'inset(0 0 0 100%)',
+    duration:1.20, ease:'power3.out', delay:0.18,
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#testimonials', start:'top 70%', once:true }
+  });
+})();
+</script>
+<!-- ════════════════════════════════════════════════════════════
+     3-D CUBE — Rotating Architecture Showcase
+════════════════════════════════════════════════════════════ -->
+<style>
+#cube-sec{background:#000;border-top:1px solid rgba(255,255,255,0.06);padding:160px 0;}
+.cube-wrap{max-width:1300px;margin:0 auto;padding:0 80px;}
+.cube-hdr{text-align:center;margin-bottom:110px;}
+.cube-eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 9px/1 'Geist',sans-serif;letter-spacing:0.44em;text-transform:uppercase;color:rgba(255,255,255,0.50);margin-bottom:28px;}
+.cube-h{font:300 clamp(62px,9vw,110px)/0.90 'Geist',sans-serif;letter-spacing:-0.05em;color:#fff;margin:0;}
+.cube-h em{color:rgba(255,255,255,0.38);font-style:normal;}
+.cube-body{display:grid;grid-template-columns:1.05fr 0.95fr;gap:80px;align-items:center;}
+
+/* ── scene ── */
+.cube-scene-wrap{display:flex;align-items:center;justify-content:center;position:relative;height:440px;}
+.cube-ambient{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:360px;height:360px;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.055) 0%,transparent 62%);
+  border-radius:50%;filter:blur(32px);pointer-events:none;
+}
+#cube-scene{
+  perspective:980px;perspective-origin:50% 44%;
+  width:380px;height:380px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:grab;
+  touch-action:pan-y;
+}
+#cube{
+  width:320px;height:320px;
+  transform-style:preserve-3d;
+  position:relative;
+}
+/* ── faces ── */
+.cface{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:38px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;
+  overflow:hidden;
+  background:#0a0a0c;
+}
+#cf-front{transform:translateZ(160px);border-color:rgba(255,255,255,0.24);}
+#cf-back {transform:rotateY(180deg) translateZ(160px);}
+#cf-right{transform:rotateY(90deg) translateZ(160px);}
+#cf-left {transform:rotateY(-90deg) translateZ(160px);}
+#cf-top  {transform:rotateX(90deg) translateZ(160px);}
+#cf-bot  {transform:rotateX(-90deg) translateZ(160px);}
+/* face background image */
+.cface-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:0.38;
+  z-index:0;
+  pointer-events:none;
+}
+/* gradient veil over image so text reads cleanly */
+.cface-veil{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.30) 50%,rgba(0,0,0,0.65) 100%);
+  z-index:1;
+  pointer-events:none;
+}
+/* edge lines */
+.cface::before{
+  content:'';position:absolute;inset:-1px;border-radius:10px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);pointer-events:none;
+  z-index:3;
+}
+/* face text content — above image */
+.cf-tag{font:500 8px/1 'Geist',sans-serif;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,255,255,0.50);margin-bottom:18px;position:relative;z-index:2;}
+.cf-num{font:200 clamp(38px,5vw,60px)/1 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;position:relative;z-index:2;text-shadow:0 2px 20px rgba(0,0,0,0.8);}
+.cf-sub{font:300 11px/1.65 'Geist',sans-serif;color:rgba(255,255,255,0.55);margin-top:14px;text-align:center;max-width:200px;position:relative;z-index:2;}
+/* spinning indicator ring around scene */
+.cube-ring{
+  position:absolute;top:50%;left:50%;
+  width:400px;height:400px;
+  margin:-200px 0 0 -200px;
+  border-radius:50%;
+  border:1px dashed rgba(255,255,255,0.05);
+  pointer-events:none;
+  animation:cube-ring-spin 28s linear infinite;
+}
+.cube-ring::before{
+  content:'';position:absolute;top:-3px;left:50%;
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  transform:translateX(-50%);
+}
+@keyframes cube-ring-spin{to{transform:rotate(360deg);}}
+
+/* ── features (right) ── */
+.cube-feats{display:flex;flex-direction:column;}
+.cube-feat{padding:28px 0;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;gap:20px;align-items:flex-start;}
+.cube-feat:first-child{border-top:1px solid rgba(255,255,255,0.07);}
+.cf-ico{
+  width:38px;height:38px;flex-shrink:0;
+  border-radius:9px;background:rgba(255,255,255,0.055);
+  border:1px solid rgba(255,255,255,0.10);
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+.cf-ico svg{opacity:0.65;}
+.cf-body{}
+.cf-title{font:500 14px/1 'Geist',sans-serif;color:rgba(255,255,255,0.92);margin-bottom:8px;}
+.cf-desc{font:300 12px/1.72 'Geist',sans-serif;color:rgba(255,255,255,0.44);}
+</style>
+
+<section id="cube-sec">
+  <div class="cube-wrap">
+
+    <div class="cube-hdr">
+      <span class="cube-eyebrow">+ Core Architecture</span>
+      <h2 class="cube-h">The Engine Behind<br><em>Every Deployment</em></h2>
+    </div>
+
+    <div class="cube-body">
+
+      <!-- LEFT: 3-D cube -->
+      <div class="cube-scene-wrap">
+        <div class="cube-ambient"></div>
+        <div class="cube-ring"></div>
+        <div id="cube-scene">
+          <div id="cube">
+
+            <div class="cface" id="cf-front">
+              <img class="cface-img" src="leo_holobox1.jpg" alt="">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Neural Core</span>
+              <span class="cf-num">+8</span>
+              <span class="cf-sub">Years of Spatial AI Research &amp; Development</span>
+            </div>
+
+            <div class="cface" id="cf-back">
+              <img class="cface-img" src="holoboxing.png" alt="">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Reliability</span>
+              <span class="cf-num">99.7%</span>
+              <span class="cf-sub">Documented Uptime SLA Across All Active Sites</span>
+            </div>
+
+            <div class="cface" id="cf-right">
+              <img class="cface-img" src="holobox.png" alt="">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Scale</span>
+              <span class="cf-num">50+</span>
+              <span class="cf-sub">Enterprise Deployments in 14 Countries Worldwide</span>
+            </div>
+
+            <div class="cface" id="cf-left">
+              <img class="cface-img" src="leo_holobox.jpg" alt="">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Latency</span>
+              <span class="cf-num">&lt;100ms</span>
+              <span class="cf-sub">End-to-End Response from Sensor to Voice Output</span>
+            </div>
+
+            <div class="cface" id="cf-top">
+              <img class="cface-img" src="holobox3d.png" alt="">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Resolution</span>
+              <span class="cf-num">4K</span>
+              <span class="cf-sub">Holographic Projection with Depth Sensing Layer</span>
+            </div>
+
+            <div class="cface" id="cf-bot">
+              <img class="cface-img" src="holoboxing.png" alt="" style="object-position:center 30%;">
+              <div class="cface-veil"></div>
+              <span class="cf-tag">Since</span>
+              <span class="cf-num">2016</span>
+              <span class="cf-sub">Continuously Operational — Zero Market Withdrawal</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: capability list -->
+      <div class="cube-feats">
+
+        <div class="cube-feat">
+          <div class="cf-ico">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="white" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="cf-body">
+            <div class="cf-title">Neural Persona Engine</div>
+            <div class="cf-desc">Proprietary transformer architecture trained on human interaction patterns for context-aware, personality-consistent conversation at scale.</div>
+          </div>
+        </div>
+
+        <div class="cube-feat">
+          <div class="cf-ico">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C4.69 2 2 4.69 2 8s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" stroke="white" stroke-width="1.2"/><circle cx="8" cy="8" r="2" fill="white" fill-opacity="0.5"/><path d="M8 5V3M8 13v-2M5 8H3M13 8h-2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="cf-body">
+            <div class="cf-title">Computer Vision + Depth Sensing</div>
+            <div class="cf-desc">4K camera array fused with LiDAR depth data enables real-time person detection, gaze tracking, and spatial awareness without cloud round-trips.</div>
+          </div>
+        </div>
+
+        <div class="cube-feat">
+          <div class="cf-ico">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M5 13h6" stroke="white" stroke-width="1.2" stroke-linecap="round"/><path d="M8 11v2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="cf-body">
+            <div class="cf-title">Edge Deployment Architecture</div>
+            <div class="cf-desc">All inference runs on-device. No mandatory cloud dependency means GDPR-compliant operation in air-gapped and restricted environments.</div>
+          </div>
+        </div>
+
+        <div class="cube-feat">
+          <div class="cf-ico">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M3 8h7M3 11h5" stroke="white" stroke-width="1.2" stroke-linecap="round"/><rect x="1.5" y="2" width="13" height="12" rx="2" stroke="white" stroke-width="1.2"/></svg>
+          </div>
+          <div class="cf-body">
+            <div class="cf-title">Enterprise Integration API</div>
+            <div class="cf-desc">REST + WebSocket API with pre-built connectors for Salesforce, SAP, ServiceNow, and custom CMS systems. Full webhook support for event-driven workflows.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── entrance ── */
+  gsap.from('.cube-hdr > *', {
+    y:36, opacity:0, stagger:0.12, duration:1.0, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{trigger:'#cube-sec', start:'top 80%', once:true}
+  });
+  /* cube spins in from nothing */
+  gsap.fromTo('#cube',
+    {rotateY:-180, scale:0, opacity:0},
+    {rotateY:-20, scale:1, opacity:1, duration:1.4, ease:'back.out(1.3)',
+     immediateRender:false,
+     scrollTrigger:{trigger:'#cube-sec', start:'top 70%', once:true}}
+  );
+  gsap.from('.cube-feats .cube-feat', {
+    x:50, opacity:0, stagger:0.10, duration:0.9, ease:'power3.out', delay:0.3,
+    immediateRender:false,
+    scrollTrigger:{trigger:'.cube-body', start:'top 75%', once:true}
+  });
+
+  /* ══════════════════════════════════════════════
+     CUBE AUTO-ROTATION
+     rotateY: continuous drift
+     rotateX: slow sin() wobble (organic tilt)
+     Mouse drag: additive offset for interactive feel
+  ══════════════════════════════════════════════ */
+  const cube     = document.getElementById('cube');
+  const scene    = document.getElementById('cube-scene');
+  const BASE_RX  = 12;   /* base X tilt degrees */
+  const WOBBLE   = 5;    /* ±5° wobble amplitude */
+  const SPEED    = 0.18; /* deg / ticker frame */
+
+  let ry      = -20;
+  let rxExtra = 0;
+  let active  = false;
+  let paused  = false;
+
+  /* mouse-drag interaction */
+  let drag = false, lastX = 0, lastY = 0, velX = 0, velY = 0;
+
+  scene.addEventListener('mousedown', e => {
+    drag = true; lastX = e.clientX; lastY = e.clientY;
+    scene.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    velX = e.clientX - lastX;
+    velY = e.clientY - lastY;
+    ry     += velX * 0.5;
+    rxExtra += velY * 0.3;
+    rxExtra = Math.max(-20, Math.min(20, rxExtra));
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => {
+    drag = false;
+    scene.style.cursor = 'grab';
+  });
+
+  function cubeTick(time) {
+    if (!active) return;
+    if (!drag && !paused) ry += SPEED;
+    const rx = BASE_RX + WOBBLE * Math.sin(Date.now() * 0.0004) + rxExtra;
+    /* rxExtra decays back to 0 */
+    rxExtra *= 0.96;
+    gsap.set(cube, {rotateY: ry, rotateX: rx});
+  }
+
+  gsap.ticker.add(cubeTick);
+
+  /* run only when visible */
+  new IntersectionObserver(entries => {
+    active = entries[0].isIntersecting;
+  }, {threshold: 0.1}).observe(document.getElementById('cube-sec'));
+
+  /* hover pause auto-spin */
+  scene.addEventListener('mouseenter', () => { if (!drag) paused = true; });
+  scene.addEventListener('mouseleave', () => { paused = false; });
+})();
+</script>
+<!-- ════════════════════════════════════════════════════════════
+     CTA — HORIZONTAL BARS OPENING REVEAL
+     Two black bars (top 50% + bottom 50%) collapse away on scroll,
+     revealing a Holobox image grid + curtain-cut headline text.
+════════════════════════════════════════════════════════════ -->
+<style>
+#cta-sec{background:#000;border-top:1px solid rgba(255,255,255,0.06);}
+#cta-scroll{position:relative;height:240vh;}
+#cta-sticky{
+  position:sticky;top:0;height:100vh;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── image grid background ── */
+#cta-grid{
+  position:absolute;inset:0;z-index:0;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(2,1fr);
+  gap:5px;padding:5px;
+}
+.cta-gi{position:relative;overflow:hidden;border-radius:10px;}
+.cta-gi img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:brightness(0.28) saturate(0.50) contrast(1.08);
+}
+/* dark centre veil: edges dark, middle slightly lighter so text pops */
+#cta-veil{
+  position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 50%,rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.72) 100%),
+    linear-gradient(to bottom,rgba(0,0,0,0.38) 0%,transparent 28%,transparent 72%,rgba(0,0,0,0.38) 100%);
+}
+
+/* ── the two bars ── */
+#cta-bar-t{
+  position:absolute;top:0;left:0;right:0;height:50%;
+  background:#000;z-index:4;
+  transform-origin:top center;
+  pointer-events:none;
+}
+#cta-bar-b{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background:#000;z-index:4;
+  transform-origin:bottom center;
+  pointer-events:none;
+}
+/* thin accent lines at the split edge — visible while bars are opening */
+#cta-bar-t::after{
+  content:'';position:absolute;bottom:0;left:7%;right:7%;
+  height:1px;background:rgba(255,255,255,0.16);
+}
+#cta-bar-b::before{
+  content:'';position:absolute;top:0;left:7%;right:7%;
+  height:1px;background:rgba(255,255,255,0.16);
+}
+
+/* ── text content ── */
+#cta-content{
+  position:relative;z-index:5;
+  text-align:center;padding:0 60px;
+  pointer-events:none;/* re-enabled on buttons below */
+}
+.cta-eyebrow{
+  display:block;
+  font:500 9px/1 'Geist',sans-serif;
+  letter-spacing:0.46em;text-transform:uppercase;
+  color:rgba(255,255,255,0.40);margin-bottom:38px;
+}
+.cta-h{
+  font:200 clamp(56px,9.5vw,120px)/0.87 'Geist',sans-serif;
+  letter-spacing:-0.055em;color:#fff;margin:0 0 62px;
+}
+/* per-line curtain wrap — overflow:hidden clips the sliding text */
+.cta-lw{display:block;overflow:hidden;}
+.cta-l{display:block;} /* y driven by GSAP */
+.cta-l em{font-style:normal;color:rgba(255,255,255,0.32);}
+/* action row */
+.cta-acts{
+  display:flex;align-items:center;justify-content:center;gap:22px;
+  pointer-events:auto;
+}
+.cta-btn-p{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:15px 36px;border-radius:60px;
+  background:#fff;color:#000;
+  font:500 10px/1 'Geist',sans-serif;
+  letter-spacing:0.18em;text-transform:uppercase;
+  text-decoration:none;white-space:nowrap;
+  transition:background .30s,transform .30s;
+}
+.cta-btn-p:hover{background:rgba(255,255,255,.86);transform:scale(1.04);}
+.cta-btn-s{
+  font:400 10px/1 'Geist',sans-serif;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(255,255,255,0.40);text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,0.18);padding-bottom:3px;
+  white-space:nowrap;
+  transition:color .30s,border-color .30s;
+}
+.cta-btn-s:hover{color:#fff;border-color:rgba(255,255,255,.48);}
+</style>
+
+<section id="cta-sec">
+  <div id="cta-scroll">
+    <div id="cta-sticky">
+
+      <!-- grid of Holobox images behind everything -->
+      <div id="cta-grid">
+        <div class="cta-gi"><img src="leo_holobox.jpg"  alt=""></div>
+        <div class="cta-gi"><img src="holoboxing.png"   alt=""></div>
+        <div class="cta-gi"><img src="leo_holobox1.jpg" alt=""></div>
+        <div class="cta-gi"><img src="holobox.png"      alt=""></div>
+        <div class="cta-gi"><img src="holobox3d.png"    alt=""></div>
+        <div class="cta-gi"><img src="holobox3d.png"    alt="" style="object-position:center 75%;"></div>
+        <div class="cta-gi"><img src="leo_holobox1.jpg" alt="" style="object-position:center 20%;"></div>
+        <div class="cta-gi"><img src="holoboxing.png"   alt="" style="object-position:right center;"></div>
+        <div class="cta-gi"><img src="leo_holobox.jpg"  alt="" style="object-position:center 65%;"></div>
+        <div class="cta-gi"><img src="holobox.png"      alt="" style="object-position:left center;"></div>
+      </div>
+      <div id="cta-veil"></div>
+
+      <!-- TOP bar — collapses upward -->
+      <div id="cta-bar-t"></div>
+      <!-- BOTTOM bar — collapses downward -->
+      <div id="cta-bar-b"></div>
+
+      <!-- Headline + CTA -->
+      <div id="cta-content">
+        <span class="cta-eyebrow">+ Begin Your Project</span>
+        <h2 class="cta-h">
+          <span class="cta-lw"><span class="cta-l">Let's Create</span></span>
+          <span class="cta-lw"><span class="cta-l"><em>Your Vision</em></span></span>
+        </h2>
+        <div class="cta-acts">
+          <a href="mailto:hello@holobox.ai" class="cta-btn-p">
+            Start a Project
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 9.5L9.5 1.5M9.5 1.5H2.5M9.5 1.5v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#" class="cta-btn-s">View All Deployments</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── initial states ── */
+  gsap.set('.cta-l',       { y:'110%' });          /* lines hidden below their clip */
+  gsap.set('.cta-eyebrow', { opacity:0, y:22 });
+  gsap.set('.cta-acts',    { opacity:0, y:30 });
+  gsap.set('.cta-gi img',  { scale:1.08 });         /* start slightly zoomed */
+
+  /* ══════════════════════════════════════════════
+     SCRUB TIMELINE
+     Total normalised duration = 1.0 mapped to 140vh of scroll.
+
+     0.00 → 0.46  bars collapse (top scaleY→0, bottom scaleY→0)
+     0.28 → 0.58  text lines cut upward into view
+     0.46 → 0.62  eyebrow fades in
+     0.54 → 0.68  buttons fade in
+     0.00 → 0.46  bg grid de-zooms (scale 1.08 → 1.00) — parallax focus
+     0.70 → 1.00  whole grid drifts up slightly — depth parallax
+  ══════════════════════════════════════════════ */
+  const tl = gsap.timeline({
+    defaults:{ ease:'none' },
+    scrollTrigger:{
+      trigger: '#cta-scroll',
+      start:   'top top',
+      end:     'bottom bottom',
+      scrub:   1.6,
+    }
+  });
+
+  /* bars open */
+  tl.to('#cta-bar-t', { scaleY:0, ease:'power2.inOut', duration:0.46 }, 0)
+    .to('#cta-bar-b', { scaleY:0, ease:'power2.inOut', duration:0.46 }, 0)
+
+  /* grid focus as bars open */
+    .to('.cta-gi img', { scale:1.00, ease:'power1.out', duration:0.46 }, 0)
+
+  /* text curtain cut — line 1 then line 2 */
+    .to('.cta-l', {
+      y:'0%',
+      stagger:0.08,
+      ease:'power3.out',
+      duration:0.26,
+    }, 0.27)
+
+  /* eyebrow */
+    .to('.cta-eyebrow', { opacity:1, y:0, ease:'power3.out', duration:0.14 }, 0.44)
+
+  /* buttons */
+    .to('.cta-acts', { opacity:1, y:0, ease:'power3.out', duration:0.16 }, 0.53)
+
+  /* slow drift parallax on the grid */
+    .to('#cta-grid', { y:'-5%', ease:'none', duration:0.30 }, 0.70);
+})();
+</script>
+<!-- ════════════════════════════════════════════════════════════
+     SITE FOOTER
+     1. Email CTA — line-style input, focus glow, success state
+     2. Navigation — 4 columns, magnetic hover (GSAP)
+     3. Brand logotype — 15vw HOLOBOX, mask-fades at base
+     4. Bottom bar — copyright, legal, social icons
+════════════════════════════════════════════════════════════ -->
+<style>
+/* ── wrapper ── */
+#site-footer{
+  position:relative;
+  background:#000;
+  border-top:1px solid rgba(255,255,255,0.07);
+  overflow:hidden;
+}
+.ft-inner{max-width:1300px;margin:0 auto;padding:0 80px;}
+
+/* ══ 1. EMAIL CTA ══ */
+.ft-top{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+  padding:120px 0 88px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.ft-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font:500 9px/1 'Geist',sans-serif;
+  letter-spacing:0.46em;text-transform:uppercase;
+  color:rgba(255,255,255,0.36);margin-bottom:28px;
+}
+.ft-top-h{
+  font:200 clamp(42px,4.8vw,66px)/0.92 'Geist',sans-serif;
+  letter-spacing:-0.048em;color:#fff;margin:0 0 20px;
+}
+.ft-top-sub{
+  font:300 13px/1.80 'Geist',sans-serif;
+  color:rgba(255,255,255,0.35);margin:0;max-width:340px;
+}
+
+/* right: email form */
+.ft-top-r{display:flex;flex-direction:column;justify-content:center;}
+.ft-form-label{
+  font:500 9px/1 'Geist',sans-serif;
+  letter-spacing:0.38em;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);margin-bottom:22px;
+}
+.ft-form{position:relative;width:100%;}
+.ft-field{position:relative;margin-bottom:14px;}
+.ft-field-inner{
+  display:flex;align-items:center;gap:0;
+  padding:18px 0;
+}
+.ft-ei{
+  flex:1;background:none;border:none;outline:none;
+  font:300 18px/1 'Geist',sans-serif;
+  letter-spacing:-0.01em;color:#fff;
+  caret-color:rgba(255,255,255,0.6);
+  padding:0;
+}
+.ft-ei::placeholder{color:rgba(255,255,255,0.22);}
+/* animated bottom line */
+.ft-line-track{
+  position:absolute;bottom:0;left:0;right:0;
+  height:1px;background:rgba(255,255,255,0.10);
+}
+.ft-line-fill{
+  position:absolute;inset:0;
+  background:#fff;
+  transform:scaleX(0);transform-origin:left center;
+}
+/* submit button */
+.ft-go{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.14);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;cursor:pointer;flex-shrink:0;
+  transition:background .28s,border-color .28s,transform .28s;
+}
+.ft-go:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.38);transform:rotate(45deg);}
+.ft-go svg{pointer-events:none;}
+.ft-hint{
+  font:300 10px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.22);letter-spacing:0.06em;
+}
+/* success overlay */
+.ft-success{
+  position:absolute;inset:0;
+  display:flex;align-items:center;gap:10px;
+  font:300 13px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.80);
+  opacity:0;pointer-events:none;
+}
+.ft-success-icon{
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+/* ══ 2. NAVIGATION ══ */
+.ft-nav{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:40px;padding:72px 0 72px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.ft-col-label{
+  display:block;
+  font:500 9px/1 'Geist',sans-serif;
+  letter-spacing:0.40em;text-transform:uppercase;
+  color:rgba(255,255,255,0.28);margin-bottom:28px;
+}
+.ft-link{
+  display:block;
+  font:300 13px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.50);text-decoration:none;
+  margin-bottom:16px;
+  transition:color .24s;
+  will-change:transform;
+}
+.ft-link:hover{color:#fff;}
+.ft-link:last-child{margin-bottom:0;}
+.ft-loc{
+  display:block;
+  font:300 13px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.28);margin-bottom:16px;
+}
+.ft-loc::before{
+  content:'';display:inline-block;
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(255,255,255,0.22);
+  margin-right:8px;vertical-align:middle;position:relative;top:-1px;
+}
+
+/* ══ 3. BRAND LOGOTYPE ══ */
+.ft-brand-wrap{
+  padding:64px 0 0;
+  overflow:hidden;
+  position:relative;
+  /* fade bottom edge into black */
+  -webkit-mask-image:linear-gradient(to bottom,black 0%,black 38%,transparent 100%);
+  mask-image:linear-gradient(to bottom,black 0%,black 38%,transparent 100%);
+}
+.ft-brand-text{
+  display:block;
+  font:900 15.5vw/0.82 'Geist',sans-serif;
+  letter-spacing:-0.04em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,0.09);
+  text-stroke:1px rgba(255,255,255,0.09);
+  white-space:nowrap;
+  /* subtle fill gradient for depth */
+  background:linear-gradient(to bottom,rgba(255,255,255,0.055) 0%,rgba(255,255,255,0.02) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  user-select:none;
+}
+
+/* ══ 4. BOTTOM BAR ══ */
+.ft-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;
+  padding:32px 0 40px;
+  border-top:1px solid rgba(255,255,255,0.07);
+  flex-wrap:wrap;
+}
+.ft-copy{
+  font:300 11px/1 'Geist',sans-serif;
+  color:rgba(255,255,255,0.22);
+}
+.ft-legal{display:flex;gap:24px;align-items:center;}
+.ft-ll{
+  font:300 10px/1 'Geist',sans-serif;
+  letter-spacing:0.10em;text-transform:uppercase;
+  color:rgba(255,255,255,0.26);text-decoration:none;
+  transition:color .24s;
+}
+.ft-ll:hover{color:rgba(255,255,255,0.65);}
+.ft-socials{display:flex;align-items:center;gap:14px;}
+.ft-soc{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.09);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;color:rgba(255,255,255,0.45);
+  transition:background .26s,border-color .26s,color .26s,transform .26s;
+}
+.ft-soc:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.24);color:#fff;transform:translateY(-2px);}
+.ft-soc svg{pointer-events:none;}
+
+/* ── subtle grid dot pattern behind footer ── */
+#site-footer::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);
+  background-size:36px 36px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.4) 20%,rgba(0,0,0,0.4) 80%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.4) 20%,rgba(0,0,0,0.4) 80%,transparent 100%);
+}
+#site-footer>.ft-inner{position:relative;z-index:1;}
+</style>
+
+<footer id="site-footer">
+  <div class="ft-inner">
+
+    <!-- ── 1. EMAIL CTA ── -->
+    <div class="ft-top">
+
+      <div class="ft-top-l">
+        <span class="ft-eyebrow">+ Holobox Intelligence</span>
+        <h3 class="ft-top-h">Stay at the<br>Frontier</h3>
+        <p class="ft-top-sub">Monthly insights on spatial AI, holographics, and real-world deployment strategy — no noise, no filler.</p>
+      </div>
+
+      <div class="ft-top-r">
+        <span class="ft-form-label">Subscribe to the briefing</span>
+        <form class="ft-form" id="ft-form" novalidate>
+          <div class="ft-field">
+            <div class="ft-field-inner">
+              <input id="ft-ei" class="ft-ei" type="email" placeholder="your@email.com" autocomplete="email">
+              <button class="ft-go" type="submit" aria-label="Subscribe">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11.5L11.5 1.5M11.5 1.5H2.5M11.5 1.5v9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="ft-line-track"><div class="ft-line-fill"></div></div>
+            <!-- success overlay inside field -->
+            <div class="ft-success">
+              <div class="ft-success-icon">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              You're in — welcome to the frontier.
+            </div>
+          </div>
+          <span class="ft-hint">No spam. Unsubscribe at any time.</span>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- ── 2. NAVIGATION ── -->
+    <nav class="ft-nav" aria-label="Footer navigation">
+
+      <div class="ft-nav-col">
+        <span class="ft-col-label">Technology</span>
+        <a href="#" class="ft-link ft-mag">Neural AI Engine</a>
+        <a href="#" class="ft-link ft-mag">Vision System</a>
+        <a href="#" class="ft-link ft-mag">Edge Deployment</a>
+        <a href="#" class="ft-link ft-mag">API Documentation</a>
+      </div>
+
+      <div class="ft-nav-col">
+        <span class="ft-col-label">Solutions</span>
+        <a href="#" class="ft-link ft-mag">Retail &amp; Commerce</a>
+        <a href="#" class="ft-link ft-mag">Hospitality</a>
+        <a href="#" class="ft-link ft-mag">Healthcare</a>
+        <a href="#" class="ft-link ft-mag">Education</a>
+      </div>
+
+      <div class="ft-nav-col">
+        <span class="ft-col-label">Company</span>
+        <a href="#" class="ft-link ft-mag">About Holobox</a>
+        <a href="#" class="ft-link ft-mag">Case Studies</a>
+        <a href="#" class="ft-link ft-mag">Press &amp; Media</a>
+        <a href="#" class="ft-link ft-mag">Careers</a>
+      </div>
+
+      <div class="ft-nav-col">
+        <span class="ft-col-label">Connect</span>
+        <span class="ft-loc">Dubai — HQ</span>
+        <span class="ft-loc">London</span>
+        <span class="ft-loc">Singapore</span>
+        <a href="mailto:hello@holobox.ai" class="ft-link ft-mag" style="margin-top:6px;">hello@holobox.ai</a>
+      </div>
+
+    </nav>
+
+    <!-- ── 3. BRAND LOGOTYPE ── -->
+    <div class="ft-brand-wrap">
+      <span class="ft-brand-text" aria-hidden="true">HOLOBOX</span>
+    </div>
+
+    <!-- ── 4. BOTTOM BAR ── -->
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2024 Holobox AI Ltd. All rights reserved.</span>
+      <div class="ft-legal">
+        <a href="#" class="ft-ll">Privacy</a>
+        <a href="#" class="ft-ll">Terms</a>
+        <a href="#" class="ft-ll">Cookies</a>
+      </div>
+      <div class="ft-socials">
+        <!-- LinkedIn -->
+        <a href="#" class="ft-soc" aria-label="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h2v7H2V5zm1-1.5a1 1 0 110-2 1 1 0 010 2zM6 5h1.9v1s.6-1 2.1-1C11.5 5 12 6.3 12 7.8V12h-2V8.2c0-.7-.3-1.2-.9-1.2-.7 0-1.1.5-1.1 1.3V12H6V5z" fill="currentColor"/></svg>
+        </a>
+        <!-- X / Twitter -->
+        <a href="#" class="ft-soc" aria-label="X / Twitter">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1l4.5 5.3L1 12h1l4-4.7L9.6 12H12L7.3 6.5 11.7 1h-1L6.8 5.4 3.4 1H1z" fill="currentColor"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="#" class="ft-soc" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="3" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.2"/><circle cx="10.2" cy="3.8" r="0.6" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ══════════════════════════════════════════════
+     EMAIL FORM INTERACTIONS
+  ══════════════════════════════════════════════ */
+  const form     = document.getElementById('ft-form');
+  const input    = document.getElementById('ft-ei');
+  const lineFill = document.querySelector('.ft-line-fill');
+  const fieldInner = document.querySelector('.ft-field-inner');
+  const hint     = document.querySelector('.ft-hint');
+  const success  = document.querySelector('.ft-success');
+
+  /* line grows on focus */
+  input.addEventListener('focus', () => {
+    gsap.to(lineFill, { scaleX:1, duration:0.50, ease:'power3.out' });
+  });
+  input.addEventListener('blur', () => {
+    if (!input.value.trim())
+      gsap.to(lineFill, { scaleX:0, duration:0.30, ease:'power2.in' });
+  });
+
+  /* submit */
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = input.value.trim();
+    /* shake on invalid */
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      gsap.fromTo(fieldInner,
+        { x:-6 }, { x:0, duration:0.45, ease:'elastic.out(2,0.4)' });
+      gsap.to(lineFill, { scaleX:1, background:'rgba(255,100,100,0.8)', duration:0.2 });
+      gsap.to(lineFill, { background:'#fff', delay:0.6, duration:0.3 });
+      return;
+    }
+    /* success */
+    gsap.to([fieldInner, hint], { y:-14, opacity:0, stagger:0.05, duration:0.32 });
+    gsap.fromTo(success,
+      { y:14, opacity:0 },
+      { y:0,  opacity:1, duration:0.40, delay:0.28, ease:'power3.out' });
+  });
+
+  /* ══════════════════════════════════════════════
+     MAGNETIC LINKS
+  ══════════════════════════════════════════════ */
+  document.querySelectorAll('.ft-mag').forEach(el => {
+    el.addEventListener('mousemove', ev => {
+      const r  = el.getBoundingClientRect();
+      const dx = (ev.clientX - (r.left + r.width  / 2)) * 0.28;
+      const dy = (ev.clientY - (r.top  + r.height / 2)) * 0.28;
+      gsap.to(el, { x:dx, y:dy, duration:0.35, ease:'power2.out' });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, { x:0, y:0, duration:0.60, ease:'elastic.out(1,0.5)' });
+    });
+  });
+
+  /* ══════════════════════════════════════════════
+     SCROLL ENTRANCE ANIMATIONS
+  ══════════════════════════════════════════════ */
+  /* email section */
+  gsap.from('.ft-top-l > *', {
+    y:36, opacity:0, stagger:0.10, duration:1.0, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#site-footer', start:'top 85%', once:true }
+  });
+  gsap.from('.ft-top-r > *', {
+    y:28, opacity:0, stagger:0.10, duration:0.90, ease:'power3.out', delay:0.14,
+    immediateRender:false,
+    scrollTrigger:{ trigger:'#site-footer', start:'top 85%', once:true }
+  });
+  /* nav columns */
+  gsap.from('.ft-nav-col', {
+    y:28, opacity:0, stagger:0.08, duration:0.85, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'.ft-nav', start:'top 90%', once:true }
+  });
+  /* brand logotype wipe */
+  gsap.from('.ft-brand-text', {
+    y:'22%', opacity:0, duration:1.30, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'.ft-brand-wrap', start:'top 96%', once:true }
+  });
+  /* bottom bar */
+  gsap.from('.ft-bottom > *', {
+    y:16, opacity:0, stagger:0.08, duration:0.70, ease:'power3.out',
+    immediateRender:false,
+    scrollTrigger:{ trigger:'.ft-bottom', start:'top 98%', once:true }
+  });
+})();
+</script>
+<!-- ════════════════════════════════════════════════════════════
+     BRAND ACCENT PALETTE — Orange / Gold / Electric Blue
+     Applied subtly to numbers, card glows, rings, lines, buttons.
+════════════════════════════════════════════════════════════ -->
+<style>
+:root{
+  --a-orange: #FF6600;
+  --a-fire:   #FF3D00;
+  --a-gold:   #FFB300;
+  --a-amber:  #FF8C00;
+  --a-blue:   #0099FF;
+  --a-cyan:   #00C4FF;
+  /* orange gradient shorthand */
+  --g-orange: linear-gradient(135deg, #FF8C00 0%, #FFB300 55%, #FF6600 100%);
+  /* blue gradient shorthand */
+  --g-blue:   linear-gradient(135deg, #00C4FF 0%, #0099FF 100%);
+}
+
+/* ══ WHY CHOOSE US — stat numbers in orange-gold gradient ══ */
+.why-stat-num{
+  background: var(--g-orange);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+/* dots: first card orange, second blue */
+.why-stat:nth-child(1) .why-dot{background:#FF7A00;box-shadow:0 0 7px rgba(255,122,0,0.65);}
+.why-stat:nth-child(2) .why-dot{background:#0099FF;box-shadow:0 0 7px rgba(0,153,255,0.65);}
+/* card hover glows */
+.why-stat{transition:border-color .35s,box-shadow .35s;}
+.why-stat:nth-child(1):hover{border-color:rgba(255,102,0,0.24)!important;box-shadow:0 0 50px rgba(255,102,0,0.07),inset 0 0 40px rgba(255,102,0,0.03);}
+.why-stat:nth-child(2):hover{border-color:rgba(0,153,255,0.24)!important;box-shadow:0 0 50px rgba(0,153,255,0.07),inset 0 0 40px rgba(0,153,255,0.03);}
+/* dashed divider on stat cards — orange on 1, blue on 2 */
+.why-stat:nth-child(1) .why-stat-divider{background:repeating-linear-gradient(to right,rgba(255,122,0,0.28) 0,rgba(255,122,0,0.28) 4px,transparent 4px,transparent 10px);}
+.why-stat:nth-child(2) .why-stat-divider{background:repeating-linear-gradient(to right,rgba(0,153,255,0.28) 0,rgba(0,153,255,0.28) 4px,transparent 4px,transparent 10px);}
+/* asterisk decorations */
+.why-stat:nth-child(1) .why-aster{color:rgba(255,122,0,0.28);}
+.why-stat:nth-child(2) .why-aster{color:rgba(0,153,255,0.28);}
+/* left panel subtle top border glow */
+.why-left{border-top:1px solid rgba(255,102,0,0.12)!important;box-shadow:0 -1px 0 0 rgba(255,102,0,0.06),0 0 60px rgba(255,102,0,0.03);}
+
+/* ══ FAN CAROUSEL — subtle orange tint on cards ══ */
+.fan-card{border:1px solid rgba(255,102,0,0.14)!important;box-shadow:0 4px 20px rgba(0,0,0,0.55),0 0 12px rgba(255,102,0,0.06)!important;}
+
+/* ══ 3D CUBE — numbers, ring, icons ══ */
+.cf-num{
+  background: var(--g-orange) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  text-shadow: none !important;
+}
+/* cube ring: orange dashed */
+.cube-ring{border-color:rgba(255,122,0,0.16)!important;}
+/* ring travel dot: orange */
+.cube-ring::before{background:rgba(255,122,0,0.90)!important;box-shadow:0 0 8px rgba(255,122,0,0.70);}
+/* cube ambient glow tint */
+.cube-ambient{background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(255,102,0,0.07) 0%,rgba(0,153,255,0.04) 55%,transparent 100%)!important;}
+/* feature icons — odd = orange, even = blue */
+.cube-feat:nth-child(odd)  .cf-ico{background:rgba(255,102,0,0.10)!important;border-color:rgba(255,102,0,0.22)!important;}
+.cube-feat:nth-child(even) .cf-ico{background:rgba(0,153,255,0.10)!important;border-color:rgba(0,153,255,0.22)!important;}
+.cube-feat:nth-child(odd)  .cf-ico svg *{stroke:rgba(255,140,0,0.90)!important;}
+.cube-feat:nth-child(even) .cf-ico svg *{stroke:rgba(0,170,255,0.90)!important;}
+/* cube section heading em */
+.cube-h em{
+  background: var(--g-blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* ══ EXPERIENCE CARDS — blue glow on hover ══ */
+.exp-card{transition:box-shadow .35s,border-color .35s;}
+.exp-card:hover{box-shadow:0 0 0 1px rgba(0,153,255,0.18),0 24px 70px rgba(0,0,0,0.55)!important;}
+
+/* ══ SPECS SECTION — stat number accent ══ */
+.spec-stat-val{
+  background: var(--g-orange);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* ══ CASE STUDIES — subtle orange hover glow on cards ══ */
+.csi-card{transition:box-shadow .40s!important;}
+.csi-card:hover{box-shadow:0 0 60px rgba(255,102,0,0.07),0 30px 80px rgba(0,0,0,0.60)!important;}
+/* progress dot active state */
+.csi-dot.on{background:var(--a-orange)!important;box-shadow:0 0 8px rgba(255,102,0,0.55)!important;}
+
+/* ══ CTA SECTION — "Your Vision" orange gradient, button glow ══ */
+.cta-l em{
+  background: var(--g-orange) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.cta-btn-p:hover{background:rgba(255,255,255,.90)!important;box-shadow:0 0 30px rgba(255,102,0,0.22),0 0 60px rgba(255,102,0,0.09)!important;}
+/* secondary CTA link hover */
+.cta-btn-s:hover{color:rgba(255,170,50,0.85)!important;border-color:rgba(255,122,0,0.35)!important;}
+
+/* ══ FOOTER — orange input line, orange submit hover ══ */
+.ft-line-fill{background:linear-gradient(to right,#FF6600,#FFB300)!important;}
+.ft-go:hover{background:rgba(255,102,0,0.12)!important;border-color:rgba(255,119,0,0.40)!important;box-shadow:0 0 20px rgba(255,102,0,0.18)!important;}
+.ft-success-icon{background:rgba(255,102,0,0.08)!important;border-color:rgba(255,119,0,0.35)!important;}
+/* footer heading eyebrow accent */
+.ft-eyebrow{color:rgba(255,140,0,0.55)!important;}
+/* social icon hovers */
+.ft-soc:nth-child(1):hover{border-color:rgba(0,153,255,0.42)!important;box-shadow:0 0 12px rgba(0,153,255,0.15);}
+.ft-soc:nth-child(2):hover{border-color:rgba(255,102,0,0.42)!important;box-shadow:0 0 12px rgba(255,102,0,0.15);}
+.ft-soc:nth-child(3):hover{border-color:rgba(255,102,0,0.42)!important;box-shadow:0 0 12px rgba(255,102,0,0.15);}
+/* footer nav link hover: orange */
+.ft-link:hover{color:rgba(255,160,50,0.90)!important;}
+/* bottom border gradient: orange → blue */
+#site-footer{border-top:1px solid transparent!important;
+  background:linear-gradient(#000,#000) padding-box,
+             linear-gradient(to right,rgba(255,102,0,0.28),rgba(0,153,255,0.28)) border-box!important;}
+
+/* ══ GLOBAL SECTION SEPARATORS — faint orange/blue gradient line ══ */
+/* adds a coloured top accent line to each major section */
+#cube-sec::before,
+#case-studies::before,
+#cta-sec::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent 0%,rgba(255,102,0,0.22) 30%,rgba(0,153,255,0.22) 70%,transparent 100%);
+  z-index:10;pointer-events:none;
+}
+#cube-sec,#case-studies,#cta-sec{position:relative;}
+</style>
 </body>
 </html>

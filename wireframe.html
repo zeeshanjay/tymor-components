@@ -3,7 +3,29 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wireframe</title>
+  <title>Tymor — AI Holobox Technology</title>
+  <meta name="description" content="Tymor builds life-size AI Holobox systems — photorealistic MetaHumans that think, speak and connect. Deployed in retail, hospitality, healthcare and enterprise worldwide."/>
+  <meta name="keywords" content="AI Holobox, MetaHuman, holographic AI, Tymor, spatial AI, holographic display, AI concierge"/>
+  <meta name="author" content="Tymor"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://tymor.ai/"/>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://tymor.ai/"/>
+  <meta property="og:title" content="Tymor — AI Holobox Technology"/>
+  <meta property="og:description" content="Life-size AI humans that think, speak & connect — deployed anywhere, unforgettable everywhere."/>
+  <meta property="og:image" content="https://tymor.ai/og-image.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:site_name" content="Tymor"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:site" content="@tymor_ai"/>
+  <meta name="twitter:title" content="Tymor — AI Holobox Technology"/>
+  <meta name="twitter:description" content="Life-size AI humans that think, speak & connect — deployed anywhere, unforgettable everywhere."/>
+  <meta name="twitter:image" content="https://tymor.ai/og-image.jpg"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -516,6 +538,384 @@
   </style>
 </head>
 <body>
+
+<!-- ════════════════════════════════════════════════════════════
+     LUXURY PRELOADER — cinematic curtain reveal
+════════════════════════════════════════════════════════════ -->
+<style>
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: all;
+  overflow: hidden;
+}
+
+/* Top and bottom curtain panels */
+#pre-panel-t,
+#pre-panel-b {
+  position: absolute;
+  left: 0; right: 0;
+  height: 50%;
+  background: #000000;
+  z-index: 2;
+  will-change: transform;
+}
+#pre-panel-t { top: 0;   transform-origin: top center;   }
+#pre-panel-b { bottom: 0; transform-origin: bottom center; }
+
+/* Thin orange accent line at split edge */
+#pre-panel-t::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,140,0,0.55), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#pre-panel-b::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,140,0,0.55), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#preloader.lines-visible #pre-panel-t::after,
+#preloader.lines-visible #pre-panel-b::before { opacity: 1; }
+
+/* Centre content sits between the two panels */
+#pre-content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  pointer-events: none;
+}
+
+/* Logo */
+#pre-logo {
+  height: 30px;
+  width: auto;
+  display: block;
+  opacity: 0;
+  transform: translateY(10px);
+  filter: drop-shadow(0 0 24px rgba(255,140,0,0.35));
+  will-change: transform, opacity;
+}
+
+/* Progress bar */
+#pre-bar-wrap {
+  width: 160px;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+#pre-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #FF6600, #FFD080, #FF8A00);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(255,140,0,0.60);
+  will-change: width;
+}
+
+/* Counter */
+#pre-counter {
+  font: 300 9px/1 'Geist', sans-serif;
+  letter-spacing: 0.44em;
+  color: rgba(255,255,255,0.25);
+  opacity: 0;
+  will-change: opacity;
+  min-width: 3ch;
+  text-align: center;
+}
+
+/* Word mark tagline */
+#pre-tagline {
+  font: 300 7.5px/1 'Geist', sans-serif;
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  opacity: 0;
+  margin-top: -12px;
+  will-change: opacity;
+}
+</style>
+
+<div id="preloader">
+  <div id="pre-panel-t"></div>
+  <div id="pre-panel-b"></div>
+  <div id="pre-content">
+    <img id="pre-logo" src="logo.png" alt="Tymor">
+    <div id="pre-bar-wrap"><div id="pre-bar"></div></div>
+    <span id="pre-counter">00</span>
+    <span id="pre-tagline">AI Holobox Technology</span>
+  </div>
+</div>
+
+<script>
+/* ── Luxury Preloader — runs before any other GSAP code ── */
+(function(){
+  /* Lock scroll immediately */
+  document.documentElement.style.overflow = 'hidden';
+
+  var pre      = document.getElementById('preloader');
+  var logo     = document.getElementById('pre-logo');
+  var barWrap  = document.getElementById('pre-bar-wrap');
+  var bar      = document.getElementById('pre-bar');
+  var counter  = document.getElementById('pre-counter');
+  var tagline  = document.getElementById('pre-tagline');
+  var panelT   = document.getElementById('pre-panel-t');
+  var panelB   = document.getElementById('pre-panel-b');
+
+  /* Show split-edge accent lines */
+  setTimeout(function(){ pre.classList.add('lines-visible'); }, 300);
+
+  var tl = gsap.timeline({
+    delay: 0.05,
+    onComplete: function(){
+      /* ── CURTAIN OPEN: panels slide away ── */
+      var exit = gsap.timeline({
+        onComplete: function(){
+          pre.style.display = 'none';
+          document.documentElement.style.overflow = '';
+        }
+      });
+      /* fade content slightly before curtain opens */
+      exit.to([logo, barWrap, counter, tagline], {
+        opacity: 0, duration: 0.30, ease: 'power2.in'
+      }, 0);
+      /* panels slide out */
+      exit.to(panelT, {
+        yPercent: -100,
+        duration: 0.90,
+        ease: 'power4.inOut'
+      }, 0.15);
+      exit.to(panelB, {
+        yPercent: 100,
+        duration: 0.90,
+        ease: 'power4.inOut'
+      }, 0.15);
+    }
+  });
+
+  /* 1 — logo rises in */
+  tl.to(logo, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 0.20);
+
+  /* 2 — bar wrap fades in */
+  tl.to(barWrap, { opacity: 1, duration: 0.35, ease: 'power2.out' }, 0.55);
+
+  /* 3 — counter fades in */
+  tl.to(counter, { opacity: 1, duration: 0.30, ease: 'power2.out' }, 0.60);
+
+  /* 4 — tagline fades in */
+  tl.to(tagline, { opacity: 1, duration: 0.40, ease: 'power2.out' }, 0.70);
+
+  /* 5 — bar fills + counter ticks 00→100 simultaneously */
+  var count = { val: 0 };
+  tl.to(bar,   { width: '100%', duration: 1.10, ease: 'power2.inOut' }, 0.65);
+  tl.to(count, {
+    val: 100,
+    duration: 1.10,
+    ease: 'power2.inOut',
+    onUpdate: function(){
+      counter.textContent = String(Math.round(count.val)).padStart(2, '0');
+    }
+  }, 0.65);
+
+  /* 6 — brief hold at 100 before curtain opens */
+  tl.to({}, { duration: 0.30 });
+
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     CUSTOM LUXURY CURSOR
+════════════════════════════════════════════════════════════ -->
+<style>
+/* Kill default cursor everywhere */
+*, *::before, *::after { cursor: none !important; }
+
+/* ── Outer ring — lerp-lagged ── */
+#cur-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.45);
+  background: transparent;
+  pointer-events: none;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  will-change: transform;
+  transition:
+    width   0.50s cubic-bezier(0.16,1,0.3,1),
+    height  0.50s cubic-bezier(0.16,1,0.3,1),
+    border-color 0.35s ease,
+    background   0.35s ease,
+    opacity      0.40s ease;
+}
+
+/* State: hovering a regular link/card */
+#cur-ring.s-link {
+  width: 52px; height: 52px;
+  border-color: rgba(255,255,255,0.70);
+  background: rgba(255,255,255,0.05);
+}
+
+/* State: hovering a CTA button */
+#cur-ring.s-cta {
+  width: 76px; height: 76px;
+  border-color: rgba(255,140,0,0.80);
+  background: rgba(255,102,0,0.09);
+}
+
+/* State: hovering a video / media card */
+#cur-ring.s-media {
+  width: 68px; height: 68px;
+  border-color: rgba(255,255,255,0.60);
+  background: rgba(255,255,255,0.06);
+}
+
+/* Label text inside ring */
+#cur-label {
+  font: 500 7.5px/1 'Geist', sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.90);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+#cur-ring.s-cta   #cur-label { opacity: 1; color: rgba(255,185,80,0.95); }
+#cur-ring.s-media #cur-label { opacity: 1; }
+
+/* ── Inner dot — no lag, exact mouse position ── */
+#cur-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+  will-change: transform;
+  transition: width 0.35s ease, height 0.35s ease,
+              background 0.35s ease, opacity 0.40s ease;
+}
+#cur-dot.s-link  { width: 3px; height: 3px; opacity: 0.45; }
+#cur-dot.s-cta   { background: rgba(255,140,0,0.90); }
+#cur-dot.s-media { width: 3px; height: 3px; }
+</style>
+
+<!-- Cursor elements -->
+<div id="cur-ring"><span id="cur-label"></span></div>
+<div id="cur-dot"></div>
+
+<script>
+(function(){
+  var ring  = document.getElementById('cur-ring');
+  var dot   = document.getElementById('cur-dot');
+  var label = document.getElementById('cur-label');
+  if (!ring || !dot) return;
+
+  /* GSAP xPercent/yPercent centres both elements on their position */
+  gsap.set(ring, { xPercent: -50, yPercent: -50 });
+  gsap.set(dot,  { xPercent: -50, yPercent: -50 });
+
+  var mx = -200, my = -200;  /* off-screen until first move */
+  var rx = mx,   ry = my;
+  var visible = false;
+
+  /* ── Mouse tracking ── */
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX;
+    my = e.clientY;
+    gsap.set(dot, { x: mx, y: my }); /* dot: zero lag */
+    if (!visible) {
+      visible = true;
+      gsap.to([ring, dot], { opacity: 1, duration: 0.45, ease: 'power2.out' });
+    }
+  });
+
+  document.addEventListener('mouseleave', function() {
+    gsap.to([ring, dot], { opacity: 0, duration: 0.35 });
+  });
+  document.addEventListener('mouseenter', function() {
+    if (visible) gsap.to([ring, dot], { opacity: 1, duration: 0.35 });
+  });
+
+  /* ── Click pulse via GSAP (elastic spring) ── */
+  document.addEventListener('mousedown', function() {
+    gsap.to(ring, { scale: 0.76, duration: 0.14, ease: 'power3.out' });
+  });
+  document.addEventListener('mouseup', function() {
+    gsap.to(ring, { scale: 1, duration: 0.60, ease: 'elastic.out(1, 0.42)' });
+  });
+
+  /* ── RAF lerp — ring follows with smooth lag ── */
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  (function tick() {
+    rx = lerp(rx, mx, 0.095);
+    ry = lerp(ry, my, 0.095);
+    gsap.set(ring, { x: rx, y: ry });
+    requestAnimationFrame(tick);
+  })();
+
+  /* ── Hover state management ── */
+  function clearStates() {
+    ring.classList.remove('s-link', 's-cta', 's-media');
+    dot.classList.remove('s-link', 's-cta', 's-media');
+    label.textContent = '';
+  }
+
+  function bindHover(selector, ringState, dotState, text) {
+    document.querySelectorAll(selector).forEach(function(el) {
+      el.addEventListener('mouseenter', function() {
+        clearStates();
+        ring.classList.add(ringState);
+        if (dotState) dot.classList.add(dotState);
+        if (text) label.textContent = text;
+      });
+      el.addEventListener('mouseleave', clearStates);
+    });
+  }
+
+  /* Bind after full page load so all elements exist */
+  window.addEventListener('load', function() {
+    /* CTA buttons — orange ring */
+    bindHover(
+      '.hero-cta, .cta-slide, .hbg-outer, .np-cta, .cta-btn-p, .blob-btn, .csi-view-all',
+      's-cta', 's-cta', 'Open'
+    );
+    /* Videos / media cards */
+    bindHover(
+      'video, .csi-card, .proj-card, #sxp-media-wrap',
+      's-media', 's-media', 'View'
+    );
+    /* General nav links */
+    bindHover(
+      '.np-link, .ft-col a, .cta-btn-s, .why-card .sc-arrow, .sc-arrow, .proc-arrow',
+      's-link', 's-link', ''
+    );
+  });
+})();
+</script>
+
 <!-- hidden SVG goo filter for blob button -->
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="position:absolute;width:0;height:0;overflow:hidden;">
   <defs>
@@ -533,8 +933,8 @@
     <div style="max-width:1380px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;">
 
       <!-- Brand: TYMOR wordmark logo -->
-      <a href="#" class="np-brand" aria-label="Tymor — Home" style="flex:0 0 160px;display:inline-flex;align-items:center;text-decoration:none;">
-        <img src="Logos/logo.png" alt="Tymor" style="height:24px;width:auto;display:block;filter:drop-shadow(0 0 14px rgba(255,255,255,0.10));transition:filter .35s ease,transform .35s ease;" />
+      <a href="#" class="np-brand" aria-label="Tymor — Home" style="flex:0 0 160px;display:inline-flex;align-items:center;text-decoration:none;filter:drop-shadow(0 0 14px rgba(255,255,255,0.10));transition:filter .35s ease,transform .35s ease;">
+        <img src="logo.png" alt="Tymor" style="height:24px;width:auto;display:block;" />
       </a>
 
       <!-- Centered nav — 4 plain text links -->
@@ -1224,13 +1624,22 @@
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
   will-change:transform;
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 .zp-img {
   position:relative;
   width:25vw; height:25vh;
   overflow:hidden; border-radius:10px; flex-shrink:0;
 }
-.zp-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.zp-img img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  will-change:transform;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  image-rendering:-webkit-optimize-contrast;
+  image-rendering:crisp-edges;
+}
 .zp-label {
   position:absolute; bottom:0; left:0; right:0;
   padding:10px 12px 10px;
@@ -1344,8 +1753,8 @@
 (function(){
   gsap.registerPlugin(ScrollTrigger);
 
-  /* mirror framer-motion scales: [1→4, 1→5, 1→6, 1→5, 1→6, 1→8, 1→9] */
-  var scaleTo = [4, 5, 6, 5, 6, 8, 9];
+  /* scales tuned down from [4,5,6,5,6,8,9] — effect still dramatic, GPU headroom freed */
+  var scaleTo = [3.5, 4.5, 5.5, 4.5, 5.5, 6.5, 7.5];
 
   scaleTo.forEach(function(s, i){
     gsap.to('#zp-l' + i, {
@@ -1355,7 +1764,7 @@
         trigger: '#zp-outer',
         start:   'top top',
         end:     'bottom bottom',
-        scrub:   1,
+        scrub:   1.5,   /* increased lag → fewer compositor flushes per frame */
       }
     });
   });
@@ -1582,7 +1991,7 @@
   display:flex;flex-direction:column;
   box-shadow:0 30px 70px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08);
 }
-/* solid color variants — one per card */
+/* solid color variants — client-approved palette */
 .spec-card--slate  { background:#3D4458; }
 .spec-card--purple { background:#4F47BB; }
 .spec-card--amber  { background:#B85420; }
@@ -1695,7 +2104,7 @@
     <div id="hb-stage">
       <div id="hb-frame">
         <video id="hb-video"
-               src="model/3dvideo.mp4?v=3"
+               src="model/3dvideo.mp4"
                muted playsinline preload="auto"></video>
         <div id="hb-frame-overlay"></div>
       </div>
@@ -1929,43 +2338,53 @@
 </script>
 
 <script>
-/* ── Holobox: scroll-scrub video (robust: waits for metadata, unlocks seeking) ── */
+/* ── Holobox: scroll-scrub video — seek-guarded, decoder-friendly ── */
 (function(){
   gsap.registerPlugin(ScrollTrigger);
   var video = document.getElementById('hb-video');
   if(!video) return;
 
-  /* force attributes for autoplay-policy compliance */
-  video.muted      = true;
+  video.muted       = true;
   video.playsInline = true;
-  video.preload    = 'auto';
+  video.preload     = 'auto';
   video.load();
 
-  var scrollProg = 0;
-  var smoothProg = 0;
-  var ready      = false;
+  var scrollProg  = 0;
+  var lastQueued  = -1;
+  var isSeeking   = false;
+  var seekTimer   = null;   /* safety: reset isSeeking after 400ms if seeked never fires */
+  var ready       = false;
 
-  /* unlock seeking: brief play→pause (required by some browsers) */
+  function releaseSeeking(){ isSeeking = false; clearTimeout(seekTimer); }
+
+  /* Primary release — decoder done */
+  video.addEventListener('seeked',   releaseSeeking);
+  /* Safety releases — don't let errors lock the flag forever */
+  video.addEventListener('error',    releaseSeeking);
+  video.addEventListener('stalled',  releaseSeeking);
+  video.addEventListener('waiting',  releaseSeeking);
+
+  /* Unlock seeking: brief play→pause primes the decoder on some browsers */
   function unlock(){
     if(ready) return;
+    ready = true;
     var p = video.play();
     if(p && p.then){
-      p.then(function(){ video.pause(); video.currentTime = 0; ready = true; startRAF(); })
-       .catch(function(){ video.pause(); ready = true; startRAF(); });
+      p.then(function(){ video.pause(); video.currentTime = 0; startRAF(); })
+       .catch(function(){ startRAF(); });
     } else {
-      video.pause(); ready = true; startRAF();
+      video.pause(); startRAF();
     }
   }
 
-  /* wait for metadata, then unlock */
-  if(video.readyState >= 1){
-    unlock();
-  } else {
+  if(video.readyState >= 1){ unlock(); }
+  else {
     video.addEventListener('loadedmetadata', unlock, { once:true });
+    video.addEventListener('canplay',        unlock, { once:true }); /* extra fallback */
   }
 
-  /* fallback: if metadata takes too long, retry load */
-  setTimeout(function(){ if(!ready){ video.load(); } }, 2000);
+  /* Last-resort: force-start RAF even if metadata never fires */
+  setTimeout(function(){ if(!ready){ ready = true; startRAF(); } }, 3000);
 
   ScrollTrigger.create({
     trigger: '#tech-section',
@@ -1974,16 +2393,27 @@
     onUpdate: function(s){ scrollProg = s.progress; }
   });
 
-  /* RAF: smooth lerp seek — only runs once video is ready */
   function startRAF(){
     (function raf(){
       requestAnimationFrame(raf);
+
+      /* Skip if video not buffered enough to seek */
       if(!video.duration || video.readyState < 2) return;
-      smoothProg += (scrollProg - smoothProg) * 0.12;
-      var t = Math.max(0, Math.min(smoothProg * video.duration, video.duration - 0.01));
-      if(Math.abs(t - video.currentTime) > 0.005){
-        try{ video.currentTime = t; }catch(e){}
-      }
+
+      /* Skip if decoder still working on previous seek */
+      if(isSeeking) return;
+
+      var t = Math.max(0, Math.min(scrollProg * video.duration, video.duration - 0.01));
+
+      /* Skip if change is too small to matter (< 40ms = ~24fps resolution) */
+      if(Math.abs(t - lastQueued) < 0.04) return;
+
+      /* Commit the seek — safety timer ensures isSeeking never locks permanently */
+      isSeeking  = true;
+      lastQueued = t;
+      clearTimeout(seekTimer);
+      seekTimer  = setTimeout(releaseSeeking, 400);
+      try{ video.currentTime = t; }catch(e){ releaseSeeking(); }
     })();
   }
 })();
@@ -2014,14 +2444,13 @@
 
 <script>
 const POOL = [
-  /* hero_images folder */
+  /* hero_images folder — 10 premium product shots */
   'hero_images/img1.png','hero_images/img2.png','hero_images/img3.jpg',
   'hero_images/img4.png','hero_images/img5.jpg','hero_images/img6.png',
   'hero_images/img7.png','hero_images/img8.png','hero_images/img9.png',
   'hero_images/img10.png',
-  /* root folder originals */
+  /* root folder — confirmed product images */
   'holobox.png','holobox3d.png','holoboxing.png',
-  'img.png','img2.png','newimg.png',
   'leo_holobox.jpg','leo_holobox1.jpg'
 ];
 
@@ -2354,7 +2783,7 @@ window.addEventListener('load', function(){
   border:1px solid rgba(255,255,255,0.06);
 }
 
-/* solid color per step */
+/* solid color per step — client-approved palette */
 .prc-01{background:#1A2D5C;}
 .prc-02{background:#1A5040;}
 .prc-03{background:#3D2470;}
@@ -3226,6 +3655,7 @@ window.addEventListener('load', function(){
   transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),box-shadow 0.4s ease;
 }
 .why-card:hover{transform:translateY(-3px);box-shadow:0 32px 80px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.10);}
+/* client-approved palette */
 .why-card--blue  {background:#2E448F;}
 .why-card--green {background:#1F6B52;}
 /* top row */
@@ -4534,7 +4964,7 @@ window.addEventListener('load', function(){
     <!-- left: brand -->
     <div class="ft-brand-block">
       <a href="#" class="ft-logo" aria-label="Tymor">
-        <img src="Logos/logo.png" alt="Tymor" />
+        <img src="logo.png" alt="Tymor" />
       </a>
       <p class="ft-desc">AI Holobox technology bringing presence, intelligence, and personality into physical spaces — deployed anywhere, unforgettable everywhere.</p>
       <div class="ft-badges" aria-label="Compliance">

@@ -31,6 +31,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script>gsap.registerPlugin(ScrollTrigger);</script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
@@ -1286,7 +1287,6 @@
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* ── video: slide in from left ── */
   gsap.to('#abt-reel-wrap', {
@@ -1554,7 +1554,6 @@
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* ── Lenis butter-smooth scroll ── */
   const lenis = new Lenis({
@@ -1932,7 +1931,6 @@
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* scales tuned down from [4,5,6,5,6,8,9] — effect still dramatic, GPU headroom freed */
   var scaleTo = [3.5, 4.5, 5.5, 4.5, 5.5, 6.5, 7.5];
@@ -2138,7 +2136,6 @@
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* cards stagger in */
   gsap.utils.toArray('.proj-item').forEach(function(card, i){
@@ -2484,7 +2481,6 @@
 <script>
 /* ── GSAP: spec panel reveal physics ── */
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* initial state */
   gsap.set('.spec-card', { opacity:0, x:60 });
@@ -2522,7 +2518,6 @@
 <script>
 /* ── Holobox: scroll-scrub video — seek-guarded, decoder-friendly ── */
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
   var video = document.getElementById('hb-video');
   if(!video) return;
 
@@ -2604,7 +2599,6 @@
 
 /* ── Scroll: drive left-panel label + counter + progress bar ── */
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
   var LABELS = ['AI Holographic Interface','Display &nbsp;&mdash;&nbsp;Transparent OLED 4K','Neural Engine &nbsp;&mdash;&nbsp;32 TOPS On-Device','MetaHuman &nbsp;&mdash;&nbsp;60fps Rendering','Spatial Sensing &nbsp;&mdash;&nbsp;LiDAR'];
   ScrollTrigger.create({
     trigger: '#tech-section',
@@ -2837,7 +2831,6 @@ COLS.forEach((col) => {
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   var vw = function(){ return window.innerWidth; };
 
@@ -3306,7 +3299,6 @@ window.addEventListener('load', function(){
 <script>
 /* ── Process: Pinned scroll — zoom in from below, exit to top ── */
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* header entrance — words split in from opposite sides */
   (function(){
@@ -3613,7 +3605,7 @@ window.addEventListener('load', function(){
             <span class="csi-client">Dubai Mall &nbsp;&mdash;&nbsp; Retail AI</span>
             <h3 class="csi-title">Horizon</h3>
           </div>
-          <a class="csi-arrow" href="project/horizon.html">
+          <a class="csi-arrow" href="#" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -3630,7 +3622,7 @@ window.addEventListener('load', function(){
             <span class="csi-client">London Science Museum &nbsp;&mdash;&nbsp; Interactive Guide</span>
             <h3 class="csi-title">Beyond</h3>
           </div>
-          <a class="csi-arrow" href="project/beyond.html">
+          <a class="csi-arrow" href="#" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -3647,7 +3639,7 @@ window.addEventListener('load', function(){
             <span class="csi-client">Singapore HQ &nbsp;&mdash;&nbsp; Corporate Lobby AI</span>
             <h3 class="csi-title">Elevate</h3>
           </div>
-          <a class="csi-arrow" href="project/elevate.html">
+          <a class="csi-arrow" href="#" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -3664,7 +3656,7 @@ window.addEventListener('load', function(){
             <span class="csi-client">Dubai International Airport &nbsp;&mdash;&nbsp; Concierge AI</span>
             <h3 class="csi-title">Origin</h3>
           </div>
-          <a class="csi-arrow" href="project/origin.html">
+          <a class="csi-arrow" href="#" aria-disabled="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 2M14 2H4M14 2v10" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -3681,7 +3673,6 @@ window.addEventListener('load', function(){
    Deep-scrub GSAP: spring feel via scrub:2, 3D depth on entry
 ════════════════════════════════════════════════════════════ */
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   const area   = document.getElementById('csi-area');
   const cards  = gsap.utils.toArray('#csi-sticky .csi-card');
@@ -4035,7 +4026,6 @@ window.addEventListener('load', function(){
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* ── entrance animations ── */
   (function(){
@@ -4433,7 +4423,6 @@ window.addEventListener('load', function(){
     inner.classList.add('ready');
   });
 
-  gsap.registerPlugin(ScrollTrigger);
 
   /* header split-word entrance */
   (function(){
@@ -4754,7 +4743,6 @@ window.addEventListener('load', function(){
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* ── entrance — split-word heading ── */
   (function(){
@@ -5032,7 +5020,6 @@ window.addEventListener('load', function(){
 
 <script>
 (function(){
-  gsap.registerPlugin(ScrollTrigger);
 
   /* ── initial states ── */
   gsap.set('.cta-l',       { y:'110%' });          /* lines hidden below their clip */
@@ -5337,7 +5324,7 @@ window.addEventListener('load', function(){
 
   <!-- ── BOTTOM BAR ── -->
   <div class="ft-bottom">
-    <span class="ft-copy">© 2024 Tymor AI Ltd. All rights reserved.</span>
+    <span class="ft-copy">© 2025 Tymor AI Ltd. All rights reserved.</span>
     <div class="ft-legal">
       <a href="#">Privacy</a>
       <a href="#">Terms</a>

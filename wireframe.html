@@ -242,6 +242,122 @@
     }
     .hero-cta .arr{display:inline-block;transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);}
     .hero-cta:hover .arr{transform:translateX(5px);}
+
+    /* ══ HERO PREMIUM OVERHAUL ══ */
+    @property --badge-angle { syntax:'<angle>'; initial-value:0deg; inherits:false; }
+    @keyframes badge-spin { to { --badge-angle: 360deg; } }
+    @keyframes badge-glow-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,140,0,0);}50%{box-shadow:0 0 32px 3px rgba(255,140,0,0.18);} }
+    @keyframes shimmer-sweep { 0%{background-position:-250% center;}100%{background-position:250% center;} }
+    @keyframes hero-orb-1 { 0%,100%{transform:translate(0,0) scale(1);}40%{transform:translate(38px,-26px) scale(1.10);}70%{transform:translate(-20px,20px) scale(0.93);} }
+    @keyframes hero-orb-2 { 0%,100%{transform:translate(0,0) scale(1);}38%{transform:translate(-28px,34px) scale(1.14);}74%{transform:translate(24px,-14px) scale(0.89);} }
+    @keyframes hero-btn-breathe { 0%,100%{box-shadow:0 0 60px rgba(255,102,0,0.14),0 8px 40px rgba(0,0,0,0.50),inset 0 1px 0 rgba(255,255,255,0.08);}50%{box-shadow:0 0 110px rgba(255,102,0,0.26),0 0 180px rgba(255,80,0,0.10),0 8px 40px rgba(0,0,0,0.50),inset 0 1px 0 rgba(255,255,255,0.11);} }
+
+    /* floating aurora orbs — behind hero text */
+    .hero-aurora { position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden; }
+    .hero-orb { position:absolute;border-radius:50%;pointer-events:none; }
+    .hero-orb-1 { width:500px;height:500px;left:-100px;top:50%;margin-top:-250px;background:radial-gradient(circle,rgba(255,102,0,0.22) 0%,transparent 68%);filter:blur(62px);animation:hero-orb-1 11s ease-in-out infinite; }
+    .hero-orb-2 { width:360px;height:360px;left:230px;top:10%;background:radial-gradient(circle,rgba(140,70,255,0.12) 0%,transparent 70%);filter:blur(88px);animation:hero-orb-2 15s ease-in-out infinite; }
+    .hero-orb-3 { width:280px;height:280px;left:50px;bottom:10%;background:radial-gradient(circle,rgba(255,200,0,0.10) 0%,transparent 70%);filter:blur(55px);animation:hero-orb-1 19s ease-in-out infinite reverse; }
+
+    /* premium animated-border badge */
+    .hero-badge-p {
+      position:relative;display:inline-flex;align-items:center;gap:8px;
+      padding:6px 18px 6px 10px;border-radius:100px;
+      background:rgba(10,6,3,0.80);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      margin:0 0 24px;isolation:isolate;
+      animation:badge-spin 4s linear infinite, badge-glow-pulse 3.2s ease-in-out infinite;
+    }
+    .hero-badge-p::before {
+      content:'';position:absolute;inset:0;border-radius:100px;pointer-events:none;
+      background:conic-gradient(from var(--badge-angle),rgba(255,170,40,0.95) 0deg,rgba(255,100,0,0.60) 80deg,rgba(255,255,255,0.10) 160deg,rgba(255,255,255,0.02) 260deg,rgba(255,170,40,0.95) 360deg);
+      -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;mask-composite:exclude;
+      padding:1px;
+    }
+
+    /* shimmer headline */
+    .hero-h1-premium {
+      background:linear-gradient(110deg,#ffffff 28%,rgba(255,215,148,0.90) 46%,#ffffff 64%);
+      background-size:260% auto;
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;
+      animation:shimmer-sweep 5.5s linear infinite;
+      animation-delay:2s;
+    }
+
+    /* hero blob CTA button */
+    .hero-blob-cta {
+      position:relative;display:inline-flex;align-items:center;gap:11px;
+      padding:20px 56px;border-radius:16px;
+      background:rgba(8,5,2,0.90);
+      border:none;outline:none;
+      color:rgba(255,200,130,0.96);
+      font:400 11px/1 'Geist',sans-serif;letter-spacing:0.16em;text-transform:uppercase;
+      text-decoration:none;cursor:pointer;overflow:hidden;isolation:isolate;
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      pointer-events:auto;
+      transition:color 0.42s cubic-bezier(0.16,1,0.3,1),transform 0.38s cubic-bezier(0.16,1,0.3,1);
+      animation:hero-btn-breathe 3.8s ease-in-out infinite;
+    }
+    .hero-blob-cta::before {
+      content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,165,40,0.80) 0%,rgba(255,80,0,0.48) 55%,rgba(255,140,0,0.22) 100%);
+      -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;mask-composite:exclude;
+      padding:1px;transition:opacity 0.38s;
+    }
+    .hero-blob-cta:hover::before { opacity:0.55; }
+    .hero-blob-cta:hover { color:#ffffff;transform:translateY(-3px); }
+    .hero-blob-cta__bg {
+      z-index:-1;overflow:hidden;position:absolute;inset:0;border-radius:16px;
+      background:rgba(5,3,1,0.93);
+    }
+    .hero-blob-cta__blobs { position:relative;display:block;height:100%;filter:url('#goo'); }
+    .hero-blob-cta__blob {
+      position:absolute;top:2px;width:25%;height:100%;
+      background:#FF6200;border-radius:100%;
+      transform:translate3d(0,150%,0) scale(1.7);
+      transition:transform 0.52s cubic-bezier(0.16,1,0.3,1);
+    }
+    @supports (filter:url('#goo')) {
+      .hero-blob-cta__blob { transform:translate3d(0,150%,0) scale(1.4); }
+      .hero-blob-cta:hover .hero-blob-cta__blob { transform:translateZ(0) scale(1.4); }
+    }
+    .hero-blob-cta__blob:nth-child(1){left:0%;transition-delay:0s;}
+    .hero-blob-cta__blob:nth-child(2){left:30%;transition-delay:0.08s;}
+    .hero-blob-cta__blob:nth-child(3){left:60%;transition-delay:0.16s;}
+    .hero-blob-cta__blob:nth-child(4){left:90%;transition-delay:0.24s;}
+    .hero-blob-cta:hover .hero-blob-cta__blob { transform:translateZ(0) scale(1.7); }
+    .hero-blob-cta .hbc-label { position:relative;z-index:2; }
+    .hero-blob-cta .hbc-arr { display:inline-block;position:relative;z-index:2;transition:transform 0.30s cubic-bezier(0.16,1,0.3,1); }
+    .hero-blob-cta:hover .hbc-arr { transform:translateX(6px); }
+
+    /* secondary Watch Demo link */
+    .hero-watch {
+      display:inline-flex;align-items:center;gap:11px;
+      color:rgba(255,255,255,0.36);font:300 9.5px/1 'Geist',sans-serif;
+      letter-spacing:0.22em;text-transform:uppercase;text-decoration:none;
+      pointer-events:auto;transition:color 0.32s ease;
+    }
+    .hero-watch:hover { color:rgba(255,255,255,0.72); }
+    .hero-watch-play {
+      width:30px;height:30px;border-radius:50%;
+      border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);
+      display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+      transition:all 0.32s ease;
+    }
+    .hero-watch:hover .hero-watch-play { border-color:rgba(255,255,255,0.38);background:rgba(255,255,255,0.10); }
+    .hero-watch-line { width:16px;height:1px;background:currentColor;transition:width 0.30s ease;flex-shrink:0; }
+    .hero-watch:hover .hero-watch-line { width:28px; }
+
+    /* stat row */
+    .hero-stats { display:flex;align-items:center;gap:28px;margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.07);pointer-events:none; }
+    .hero-stat-num { font:200 26px/1 'Geist',sans-serif;color:rgba(255,255,255,0.92);letter-spacing:-0.03em; }
+    .hero-stat-lbl { font:300 8px/1 'Geist',sans-serif;color:rgba(255,255,255,0.52);letter-spacing:0.24em;text-transform:uppercase;margin-top:6px; }
+    .hero-sdiv { width:1px;height:32px;background:rgba(255,255,255,0.09);flex-shrink:0; }
+
     /* CTA button — premium orange glow */
     .np-cta {
       padding:9px 22px;
@@ -549,6 +665,16 @@
   z-index: 99999;
   pointer-events: all;
   overflow: hidden;
+  background: #000;
+}
+/* ambient glow behind centre */
+#preloader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 55% 55% at 50% 50%, rgba(255,100,0,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Top and bottom curtain panels */
@@ -561,32 +687,32 @@
   z-index: 2;
   will-change: transform;
 }
-#pre-panel-t { top: 0;   transform-origin: top center;   }
+#pre-panel-t { top: 0;   transform-origin: top center; }
 #pre-panel-b { bottom: 0; transform-origin: bottom center; }
 
-/* Thin orange accent line at split edge */
+/* Full-width orange accent line at split edge */
 #pre-panel-t::after {
   content: '';
   position: absolute;
-  bottom: 0; left: 10%; right: 10%;
+  bottom: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,140,0,0.55), transparent);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,140,0,0.20) 15%, rgba(255,160,0,0.80) 50%, rgba(255,140,0,0.20) 85%, transparent 100%);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s;
 }
 #pre-panel-b::before {
   content: '';
   position: absolute;
-  top: 0; left: 10%; right: 10%;
+  top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,140,0,0.55), transparent);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,140,0,0.20) 15%, rgba(255,160,0,0.80) 50%, rgba(255,140,0,0.20) 85%, transparent 100%);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s;
 }
 #preloader.lines-visible #pre-panel-t::after,
 #preloader.lines-visible #pre-panel-b::before { opacity: 1; }
 
-/* Centre content sits between the two panels */
+/* Centre content */
 #pre-content {
   position: absolute;
   inset: 0;
@@ -595,58 +721,59 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 0;
   pointer-events: none;
 }
 
 /* Logo */
 #pre-logo {
-  height: 30px;
+  height: 28px;
   width: auto;
   display: block;
   opacity: 0;
-  transform: translateY(10px);
-  filter: drop-shadow(0 0 24px rgba(255,140,0,0.35));
+  transform: translateY(12px);
+  filter: drop-shadow(0 0 28px rgba(255,140,0,0.40));
   will-change: transform, opacity;
+  margin-bottom: 36px;
 }
 
 /* Progress bar */
 #pre-bar-wrap {
-  width: 160px;
+  width: 210px;
   height: 1px;
-  background: rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.08);
   border-radius: 1px;
   overflow: hidden;
   opacity: 0;
+  margin-bottom: 30px;
 }
 #pre-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #FF6600, #FFD080, #FF8A00);
+  background: linear-gradient(90deg, #FF5500, #FFD080, #FF8A00);
   border-radius: 1px;
-  box-shadow: 0 0 8px rgba(255,140,0,0.60);
+  box-shadow: 0 0 14px rgba(255,140,0,0.80), 0 0 30px rgba(255,100,0,0.40);
   will-change: width;
 }
 
-/* Counter */
+/* Counter — large, editorial, the hero of the loader */
 #pre-counter {
-  font: 300 9px/1 'Geist', sans-serif;
-  letter-spacing: 0.44em;
-  color: rgba(255,255,255,0.25);
+  font: 100 64px/1 'Geist', sans-serif;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.78);
   opacity: 0;
   will-change: opacity;
-  min-width: 3ch;
   text-align: center;
+  margin-bottom: 10px;
 }
 
-/* Word mark tagline */
+/* Tagline */
 #pre-tagline {
-  font: 300 7.5px/1 'Geist', sans-serif;
-  letter-spacing: 0.55em;
+  font: 300 7px/1 'Geist', sans-serif;
+  letter-spacing: 0.50em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.40);
   opacity: 0;
-  margin-top: -12px;
   will-change: opacity;
 }
 </style>
@@ -972,30 +1099,60 @@
   <!-- center glow behind text -->
   <div style="pointer-events:none;position:absolute;inset:0;background:radial-gradient(ellipse 55% 38% at 50% 50%,rgba(255,130,0,0.05) 0%,transparent 70%);"></div>
 
+  <!-- aurora orbs — animated floating glows -->
+  <div class="hero-aurora">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+
   <!-- ══ HERO TEXT — left aligned ══ -->
-  <div style="position:relative;z-index:10;height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;pointer-events:none;padding:0 0 0 8vw;max-width:720px;">
-    <!-- eyebrow badge -->
-    <div id="hero-rnb" style="display:inline-flex;align-items:center;gap:7px;padding:5px 16px 5px 10px;border-radius:100px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);margin:0 0 36px;opacity:0;transform:translateY(10px);">
+  <div style="position:relative;z-index:10;height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;pointer-events:none;padding:max(100px,10vh) 0 max(40px,4vh) 8vw;max-width:740px;">
+    <!-- eyebrow badge — premium rotating border -->
+    <div id="hero-rnb" class="hero-badge-p" style="opacity:0;transform:translateY(10px);">
       <span style="display:inline-flex;align-items:center;justify-content:center;padding:2px 7px;border-radius:100px;background:rgba(255,120,0,0.14);border:1px solid rgba(255,120,0,0.28);font:500 7px/1 'Geist',sans-serif;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,180,80,0.92);white-space:nowrap;">New</span>
       <span style="position:relative;width:5px;height:5px;flex-shrink:0;"><span style="position:absolute;inset:0;border-radius:50%;background:rgba(255,140,0,0.90);"></span><span style="position:absolute;inset:-2px;border-radius:50%;background:rgba(255,140,0,0.35);animation:hero-pulse 2s ease-in-out infinite;"></span></span>
       <span style="font:300 8.5px/1 'Geist',sans-serif;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.50);white-space:nowrap;">Now Deploying Worldwide</span>
     </div>
-    <!-- headline -->
-    <h1 id="hero-h1" style="font-size:clamp(50px,7.2vw,118px);font-weight:200;line-height:0.94;letter-spacing:-0.04em;color:#ffffff;opacity:0;transform:translateY(22px);">
+    <!-- headline — warm shimmer sweep -->
+    <h1 id="hero-h1" class="hero-h1-premium" style="font-size:clamp(50px,7.2vw,118px);font-weight:200;line-height:0.94;letter-spacing:-0.04em;opacity:0;transform:translateY(22px);">
       The Future<br/>Visualized.
     </h1>
     <!-- value subtitle -->
-    <p id="hero-sub" style="font:300 15.5px/1.75 'Geist',sans-serif;color:rgba(255,255,255,0.48);margin:28px 0 0;max-width:440px;opacity:0;transform:translateY(14px);">
+    <p id="hero-sub" style="font:300 15.5px/1.75 'Geist',sans-serif;color:rgba(255,255,255,0.48);margin:20px 0 0;max-width:440px;opacity:0;transform:translateY(14px);">
       Life-size AI humans that think, speak &amp; connect — deployed anywhere, unforgettable everywhere.
     </p>
-    <!-- single glassmorphic CTA -->
-    <div id="hero-cta-grp" style="margin-top:44px;opacity:0;transform:translateY(14px);">
-      <a href="#" class="hero-cta">Discover Holobox <span class="arr">&rarr;</span></a>
+    <!-- single CTA -->
+    <div id="hero-cta-grp" style="margin-top:30px;opacity:0;transform:translateY(14px);">
+      <a href="#" class="hero-blob-cta">
+        <span class="hbc-label">Discover Holobox</span>
+        <span class="hbc-arr">&rarr;</span>
+        <span class="hero-blob-cta__bg">
+          <span class="hero-blob-cta__blobs">
+            <span class="hero-blob-cta__blob"></span>
+            <span class="hero-blob-cta__blob"></span>
+            <span class="hero-blob-cta__blob"></span>
+            <span class="hero-blob-cta__blob"></span>
+          </span>
+        </span>
+      </a>
     </div>
-    <!-- scroll cue -->
-    <div id="hero-scroll-cue" style="position:absolute;bottom:48px;left:8vw;display:flex;align-items:center;gap:10px;opacity:0;">
-      <div style="width:32px;height:1px;background:linear-gradient(to right,rgba(255,110,0,0.55),transparent);"></div>
-      <span style="font:300 8px/1 'Geist',sans-serif;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,255,255,0.26);">Scroll</span>
+    <!-- stat row -->
+    <div id="hero-stats" class="hero-stats">
+      <div>
+        <div class="hero-stat-num">500+</div>
+        <div class="hero-stat-lbl">Deployments</div>
+      </div>
+      <div class="hero-sdiv"></div>
+      <div>
+        <div class="hero-stat-num">40+</div>
+        <div class="hero-stat-lbl">Countries</div>
+      </div>
+      <div class="hero-sdiv"></div>
+      <div>
+        <div class="hero-stat-num">98%</div>
+        <div class="hero-stat-lbl">Satisfaction</div>
+      </div>
     </div>
   </div>
 
@@ -1013,7 +1170,7 @@
   show('#hero-h1', delay + 0.12);
   show('#hero-sub', delay + 0.26);
   show('#hero-cta-grp', delay + 0.42);
-  gsap.to('#hero-scroll-cue', { opacity:1, duration:1.0, ease:'power2.out', delay:delay + 0.68 });
+  show('#hero-stats', delay + 0.58);
 
   /* navbar: smart hide/show based on scroll direction */
   var nav = document.getElementById('hb-nav');
@@ -1078,16 +1235,19 @@
 <!-- ════════════════════════════════════════════════════════════
      REEL + ABOUT
 ════════════════════════════════════════════════════════════ -->
-<section id="about-section" style="background:#000000;padding:72px 64px;border-top:1px solid rgba(255,255,255,0.04);overflow:hidden;">
-  <div style="max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:68px;">
+<section id="about-section" style="background:#000000;padding:110px 64px;border-top:1px solid rgba(255,255,255,0.05);overflow:hidden;position:relative;">
+  <!-- subtle ambient depth right side -->
+  <div style="pointer-events:none;position:absolute;right:0;top:50%;transform:translateY(-50%);width:55%;height:130%;background:radial-gradient(ellipse 65% 75% at 85% 50%,rgba(255,100,0,0.055) 0%,transparent 70%);z-index:0;"></div>
+  <div style="max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:80px;position:relative;z-index:1;">
 
     <!-- LEFT: Reel video with scroll entrance + animated gold border -->
-    <div id="abt-reel-wrap" style="width:42%;max-width:460px;flex-shrink:0;border-radius:22px;position:relative;opacity:0;transform:translateX(-44px);">
+    <div id="abt-reel-wrap" style="width:42%;max-width:480px;flex-shrink:0;border-radius:24px;position:relative;opacity:0;transform:translateX(-44px);">
       <!-- soft outer ambient glow (sits behind everything) -->
-      <div style="position:absolute;inset:-2px;border-radius:24px;box-shadow:0 0 70px rgba(255,140,0,0.12),0 0 120px rgba(255,90,0,0.08);pointer-events:none;z-index:1;"></div>
+      <div style="position:absolute;inset:-4px;border-radius:28px;box-shadow:0 0 80px rgba(255,140,0,0.20),0 0 160px rgba(255,90,0,0.11),0 32px 80px rgba(0,0,0,0.60);pointer-events:none;z-index:1;"></div>
       <!-- video clipped inside its own container so gold border can sit OUTSIDE -->
-      <div style="position:relative;border-radius:22px;overflow:hidden;z-index:2;">
+      <div style="position:relative;border-radius:24px;overflow:hidden;z-index:2;">
         <video src="holobox_reel.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.28) 0%,transparent 42%);pointer-events:none;"></div>
       </div>
       <!-- animated gold border SVG — draws as you scroll -->
       <svg id="reel-border-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:visible;" preserveAspectRatio="none">
@@ -1101,17 +1261,22 @@
           </linearGradient>
         </defs>
         <!-- two rects animate from opposite dashoffsets → strokes grow from both ends and meet -->
-        <rect id="reel-border-r1" rx="21" ry="21" fill="none" stroke="url(#reel-grad)" stroke-width="2.5"
-          style="filter:drop-shadow(0 0 9px rgba(255,165,30,0.80)) drop-shadow(0 0 24px rgba(255,130,0,0.50));"/>
-        <rect id="reel-border-r2" rx="21" ry="21" fill="none" stroke="url(#reel-grad)" stroke-width="2.5"
-          style="filter:drop-shadow(0 0 9px rgba(255,165,30,0.80)) drop-shadow(0 0 24px rgba(255,130,0,0.50));"/>
+        <rect id="reel-border-r1" rx="21" ry="21" fill="none" stroke="url(#reel-grad)" stroke-width="1.5"
+          style="filter:drop-shadow(0 0 10px rgba(255,165,30,0.90)) drop-shadow(0 0 28px rgba(255,130,0,0.60));"/>
+        <rect id="reel-border-r2" rx="23" ry="23" fill="none" stroke="url(#reel-grad)" stroke-width="1.5"
+          style="filter:drop-shadow(0 0 10px rgba(255,165,30,0.90)) drop-shadow(0 0 28px rgba(255,130,0,0.60));"/>
       </svg>
     </div>
 
-    <!-- RIGHT: Word-by-word text reveal -->
-    <div id="abt-text-wrap" style="flex:1;opacity:0;transform:translateX(32px);">
-      <p style="font-size:clamp(13px,1.1vw,16px);font-style:italic;font-weight:300;letter-spacing:-0.015em;color:rgba(255,102,0,0.60);margin:0 0 24px;line-height:1.55;font-family:'Geist',sans-serif;">Where light becomes language, and technology tells stories untold.</p>
-      <h2 style="font-size:clamp(22px,2.8vw,40px);font-weight:200;line-height:1.58;letter-spacing:-0.01em;margin:0;">
+    <!-- RIGHT: Vision tagline + word-by-word text reveal -->
+    <div id="abt-text-wrap" style="flex:1;min-width:0;opacity:0;transform:translateX(32px);">
+      <!-- micro label -->
+      <div style="display:flex;align-items:center;gap:12px;margin:0 0 16px;">
+        <div style="width:24px;height:1px;background:rgba(255,140,0,0.80);"></div>
+        <span style="font:400 8px/1 'Geist',sans-serif;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.55);">Our Vision</span>
+      </div>
+      <p style="font-size:clamp(13px,1.05vw,15px);font-style:italic;font-weight:300;letter-spacing:0em;color:rgba(255,130,0,0.88);margin:0 0 22px;line-height:1.65;font-family:'Geist',sans-serif;text-shadow:0 0 40px rgba(255,100,0,0.28);">Where light becomes language, and technology tells stories untold.</p>
+      <h2 style="font-size:clamp(22px,2.6vw,40px);font-weight:200;line-height:1.44;letter-spacing:-0.025em;margin:0;">
         <span class="abt-word">We </span><span class="abt-word">craft </span><span class="abt-word">bold </span><span class="abt-word">holographic </span><span class="abt-word">experiences </span><span class="abt-word">that </span><span class="abt-word">transform </span><span class="abt-word">how </span><span class="abt-word">brands </span><span class="abt-word">connect </span><span class="abt-word">with </span><span class="abt-word">their </span><span class="abt-word">world </span><span class="abt-word">— </span><span class="abt-word">leaving </span><span class="abt-word">a </span><span class="abt-word">lasting </span><span class="abt-word">impression </span><span class="abt-word">through </span><span class="abt-word">technology </span><span class="abt-word">and </span><span class="abt-word">vision</span>
       </h2>
     </div>
@@ -1202,6 +1367,10 @@
     rgba(255,140,0,0.15) 100%);
   box-shadow:0 0 6px rgba(255,140,0,0.45);
 }
+/* push card content below the fixed heading (~130px) */
+.exp-inner, .exp-img-wrap {
+  margin-top: 110px;
+}
 /* tagline row */
 .exp-tag {
   font-size:11px; font-weight:500; letter-spacing:0.32em; text-transform:uppercase;
@@ -1220,12 +1389,13 @@
     <!-- orange gradient progress bar — top edge -->
     <div id="exp-progress" style="position:absolute;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,#FF4500,#FF8A00,#FFD000,#FF8A00,#FF4500);background-size:300%;z-index:30;"></div>
 
-    <!-- section label — premium Solutions badge -->
-    <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:48px 100px;z-index:20;border-bottom:1px solid rgba(255,255,255,0.03);pointer-events:none;">
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <span class="sec-badge" style="margin:0;border-color:rgba(255,140,0,0.35);background:rgba(255,140,0,0.06);color:rgba(255,170,80,0.90);">Solutions</span>
+    <!-- section heading — premium fixed header -->
+    <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:40px 100px;z-index:20;pointer-events:none;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <p style="font-size:9px;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,140,0,0.55);font-family:'Geist',sans-serif;margin:0;">What We Build</p>
+        <h2 style="font-size:clamp(15px,1.4vw,20px);font-weight:300;letter-spacing:-0.01em;color:rgba(255,255,255,0.82);font-family:'Geist',sans-serif;margin:0;line-height:1.2;">Seven Capabilities.<br/>One Platform.</h2>
       </div>
-      <span id="exp-counter" style="font-size:10px;font-weight:300;letter-spacing:0.18em;color:rgba(255,255,255,0.22);font-family:'Geist',sans-serif;">01 — 07</span>
+      <span id="exp-counter" style="font-size:9px;font-weight:300;letter-spacing:0.10em;color:rgba(255,255,255,0.25);font-family:'Geist',sans-serif;padding-top:4px;">01 — 07</span>
     </div>
 
     <!-- horizontal track: 7 full-screen cards -->
@@ -1236,10 +1406,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 42%,rgba(255,100,0,0.12) 0%,transparent 62%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(255,140,0,0.8);text-transform:uppercase;">Hardware System</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(255,140,0,0.75);text-transform:uppercase;font-family:'Geist',sans-serif;">Hardware System</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,100,0,0.20);font-family:'Geist',sans-serif;transform:translateY(110%);">01</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">AI Holobox<br/>Technology</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">AI Holobox<br/>Technology</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">The Holobox brings artificial intelligence into physical presence — a life-size MetaHuman that thinks, speaks, and connects. Deployed anywhere. Unforgettable everywhere.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(255,120,0,0.9),rgba(255,200,50,0.55));"></div></div>
         </div>
@@ -1257,10 +1427,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 35% 58%,rgba(0,185,255,0.1) 0%,transparent 62%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(0,195,255,0.8);text-transform:uppercase;">Neural Core</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(0,195,255,0.70);text-transform:uppercase;font-family:'Geist',sans-serif;">Neural Core</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(0,185,255,0.18);font-family:'Geist',sans-serif;transform:translateY(110%);">02</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Conversational<br/>AI</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Conversational<br/>AI</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">Our AI engine powers real-time, natural-language conversations — responding to context, remembering preferences, and adapting tone to create interactions that feel genuinely human.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(0,195,255,0.9),rgba(0,100,255,0.50));"></div></div>
         </div>
@@ -1278,10 +1448,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 68% 38%,rgba(168,85,247,0.1) 0%,transparent 62%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(168,85,247,0.8);text-transform:uppercase;">System Interface</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(168,85,247,0.75);text-transform:uppercase;font-family:'Geist',sans-serif;">System Interface</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(168,85,247,0.18);font-family:'Geist',sans-serif;transform:translateY(110%);">03</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Holobox<br/>Integration</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Holobox<br/>Integration</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">We integrate MetaHuman AI into your CRM, knowledge base, and workflows — so every visitor interaction flows directly into your business intelligence with zero friction.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(168,85,247,0.9),rgba(220,51,255,0.50));"></div></div>
         </div>
@@ -1299,10 +1469,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 52% 45%,rgba(255,175,40,0.1) 0%,transparent 58%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(255,175,40,0.8);text-transform:uppercase;">Visual AI</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(255,175,40,0.75);text-transform:uppercase;font-family:'Geist',sans-serif;">Visual AI</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,175,40,0.18);font-family:'Geist',sans-serif;transform:translateY(110%);">04</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">MetaHuman<br/>Production</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">MetaHuman<br/>Production</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">Every MetaHuman is custom-designed, voiced, and trained to embody your brand — from facial features and movement to the knowledge it holds.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(255,175,40,0.9),rgba(255,120,30,0.55));"></div></div>
         </div>
@@ -1320,10 +1490,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 42%,rgba(34,211,165,0.1) 0%,transparent 62%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(34,211,165,0.8);text-transform:uppercase;">Support Infrastructure</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(34,211,165,0.70);text-transform:uppercase;font-family:'Geist',sans-serif;">Support Infrastructure</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(34,211,165,0.18);font-family:'Geist',sans-serif;transform:translateY(110%);">05</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Managed AI<br/>Systems</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Managed AI<br/>Systems</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">We own the system after delivery — monitoring performance, optimizing conversations, updating knowledge bases, and ensuring uptime.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(34,211,165,0.9),rgba(0,190,120,0.50));"></div></div>
         </div>
@@ -1341,10 +1511,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 38% 55%,rgba(59,130,246,0.1) 0%,transparent 62%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(59,130,246,0.8);text-transform:uppercase;">Software Architecture</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(59,130,246,0.75);text-transform:uppercase;font-family:'Geist',sans-serif;">Software Architecture</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(59,130,246,0.18);font-family:'Geist',sans-serif;transform:translateY(110%);">06</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Software<br/>Development</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">Software<br/>Development</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">Our in-house team architects the software stack that powers everything — edge compute, real-time rendering, and enterprise API layers.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(59,130,246,0.9),rgba(99,200,255,0.50));"></div></div>
         </div>
@@ -1362,10 +1532,10 @@
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 62% 40%,rgba(255,130,0,0.12) 0%,transparent 60%);pointer-events:none;"></div>
         <div class="exp-inner" style="max-width:520px;flex:0 0 auto;transform-style:preserve-3d;">
           <div style="margin-bottom:24px;">
-            <span style="display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(255,130,0,0.8);text-transform:uppercase;">Connected Ecosystem</span>
+            <span style="display:inline-block;font-size:9px;font-weight:400;letter-spacing:0.09em;color:rgba(255,130,0,0.75);text-transform:uppercase;font-family:'Geist',sans-serif;">Connected Ecosystem</span>
           </div>
           <div style="overflow:hidden;margin-bottom:-14px;"><span class="exp-num" style="display:block;font-size:clamp(90px,12vw,160px);font-weight:700;line-height:0.86;letter-spacing:-0.05em;color:rgba(255,130,0,0.20);font-family:'Geist',sans-serif;transform:translateY(110%);">07</span></div>
-          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">IoT/Holobox<br/>Architecture</h3></div>
+          <div style="overflow:hidden;margin-bottom:32px;"><h3 class="exp-title" style="font-size:clamp(40px,5vw,72px);font-weight:200;line-height:1.05;letter-spacing:-0.025em;color:#fff;font-family:'Geist',sans-serif;transform:translateY(110%);">IoT/Holobox<br/>Architecture</h3></div>
           <p class="exp-desc" style="font-size:14.5px;font-weight:300;line-height:1.8;color:rgba(255,255,255,0.55);max-width:440px;font-family:'Geist',sans-serif;opacity:0;transform:translateY(22px);">We design hardware-software ecosystems where your Holobox communicates with the physical environment — sensors, triggers, and live data.</p>
           <div style="margin-top:44px;height:1px;width:100%;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;"><div class="exp-line" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,rgba(255,130,0,0.9),rgba(255,80,20,0.50));"></div></div>
         </div>
@@ -1519,7 +1689,7 @@
           <span style="font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,160,80,0.90);font-family:'Geist',sans-serif;">Trusted Partners</span>
         </div>
         <p style="font-size:28px;font-weight:200;line-height:1.2;letter-spacing:-0.02em;color:rgba(255,255,255,0.92);font-family:'Geist',sans-serif;margin:0;">World-class brands.<br/>Powered by Tymor.</p>
-        <p style="font-size:12.5px;font-weight:400;line-height:1.6;color:rgba(255,255,255,0.48);font-family:'Geist',sans-serif;margin:0;">Hospitality · Real Estate · Enterprise</p>
+        <p style="font-size:12.5px;font-weight:400;line-height:1.6;color:rgba(255,255,255,0.48);font-family:'Geist',sans-serif;margin:0;">Hospitality &nbsp;&mdash;&nbsp;Real Estate &nbsp;&mdash;&nbsp;Enterprise</p>
       </div>
     </div>
 
@@ -1618,6 +1788,11 @@
      INDUSTRIES — Zoom Parallax (scroll-depth burst)
 ════════════════════════════════════════════════════════════ -->
 <style>
+@keyframes zp-ping {
+  0%   { transform:scale(1);   opacity:0.70; }
+  70%  { transform:scale(2.6); opacity:0; }
+  100% { transform:scale(2.6); opacity:0; }
+}
 #zp-outer  { position:relative; background:#000000; border-top:1px solid rgba(255,255,255,0.04); }
 #zp-sticky { position:sticky; top:0; height:100vh; overflow:hidden; }
 .zp-layer  {
@@ -1667,7 +1842,7 @@
   <div id="zp-outer" style="height:300vh;">
     <div id="zp-sticky">
 
-      <!-- Layer 0 · center · scale ×4 — Deployments hero -->
+      <!-- Layer 0 &nbsp;&mdash;&nbsp;center &nbsp;&mdash;&nbsp;scale ×4 — Deployments hero -->
       <div class="zp-layer" id="zp-l0">
         <div class="zp-img">
           <img src="center_industry.png" alt="Deployments"/>
@@ -1675,7 +1850,7 @@
         </div>
       </div>
 
-      <!-- Layer 1 · top-left wide · scale ×5 — Healthcare -->
+      <!-- Layer 1 &nbsp;&mdash;&nbsp;top-left wide &nbsp;&mdash;&nbsp;scale ×5 — Healthcare -->
       <div class="zp-layer" id="zp-l1">
         <div class="zp-img" style="top:-30vh;left:5vw;width:35vw;height:30vh;">
           <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1280&h=720&fit=crop&auto=format&q=80" alt="Healthcare"/>
@@ -1683,7 +1858,7 @@
         </div>
       </div>
 
-      <!-- Layer 2 · left tall · scale ×6 — Real Estate -->
+      <!-- Layer 2 &nbsp;&mdash;&nbsp;left tall &nbsp;&mdash;&nbsp;scale ×6 — Real Estate -->
       <div class="zp-layer" id="zp-l2">
         <div class="zp-img" style="top:-10vh;left:-25vw;width:20vw;height:45vh;">
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=1200&fit=crop&auto=format&q=80" alt="Real Estate"/>
@@ -1691,7 +1866,7 @@
         </div>
       </div>
 
-      <!-- Layer 3 · right · scale ×5 — Retail -->
+      <!-- Layer 3 &nbsp;&mdash;&nbsp;right &nbsp;&mdash;&nbsp;scale ×5 — Retail -->
       <div class="zp-layer" id="zp-l3">
         <div class="zp-img" style="top:0;left:27.5vw;width:25vw;height:25vh;">
           <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=600&fit=crop&auto=format&q=80" alt="Retail"/>
@@ -1699,7 +1874,7 @@
         </div>
       </div>
 
-      <!-- Layer 4 · bottom-left · scale ×6 — Education -->
+      <!-- Layer 4 &nbsp;&mdash;&nbsp;bottom-left &nbsp;&mdash;&nbsp;scale ×6 — Education -->
       <div class="zp-layer" id="zp-l4">
         <div class="zp-img" style="top:27.5vh;left:5vw;width:20vw;height:25vh;">
           <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&h=600&fit=crop&auto=format&q=80" alt="Education"/>
@@ -1707,7 +1882,7 @@
         </div>
       </div>
 
-      <!-- Layer 5 · bottom centre-left · scale ×8 — Marketing -->
+      <!-- Layer 5 &nbsp;&mdash;&nbsp;bottom centre-left &nbsp;&mdash;&nbsp;scale ×8 — Marketing -->
       <div class="zp-layer" id="zp-l5">
         <div class="zp-img" style="top:27.5vh;left:-22.5vw;width:30vw;height:25vh;">
           <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1280&h=720&fit=crop&auto=format&q=80" alt="Marketing"/>
@@ -1715,11 +1890,11 @@
         </div>
       </div>
 
-      <!-- Layer 6 · bottom-right · scale ×9 — zoom_image (orange plasma burst) -->
+      <!-- Layer 6 &nbsp;&mdash;&nbsp;bottom-right &nbsp;&mdash;&nbsp;scale ×9 — zoom_image (orange plasma burst) -->
       <div class="zp-layer" id="zp-l6">
         <div class="zp-img" style="top:22.5vh;left:25vw;width:15vw;height:15vh;">
           <img src="zoom_image.png" alt="Government & Corporate"/>
-          <div class="zp-label">Government · Corporate</div>
+          <div class="zp-label">Government &nbsp;&mdash;&nbsp;Corporate</div>
         </div>
       </div>
 
@@ -1728,20 +1903,26 @@
 
       <!-- section header — fades as the zoom burst begins -->
       <div id="zp-hdr">
-        <!-- orange-tinted badge -->
-        <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;border:1px solid rgba(255,140,0,0.35);background:rgba(255,90,0,0.10);backdrop-filter:blur(14px);margin-bottom:24px;">
-          <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,140,0,0.90);box-shadow:0 0 8px rgba(255,120,0,0.7);flex-shrink:0;display:inline-block;"></span>
-          <span style="font-size:9px;font-weight:400;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,180,100,0.90);font-family:'Geist',sans-serif;">Industries</span>
+        <!-- badge — pulsing live dot, crisp pill -->
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 12px;border-radius:100px;border:1px solid rgba(255,140,0,0.28);background:rgba(0,0,0,0.38);backdrop-filter:blur(20px);margin-bottom:28px;">
+          <span style="position:relative;width:6px;height:6px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;">
+            <span style="position:absolute;inset:0;border-radius:50%;background:rgba(255,140,0,0.30);animation:zp-ping 1.8s ease-out infinite;"></span>
+            <span style="position:relative;width:6px;height:6px;border-radius:50%;background:#ff8c00;display:block;"></span>
+          </span>
+          <span style="font-size:9px;font-weight:300;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,180,100,0.80);font-family:'Geist',sans-serif;">Industries</span>
         </div>
         <!-- premium gradient heading -->
-        <h2 style="font-size:clamp(34px,4.5vw,66px);font-weight:700;line-height:1.0;letter-spacing:-0.04em;color:#fff;font-family:'Geist',sans-serif;margin:0 0 20px;background:linear-gradient(135deg,#ffffff 0%,rgba(255,200,140,0.95) 45%,rgba(255,120,40,0.85) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(255,120,0,0.35));">Your Industry,<br/>Powered by Holobox.</h2>
-        <!-- visible subheading with all 8 industries -->
-        <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,0.75);font-family:'Geist',sans-serif;line-height:2;max-width:400px;margin:0;text-align:center;text-shadow:0 2px 24px rgba(0,0,0,0.8);letter-spacing:0.12em;">Real Estate &nbsp;·&nbsp; Hospitality &nbsp;·&nbsp; Education &nbsp;·&nbsp; Retail<br/>Healthcare &nbsp;·&nbsp; Marketing &nbsp;·&nbsp; Government &nbsp;·&nbsp; Corporate</p>
+        <h2 style="font-size:clamp(38px,5vw,72px);font-weight:200;line-height:1.08;letter-spacing:-0.025em;font-family:'Geist',sans-serif;margin:0 0 28px;background:linear-gradient(135deg,#ffffff 0%,rgba(255,210,160,0.95) 50%,rgba(255,130,50,0.90) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Your Industry,<br/>Powered by Holobox.</h2>
+        <!-- industry list — fixed 2×4 balanced layout, no orphan -->
+        <p style="font-size:9.5px;font-weight:300;color:rgba(255,255,255,0.42);font-family:'Geist',sans-serif;line-height:1.9;max-width:560px;margin:0;text-align:center;letter-spacing:0.26em;text-transform:uppercase;">
+          Real Estate &nbsp;&mdash;&nbsp; Hospitality &nbsp;&mdash;&nbsp; Education &nbsp;&mdash;&nbsp; Retail<br/>
+          Healthcare &nbsp;&mdash;&nbsp; Marketing &nbsp;&mdash;&nbsp; Government &nbsp;&mdash;&nbsp; Corporate
+        </p>
         <!-- scroll cue -->
-        <div style="margin-top:36px;display:flex;align-items:center;gap:10px;">
-          <div style="width:32px;height:1px;background:linear-gradient(to right,transparent,rgba(255,140,0,0.70));"></div>
-          <span style="font-size:8.5px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,160,80,0.80);font-family:'Geist',sans-serif;">Scroll to Explore</span>
-          <div style="width:32px;height:1px;background:linear-gradient(to left,transparent,rgba(255,140,0,0.70));"></div>
+        <div style="margin-top:40px;display:flex;align-items:center;gap:12px;">
+          <div style="width:40px;height:1px;background:linear-gradient(to right,transparent,rgba(255,140,0,0.50));"></div>
+          <span style="font-size:8px;font-weight:300;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,160,80,0.55);font-family:'Geist',sans-serif;">Scroll to Explore</span>
+          <div style="width:40px;height:1px;background:linear-gradient(to left,transparent,rgba(255,140,0,0.50));"></div>
         </div>
       </div>
 
@@ -1872,7 +2053,7 @@
 <section id="projects-section">
   <div class="proj-grid">
 
-    <!-- Card 1 · Featured — Hospitality -->
+    <!-- Card 1 &nbsp;&mdash;&nbsp;Featured — Hospitality -->
     <div class="proj-card proj-card--featured proj-item">
       <div class="proj-img">
         <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1400&h=600&fit=crop&auto=format&q=80" alt="Hospitality Concierge">
@@ -1882,13 +2063,13 @@
         <h3 class="proj-title">Five-Star Hotel AI Concierge</h3>
         <p class="proj-desc">24/7 photorealistic MetaHuman concierge in the grand lobby — handling reservations, recommendations, and guest services in 12 languages with zero wait time.</p>
         <div class="proj-footer">
-          <span class="proj-industry">Luxury Hotels · Guest Experience</span>
+          <span class="proj-industry">Luxury Hotels &nbsp;&mdash;&nbsp;Guest Experience</span>
           <div class="proj-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
     </div>
 
-    <!-- Card 2 · Real Estate -->
+    <!-- Card 2 &nbsp;&mdash;&nbsp;Real Estate -->
     <div class="proj-card proj-item">
       <div class="proj-img">
         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&auto=format&q=80" alt="Real Estate">
@@ -1898,13 +2079,13 @@
         <h3 class="proj-title">Virtual Property Advisor</h3>
         <p class="proj-desc">AI advisor in premium showrooms — walking prospects through floor plans, pricing, and availability in real-time.</p>
         <div class="proj-footer">
-          <span class="proj-industry">Luxury Properties · Sales</span>
+          <span class="proj-industry">Luxury Properties &nbsp;&mdash;&nbsp;Sales</span>
           <div class="proj-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
     </div>
 
-    <!-- Card 3 · Retail -->
+    <!-- Card 3 &nbsp;&mdash;&nbsp;Retail -->
     <div class="proj-card proj-item">
       <div class="proj-img">
         <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=600&fit=crop&auto=format&q=80" alt="Retail">
@@ -1914,13 +2095,13 @@
         <h3 class="proj-title">In-Store Product Specialist</h3>
         <p class="proj-desc">Retail AI specialist guiding customers through product ranges, comparisons, and personalised recommendations on the showroom floor.</p>
         <div class="proj-footer">
-          <span class="proj-industry">Luxury Retail · Flagship Stores</span>
+          <span class="proj-industry">Luxury Retail &nbsp;&mdash;&nbsp;Flagship Stores</span>
           <div class="proj-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
     </div>
 
-    <!-- Card 4 · Marketing -->
+    <!-- Card 4 &nbsp;&mdash;&nbsp;Marketing -->
     <div class="proj-card proj-item">
       <div class="proj-img">
         <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop&auto=format&q=80" alt="Marketing Event">
@@ -1930,13 +2111,13 @@
         <h3 class="proj-title">Live Event Brand Ambassador</h3>
         <p class="proj-desc">Full-size holographic brand ambassador at global trade shows — creating viral moments and capturing leads 24 hours non-stop.</p>
         <div class="proj-footer">
-          <span class="proj-industry">Events · Trade Shows</span>
+          <span class="proj-industry">Events &nbsp;&mdash;&nbsp;Trade Shows</span>
           <div class="proj-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
     </div>
 
-    <!-- Card 5 · Healthcare -->
+    <!-- Card 5 &nbsp;&mdash;&nbsp;Healthcare -->
     <div class="proj-card proj-item">
       <div class="proj-img">
         <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&h=600&fit=crop&auto=format&q=80" alt="Healthcare">
@@ -1946,7 +2127,7 @@
         <h3 class="proj-title">Hospital Physician Info Model</h3>
         <p class="proj-desc">AI physician avatar in hospital waiting areas — answering patient queries and reducing front-desk load by 60%.</p>
         <div class="proj-footer">
-          <span class="proj-industry">Healthcare · Patient Services</span>
+          <span class="proj-industry">Healthcare &nbsp;&mdash;&nbsp;Patient Services</span>
           <div class="proj-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1v8" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
@@ -2004,8 +2185,8 @@
   gap:20px;margin-bottom:30px;
 }
 .sc-title{
-  font:600 clamp(22px,2vw,28px)/1.1 'Geist',sans-serif;
-  letter-spacing:-0.025em;color:#fff;margin:0;flex:1;
+  font:300 clamp(24px,2.2vw,32px)/1.1 'Geist',sans-serif;
+  letter-spacing:-0.02em;color:#fff;margin:0;flex:1;
 }
 .sc-arrow{
   width:32px;height:32px;flex-shrink:0;
@@ -2018,8 +2199,8 @@
 
 /* MIDDLE: description */
 .sc-desc{
-  font:300 13px/1.65 'Geist',sans-serif;
-  color:rgba(255,255,255,0.82);margin:0;max-width:94%;
+  font:300 13px/1.72 'Geist',sans-serif;
+  color:rgba(255,255,255,0.68);margin:0;max-width:94%;
 }
 
 /* BOTTOM: two columns */
@@ -2028,12 +2209,13 @@
   display:grid;grid-template-columns:1.15fr 1fr;gap:24px;
 }
 .sc-foot-label{
-  font:400 12px/1 'Geist',sans-serif;
-  color:rgba(255,255,255,0.58);margin-bottom:14px;
+  font:300 9.5px/1 'Geist',sans-serif;
+  letter-spacing:0.10em;text-transform:uppercase;
+  color:rgba(255,255,255,0.40);margin-bottom:12px;
 }
 .sc-row{
-  font:400 12.5px/1.5 'Geist',sans-serif;
-  color:#fff;margin-bottom:2px;
+  font:300 12px/1.6 'Geist',sans-serif;
+  color:rgba(255,255,255,0.80);margin-bottom:2px;
 }
 .sc-icons{
   display:grid;grid-template-columns:repeat(3,34px);gap:6px;
@@ -2112,8 +2294,8 @@
 
     <!-- top-left overlay labels -->
     <div style="position:absolute;top:44px;left:50px;z-index:7;pointer-events:none;">
-      <p style="font:500 8px/1 'Geist',sans-serif;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.60);margin:0 0 5px;">Core Technology</p>
-      <div id="hb-model-label" style="font:500 12px/1.4 'Geist',sans-serif;color:rgba(255,255,255,0.70);letter-spacing:-0.01em;min-height:17px;transition:opacity 0.4s;"></div>
+      <p style="font:300 8px/1 'Geist',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin:0 0 6px;">Core Technology</p>
+      <div id="hb-model-label" style="font:300 12.5px/1.4 'Geist',sans-serif;color:rgba(255,255,255,0.75);letter-spacing:-0.01em;min-height:17px;transition:opacity 0.4s;"></div>
     </div>
 
     <!-- left-edge scroll progress bar -->
@@ -2123,15 +2305,15 @@
 
     <!-- bottom corner meta -->
     <div style="position:absolute;bottom:42px;left:50px;right:50px;display:flex;justify-content:space-between;pointer-events:none;z-index:7;">
-      <span style="font:300 10.5px/1 'Geist',sans-serif;color:rgba(255,255,255,0.50);letter-spacing:0.04em;">Holobox Flex — Gen II</span>
-      <span id="hb-counter" style="font:500 10px/1 'Geist',sans-serif;color:rgba(255,255,255,0.48);letter-spacing:0.06em;">01 / 05</span>
+      <span style="font:300 9.5px/1 'Geist',sans-serif;color:rgba(255,255,255,0.32);letter-spacing:0.08em;">Holobox Flex — Gen II</span>
+      <span id="hb-counter" style="font:300 9.5px/1 'Geist',sans-serif;color:rgba(255,255,255,0.32);letter-spacing:0.08em;">01 / 05</span>
     </div>
   </div>
 
   <!-- RIGHT: 5 scrolling spec panels —— premium cards -->
   <div id="tech-right">
 
-    <!-- 0 · AI Holographic Interface — slate -->
+    <!-- 0 &nbsp;&mdash;&nbsp;AI Holographic Interface — slate -->
     <div class="spec-panel">
       <div class="spec-card spec-card--slate">
         <div class="sc-top">
@@ -2164,7 +2346,7 @@
       </div>
     </div>
 
-    <!-- 1 · Transparent OLED Display — purple -->
+    <!-- 1 &nbsp;&mdash;&nbsp;Transparent OLED Display — purple -->
     <div class="spec-panel">
       <div class="spec-card spec-card--purple">
         <div class="sc-top">
@@ -2197,7 +2379,7 @@
       </div>
     </div>
 
-    <!-- 2 · Neural Compute Engine — amber -->
+    <!-- 2 &nbsp;&mdash;&nbsp;Neural Compute Engine — amber -->
     <div class="spec-panel">
       <div class="spec-card spec-card--amber">
         <div class="sc-top">
@@ -2230,7 +2412,7 @@
       </div>
     </div>
 
-    <!-- 3 · MetaHuman Renderer — green -->
+    <!-- 3 &nbsp;&mdash;&nbsp;MetaHuman Renderer — green -->
     <div class="spec-panel">
       <div class="spec-card spec-card--green">
         <div class="sc-top">
@@ -2263,7 +2445,7 @@
       </div>
     </div>
 
-    <!-- 4 · Spatial Sensing Array — blue -->
+    <!-- 4 &nbsp;&mdash;&nbsp;Spatial Sensing Array — blue -->
     <div class="spec-panel">
       <div class="spec-card spec-card--blue">
         <div class="sc-top">
@@ -2423,7 +2605,7 @@
 /* ── Scroll: drive left-panel label + counter + progress bar ── */
 (function(){
   gsap.registerPlugin(ScrollTrigger);
-  var LABELS = ['AI Holographic Interface','Display · Transparent OLED 4K','Neural Engine · 32 TOPS On-Device','MetaHuman · 60fps Rendering','Spatial Sensing · LiDAR'];
+  var LABELS = ['AI Holographic Interface','Display &nbsp;&mdash;&nbsp;Transparent OLED 4K','Neural Engine &nbsp;&mdash;&nbsp;32 TOPS On-Device','MetaHuman &nbsp;&mdash;&nbsp;60fps Rendering','Spatial Sensing &nbsp;&mdash;&nbsp;LiDAR'];
   ScrollTrigger.create({
     trigger: '#tech-section',
     start:   'top top',
@@ -2720,6 +2902,7 @@ window.addEventListener('load', function(){
   padding:100px 0 72px;
   text-align:center;
   position:relative;z-index:2;
+  overflow:visible;
 }
 .proc-badge{
   display:inline-block;padding:6px 20px;border-radius:100px;
@@ -2737,8 +2920,8 @@ window.addEventListener('load', function(){
   color:rgba(255,255,255,0.62);margin:0 auto;max-width:460px;
 }
 
-/* ── scroll space (6×100vh) ── */
-.proc-scroll-space{ height:720vh;position:relative; }
+/* ── scroll space (6×100vh + 120vh rest so last card is fully visible) ── */
+.proc-scroll-space{ height:840vh;position:relative; }
 
 /* ── sticky viewport ── */
 #proc-sticky{
@@ -2773,6 +2956,7 @@ window.addEventListener('load', function(){
   width:400px;min-height:540px;
   border-radius:24px !important;
   padding:32px 30px 28px;
+  overflow:hidden;
   display:flex;flex-direction:column;
   overflow:hidden;cursor:default;
   will-change:transform,opacity;
@@ -2781,6 +2965,17 @@ window.addEventListener('load', function(){
     0 30px 70px rgba(0,0,0,0.45),
     inset 0 1px 0 rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.06);
+}
+
+/* ghost step watermark number */
+.prcs-num{
+  position:absolute;
+  right:-4px;bottom:-24px;
+  font:200 148px/1 'Geist',sans-serif;
+  letter-spacing:-0.06em;
+  color:rgba(255,255,255,0.055);
+  pointer-events:none;user-select:none;
+  line-height:1;
 }
 
 /* solid color per step — client-approved palette */
@@ -2797,12 +2992,12 @@ window.addEventListener('load', function(){
   gap:20px;margin-bottom:18px;
 }
 .prcs-step-tag{
-  font:500 9px/1 'Geist',sans-serif;letter-spacing:0.32em;text-transform:uppercase;
-  color:rgba(255,255,255,0.55);display:block;margin-bottom:14px;
+  font:300 9px/1 'Geist',sans-serif;letter-spacing:0.10em;text-transform:uppercase;
+  color:rgba(255,255,255,0.40);display:block;margin-bottom:12px;
 }
 .prcs-title{
-  font:600 clamp(22px,2vw,28px)/1.1 'Geist',sans-serif;
-  letter-spacing:-0.025em;color:#fff;margin:0;
+  font:300 clamp(22px,2vw,28px)/1.1 'Geist',sans-serif;
+  letter-spacing:-0.02em;color:#fff;margin:0;
 }
 .prcs-arrow{
   width:36px;height:36px;border-radius:50%;
@@ -2818,8 +3013,8 @@ window.addEventListener('load', function(){
 
 /* MIDDLE: description */
 .prcs-desc{
-  font:300 13px/1.65 'Geist',sans-serif;
-  color:rgba(255,255,255,0.78);margin:0;max-width:94%;
+  font:300 13px/1.72 'Geist',sans-serif;
+  color:rgba(255,255,255,0.62);margin:0;max-width:94%;
 }
 
 /* BOTTOM: two columns */
@@ -2877,7 +3072,9 @@ window.addEventListener('load', function(){
   <!-- Header (above sticky) -->
   <div class="proc-head-wrap">
     <div style="max-width:520px;margin:0 auto;padding:0 24px;">
-      <h2 class="proc-head-h">How it <strong>Works</strong></h2>
+      <h2 class="proc-head-h" style="overflow:visible;">
+        <span id="phw-l" style="display:inline-block;">How it</span>&thinsp;<span id="phw-r" style="display:inline-block;"><strong>Works</strong></span>
+      </h2>
       <p class="proc-head-sub">Every Holobox deployment follows a precision-engineered methodology — from first discovery session to full go-live and beyond.</p>
     </div>
   </div>
@@ -2892,9 +3089,10 @@ window.addEventListener('load', function(){
 
       <!-- 01 Discovery — navy -->
       <div class="prcs-card prc-01">
+        <span class="prcs-num">01</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 01 &middot; Discovery</span>
+            <span class="prcs-step-tag">Step 01 &mdash; Discovery</span>
             <h3 class="prcs-title">Discovery &amp;<br>Planning</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2924,9 +3122,10 @@ window.addEventListener('load', function(){
 
       <!-- 02 MetaHuman Design — emerald -->
       <div class="prcs-card prc-02">
+        <span class="prcs-num">02</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 02 &middot; Avatar</span>
+            <span class="prcs-step-tag">Step 02 &mdash; Avatar</span>
             <h3 class="prcs-title">MetaHuman<br>Design</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2956,9 +3155,10 @@ window.addEventListener('load', function(){
 
       <!-- 03 Voice Production — violet -->
       <div class="prcs-card prc-03">
+        <span class="prcs-num">03</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 03 &middot; Voice</span>
+            <span class="prcs-step-tag">Step 03 &mdash; Voice</span>
             <h3 class="prcs-title">Voice<br>Production</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2988,9 +3188,10 @@ window.addEventListener('load', function(){
 
       <!-- 04 Facial Expressions — amber -->
       <div class="prcs-card prc-04">
+        <span class="prcs-num">04</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 04 &middot; Performance</span>
+            <span class="prcs-step-tag">Step 04 &mdash; Performance</span>
             <h3 class="prcs-title">Facial<br>Expressions</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -3020,9 +3221,10 @@ window.addEventListener('load', function(){
 
       <!-- 05 AI Integration — teal -->
       <div class="prcs-card prc-05">
+        <span class="prcs-num">05</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 05 &middot; Neural</span>
+            <span class="prcs-step-tag">Step 05 &mdash; Neural</span>
             <h3 class="prcs-title">AI<br>Integration</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -3052,9 +3254,10 @@ window.addEventListener('load', function(){
 
       <!-- 06 Go-Live — rose -->
       <div class="prcs-card prc-06">
+        <span class="prcs-num">06</span>
         <div class="prcs-top">
           <div>
-            <span class="prcs-step-tag">Step 06 &middot; Deployment</span>
+            <span class="prcs-step-tag">Step 06 &mdash; Deployment</span>
             <h3 class="prcs-title">Go-Live &amp;<br>Beyond</h3>
           </div>
           <div class="prcs-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -3105,12 +3308,14 @@ window.addEventListener('load', function(){
 (function(){
   gsap.registerPlugin(ScrollTrigger);
 
-  /* header entrance */
-  gsap.from('.proc-head-wrap *', {
-    y:30, opacity:0, stagger:0.10, duration:0.90, ease:'power3.out',
-    immediateRender:false,
-    scrollTrigger:{ trigger:'#process-section', start:'top 84%', once:true }
-  });
+  /* header entrance — words split in from opposite sides */
+  (function(){
+    var st = { trigger:'#process-section', start:'top 78%', once:true };
+    var tl = gsap.timeline({ scrollTrigger: st });
+    tl.from('#phw-l',        { x:-80, opacity:0, duration:1.05, ease:'power3.out' }, 0)
+      .from('#phw-r',        { x: 80, opacity:0, duration:1.05, ease:'power3.out' }, 0.06)
+      .from('.proc-head-sub',{ y: 28, opacity:0, duration:0.90, ease:'power3.out' }, 0.28);
+  })();
 
   var cards   = gsap.utils.toArray('.prcs-card');
   var dots    = document.querySelectorAll('.proc-dot');
@@ -3137,7 +3342,9 @@ window.addEventListener('load', function(){
     pin:        '#proc-sticky',
     pinSpacing: false,
     onUpdate: function(self){
-      var idx = Math.min(Math.floor(self.progress * N), N - 1);
+      /* clamp progress to the animation window (85.7%) so counter stays on 06 during rest */
+      var animProg = Math.min(self.progress / 0.857, 1);
+      var idx = Math.min(Math.floor(animProg * N), N - 1);
       setStep(idx);
     }
   });
@@ -3150,11 +3357,12 @@ window.addEventListener('load', function(){
    *   pos i+0.30 → i+0.60  hold: fully visible
    *   pos i+0.60 → i+1.00  exit:  fly up + zoom out
    */
+  /* Animation ends at 720/840 = 85.7% of section — last 120vh is rest time for card 06 */
   var tl = gsap.timeline({
     scrollTrigger:{
       trigger: '.proc-scroll-space',
       start:   'top top',
-      end:     'bottom top',
+      end:     '85.7% top',
       scrub:   1.4
     }
   });
@@ -3196,44 +3404,47 @@ window.addEventListener('load', function(){
   justify-content:space-between;gap:60px;
 }
 .csi-pill{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:6px 14px;border-radius:100px;
-  border:1px solid rgba(255,140,0,0.30);
-  background:rgba(255,140,0,0.07);
-  backdrop-filter:blur(10px);
-  margin:0 0 14px;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0;border-radius:0;border:none;background:none;
+  margin:0 0 18px;
 }
 .csi-pill-dot{
-  width:4px;height:4px;border-radius:50%;
-  background:rgba(255,140,0,0.90);
-  box-shadow:0 0 7px rgba(255,120,0,0.70);
+  width:5px;height:5px;border-radius:50%;
+  background:#ff8c00;
+  box-shadow:0 0 8px rgba(255,120,0,0.60);
   flex-shrink:0;
 }
 .csi-pill-txt{
-  font:400 8.5px/1 'Geist',sans-serif;
-  letter-spacing:0.08em;text-transform:uppercase;
-  color:rgba(255,160,80,0.90);
+  font:300 9px/1 'Geist',sans-serif;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(255,160,80,0.65);
 }
 .csi-h{
-  font:200 clamp(44px,5.8vw,80px)/1 'Geist',sans-serif;
-  letter-spacing:-0.04em;color:#fff;margin:0;
+  font:200 clamp(44px,5.8vw,80px)/0.95 'Geist',sans-serif;
+  letter-spacing:-0.03em;color:#fff;margin:0;
 }
-.csi-h strong{font-weight:600;}
-.csi-hdr-r{max-width:420px;flex-shrink:0;padding-bottom:4px;}
+.csi-h strong{
+  font-weight:200;font-style:normal;
+  background:linear-gradient(135deg,#ffffff 0%,rgba(255,200,140,0.95) 50%,rgba(255,120,40,0.90) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.csi-hdr-r{max-width:380px;flex-shrink:0;padding-bottom:4px;}
 .csi-sub{
-  font:300 14px/1.88 'Geist',sans-serif;
-  color:rgba(255,255,255,0.60);margin:0 0 26px;
+  font:300 13px/1.80 'Geist',sans-serif;
+  color:rgba(255,255,255,0.48);margin:0 0 28px;
 }
 .csi-view-all{
-  display:inline-flex;align-items:center;gap:8px;
-  font:400 11px/1 'Geist',sans-serif;
-  letter-spacing:0.02em;text-transform:none;
-  color:rgba(255,255,255,0.40);text-decoration:none;
-  border:1px solid rgba(255,255,255,0.12);border-radius:100px;padding:9px 18px;
-  background:rgba(255,255,255,0.03);
-  transition:color 0.3s,border-color 0.3s,background 0.3s;
+  display:inline-flex;align-items:center;gap:7px;
+  font:300 10.5px/1 'Geist',sans-serif;
+  letter-spacing:0.08em;text-transform:none;
+  color:rgba(255,255,255,0.75);text-decoration:none;
+  border:none;background:none;padding:0 0 3px;
+  border-bottom:1px solid rgba(255,255,255,0.20);
+  transition:color 0.3s,border-color 0.3s;
 }
-.csi-view-all:hover{color:#fff;border-color:rgba(255,255,255,0.30);background:rgba(255,255,255,0.06);}
+.csi-view-all:hover{color:#fff;border-color:rgba(255,255,255,0.55);}
+.csi-view-all svg{transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);}
+.csi-view-all:hover svg{transform:translate(3px,-3px);}
 
 /* ── physics scroll area ── */
 #csi-area{position:relative;}
@@ -3267,23 +3478,23 @@ window.addEventListener('load', function(){
   pointer-events:none;
 }
 
-/* year pill */
+/* year tag — top-right, minimal dark glass */
 .csi-year{
   position:absolute;
-  top:22px;left:50%;
-  transform:translateX(-50%);
+  top:28px;right:36px;
   z-index:3;
-  background:rgba(255,255,255,0.88);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  color:#111;
-  font:500 11px/1 'Geist',sans-serif;
-  letter-spacing:0.18em;
-  padding:9px 22px;
-  border-radius:100px;
+  background:rgba(0,0,0,0.42);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  color:rgba(255,255,255,0.55);
+  font:300 9px/1 'Geist',sans-serif;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  padding:8px 16px;
+  border-radius:4px;
+  border:1px solid rgba(255,255,255,0.10);
   white-space:nowrap;
   pointer-events:none;
-  box-shadow:0 4px 24px rgba(0,0,0,0.25);
 }
 
 /* image */
@@ -3317,15 +3528,15 @@ window.addEventListener('load', function(){
 }
 .csi-info{}
 .csi-client{
-  font:400 10px/1 'Geist',sans-serif;
-  letter-spacing:0.06em;text-transform:uppercase;
-  color:rgba(255,255,255,0.72);
-  display:block;margin:0 0 10px;
+  font:300 8.5px/1 'Geist',sans-serif;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(255,255,255,0.45);
+  display:block;margin:0 0 12px;
   text-shadow:0 1px 8px rgba(0,0,0,0.6);
 }
 .csi-title{
-  font:300 clamp(32px,5vw,70px)/1 'Geist',sans-serif;
-  letter-spacing:-0.04em;color:#fff;margin:0;
+  font:200 clamp(36px,5vw,72px)/1 'Geist',sans-serif;
+  letter-spacing:-0.03em;color:#fff;margin:0;
 }
 
 /* arrow button */
@@ -3367,7 +3578,7 @@ window.addEventListener('load', function(){
     <div class="csi-hdr-l">
       <div class="csi-pill">
         <span class="csi-pill-dot"></span>
-        <span class="csi-pill-txt">Live Deployments &nbsp;&#x2F;&#x2F;&nbsp; 04</span>
+        <span class="csi-pill-txt">Live Deployments &nbsp;&mdash;&nbsp; 04</span>
       </div>
       <h2 class="csi-h">Featured <strong>Projects</strong></h2>
     </div>
@@ -3394,12 +3605,12 @@ window.addEventListener('load', function(){
       <!-- Card 0 — Horizon -->
       <div class="csi-card">
         <div class="csi-darken"></div>
-        <span class="csi-year">( 2024 )</span>
+        <span class="csi-year">2024</span>
         <img class="csi-bg" src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1600&h=900&fit=crop&auto=format&q=90" alt="Horizon">
         <div class="csi-overlay"></div>
         <div class="csi-meta">
           <div class="csi-info">
-            <span class="csi-client">Dubai Mall &nbsp;·&nbsp; Retail AI &nbsp;·&nbsp; 2026</span>
+            <span class="csi-client">Dubai Mall &nbsp;&mdash;&nbsp; Retail AI</span>
             <h3 class="csi-title">Horizon</h3>
           </div>
           <a class="csi-arrow" href="project/horizon.html">
@@ -3411,12 +3622,12 @@ window.addEventListener('load', function(){
       <!-- Card 1 — Beyond -->
       <div class="csi-card">
         <div class="csi-darken"></div>
-        <span class="csi-year">( 2024 )</span>
+        <span class="csi-year">2024</span>
         <img class="csi-bg" src="https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=1600&h=900&fit=crop&auto=format&q=90" alt="Beyond">
         <div class="csi-overlay"></div>
         <div class="csi-meta">
           <div class="csi-info">
-            <span class="csi-client">London Science Museum &nbsp;·&nbsp; Interactive Guide &nbsp;·&nbsp; 2025</span>
+            <span class="csi-client">London Science Museum &nbsp;&mdash;&nbsp; Interactive Guide</span>
             <h3 class="csi-title">Beyond</h3>
           </div>
           <a class="csi-arrow" href="project/beyond.html">
@@ -3428,12 +3639,12 @@ window.addEventListener('load', function(){
       <!-- Card 2 — Elevate -->
       <div class="csi-card">
         <div class="csi-darken"></div>
-        <span class="csi-year">( 2023 )</span>
+        <span class="csi-year">2023</span>
         <img class="csi-bg" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&h=900&fit=crop&auto=format&q=90" alt="Elevate">
         <div class="csi-overlay"></div>
         <div class="csi-meta">
           <div class="csi-info">
-            <span class="csi-client">Singapore HQ &nbsp;·&nbsp; Corporate Lobby AI &nbsp;·&nbsp; 2024</span>
+            <span class="csi-client">Singapore HQ &nbsp;&mdash;&nbsp; Corporate Lobby AI</span>
             <h3 class="csi-title">Elevate</h3>
           </div>
           <a class="csi-arrow" href="project/elevate.html">
@@ -3450,7 +3661,7 @@ window.addEventListener('load', function(){
         <div class="csi-overlay"></div>
         <div class="csi-meta">
           <div class="csi-info">
-            <span class="csi-client">Dubai International Airport &nbsp;·&nbsp; Concierge AI &nbsp;·&nbsp; 2023</span>
+            <span class="csi-client">Dubai International Airport &nbsp;&mdash;&nbsp; Concierge AI</span>
             <h3 class="csi-title">Origin</h3>
           </div>
           <a class="csi-arrow" href="project/origin.html">
@@ -3568,11 +3779,11 @@ window.addEventListener('load', function(){
 ════════════════════════════════════════════════════════════ -->
 <style>
 #why-us{background:#000;border-top:1px solid rgba(255,255,255,0.06);padding:96px 0;position:relative;z-index:2;}
+#why-us::before{content:'';position:absolute;top:-15%;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(255,110,20,0.04) 0%,transparent 70%);pointer-events:none;}
 .why-wrap{max-width:1300px;margin:0 auto;padding:0 64px;}
 .why-hdr{text-align:center;margin-bottom:52px;}
-.why-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:100px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.055);backdrop-filter:blur(14px);font:300 9px/1 'Geist',sans-serif;letter-spacing:0.40em;text-transform:uppercase;color:rgba(255,255,255,0.60);margin-bottom:22px;}
-.why-h{font:300 clamp(62px,9vw,110px)/0.90 'Geist',sans-serif;letter-spacing:-0.05em;color:#fff;margin:0 0 38px;}
-.why-h em{color:rgba(255,255,255,0.40);font-style:normal;}
+.why-h{font:300 clamp(52px,7.5vw,96px)/0.92 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;margin:0 0 36px;overflow:visible;}
+.why-h em{font-style:normal;background:linear-gradient(135deg,#ffffff 0%,rgba(255,210,160,0.95) 50%,rgba(255,120,40,0.90) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .why-social{display:inline-flex;align-items:center;gap:14px;}
 .why-avs{display:flex;}
 .why-av{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,180,0,0.40);overflow:hidden;flex-shrink:0;}
@@ -3581,105 +3792,136 @@ window.addEventListener('load', function(){
 .why-rating-txt{font:300 11px/1 'Geist',sans-serif;color:rgba(255,255,255,0.52);}
 .why-rating-txt .star{color:#FFB800;}
 .why-body{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;align-items:stretch;}
-/* left panel — premium solid card matching right side */
+
+/* ── LEFT PANEL ── */
 .why-left{
-  background:#0c0a07;
-  border:1px solid rgba(255,255,255,0.08);
+  background:linear-gradient(160deg,#110e09 0%,#0d0b08 55%,#0a0807 100%);
+  border:1px solid rgba(255,255,255,0.09);
   border-radius:24px;padding:32px 30px 28px;
   display:flex;flex-direction:column;
   min-height:500px;position:relative;overflow:hidden;
-  box-shadow:0 30px 70px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow:0 30px 80px rgba(0,0,0,0.65),inset 0 1px 0 rgba(255,255,255,0.10);
+}
+/* top accent shimmer line */
+.why-left::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:24px 24px 0 0;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,160,60,0.50) 30%,rgba(255,120,40,0.28) 65%,transparent 100%);
 }
 .why-left::before{
   content:'';position:absolute;inset:0;border-radius:24px;pointer-events:none;
-  background:radial-gradient(ellipse 70% 55% at 50% 95%,rgba(255,140,0,0.07) 0%,transparent 70%);
+  background:radial-gradient(ellipse 65% 50% at 50% 100%,rgba(255,140,0,0.11) 0%,transparent 70%),
+             radial-gradient(ellipse 45% 30% at 50% 0%,rgba(255,255,255,0.028) 0%,transparent 60%);
 }
-/* top row — same rhythm as right cards (.sc-top) */
-.why-left-top{display:flex;justify-content:space-between;align-items:center;gap:20px;position:relative;z-index:2;margin-bottom:8px;}
-.why-brand{font:600 16px/1 'Geist',sans-serif;color:#fff;letter-spacing:-0.01em;}
-.why-tag{font:400 10px/1 'Geist',sans-serif;color:rgba(255,255,255,0.42);letter-spacing:0.24em;text-transform:uppercase;}
-/* footer caption */
-.why-since{font:400 10.5px/1 'Geist',sans-serif;color:rgba(255,255,255,0.40);letter-spacing:0.18em;position:relative;z-index:2;margin-top:6px;display:flex;align-items:center;justify-content:space-between;}
-.why-since .why-dot-line{flex:1;height:1px;background:repeating-linear-gradient(to right,rgba(255,255,255,0.16) 0,rgba(255,255,255,0.16) 4px,transparent 4px,transparent 9px);margin:0 14px;}
-/* ── 3-D fan scene wrapped in an outlined inner frame ── */
+/* top row */
+.why-left-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;position:relative;z-index:2;margin-bottom:8px;}
+.why-brand{font:300 16px/1 'Geist',sans-serif;color:#fff;letter-spacing:-0.01em;}
+/* live system status */
+@keyframes why-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(0.80)}}
+.why-status{display:flex;align-items:center;gap:6px;margin-top:7px;}
+.why-status-dot{width:5px;height:5px;border-radius:50%;background:#4cff8f;animation:why-pulse 2.6s ease-in-out infinite;flex-shrink:0;}
+.why-status-txt{font:300 8px/1 'Geist',sans-serif;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+/* footer */
+.why-since{font:300 9px/1 'Geist',sans-serif;color:rgba(255,255,255,0.45);letter-spacing:0.22em;text-transform:uppercase;position:relative;z-index:2;margin-top:6px;display:flex;align-items:center;justify-content:space-between;}
+.why-since .why-dot-line{flex:1;height:1px;background:repeating-linear-gradient(to right,rgba(255,255,255,0.22) 0,rgba(255,255,255,0.22) 4px,transparent 4px,transparent 8px);margin:0 12px;}
+
+/* ── FAN FRAME ── */
 #why-fan-frame{
-  flex:1;position:relative;margin:22px 0 18px;
-  border-radius:18px;
-  background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(255,150,40,0.06) 0%,transparent 70%),linear-gradient(180deg,rgba(255,255,255,0.025) 0%,rgba(255,255,255,0.01) 100%);
+  flex:1;position:relative;margin:22px 0 18px;border-radius:18px;
+  background:radial-gradient(ellipse 80% 60% at 50% 55%,rgba(255,140,40,0.09) 0%,transparent 65%),
+             linear-gradient(180deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0.01) 100%);
   border:1px solid rgba(255,255,255,0.07);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),inset 0 0 60px rgba(255,120,0,0.025);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 0 80px rgba(255,100,0,0.05);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
-/* corner ticks — luxury frame detail */
-.why-corner{position:absolute;width:14px;height:14px;border-color:rgba(255,160,60,0.45);pointer-events:none;}
-.why-corner.tl{top:10px;left:10px;border-top:1px solid;border-left:1px solid;}
-.why-corner.tr{top:10px;right:10px;border-top:1px solid;border-right:1px solid;}
-.why-corner.bl{bottom:10px;left:10px;border-bottom:1px solid;border-left:1px solid;}
-.why-corner.br{bottom:10px;right:10px;border-bottom:1px solid;border-right:1px solid;}
-#why-fan-scene{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  perspective:680px;perspective-origin:50% 50%;
-  width:100%;position:relative;overflow:visible;
-  pointer-events:none;z-index:1;
-}
-#why-fan{
-  position:relative;width:100%;height:290px;
-  transform-style:preserve-3d;
-  pointer-events:none;
-}
+.why-corner{position:absolute;width:16px;height:16px;border-color:rgba(255,160,60,0.55);pointer-events:none;}
+.why-corner.tl{top:12px;left:12px;border-top:1px solid;border-left:1px solid;}
+.why-corner.tr{top:12px;right:12px;border-top:1px solid;border-right:1px solid;}
+.why-corner.bl{bottom:12px;left:12px;border-bottom:1px solid;border-left:1px solid;}
+.why-corner.br{bottom:12px;right:12px;border-bottom:1px solid;border-right:1px solid;}
+#why-fan-scene{flex:1;display:flex;align-items:center;justify-content:center;perspective:680px;perspective-origin:50% 50%;width:100%;position:relative;overflow:visible;pointer-events:none;z-index:1;}
+#why-fan{position:relative;width:100%;height:290px;transform-style:preserve-3d;pointer-events:none;}
 .fan-card{
-  position:absolute;
-  top:50%;left:50%;
-  width:148px;height:208px;
-  margin:-104px 0 0 -74px;
+  position:absolute;top:50%;left:50%;
+  width:148px;height:208px;margin:-104px 0 0 -74px;
   border-radius:16px;overflow:hidden;
-  border:1px solid rgba(255,255,255,0.18);
-  box-shadow:0 24px 64px rgba(0,0,0,0.85),0 0 30px rgba(255,102,0,0.06);
-  will-change:transform,opacity;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  pointer-events:none;
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow:0 28px 70px rgba(0,0,0,0.92),0 0 40px rgba(255,100,0,0.09);
+  will-change:transform,opacity;backface-visibility:hidden;-webkit-backface-visibility:hidden;pointer-events:none;
 }
 .fan-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
-/* right cards — same solid-color spec-card style (slightly compacted) */
+
+/* ── RIGHT CARDS ── */
 .why-right{display:flex;flex-direction:column;gap:16px;}
 .why-card{
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:22px;
-  padding:26px 26px 22px;
-  flex:1;min-height:230px;
-  position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:22px;padding:26px 26px 22px;
+  flex:1;min-height:230px;position:relative;overflow:hidden;
   display:flex;flex-direction:column;
-  box-shadow:0 24px 60px rgba(0,0,0,0.42),inset 0 1px 0 rgba(255,255,255,0.08);
-  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),box-shadow 0.4s ease;
+  box-shadow:0 24px 60px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.10);
+  transition:transform 0.45s cubic-bezier(0.16,1,0.3,1),box-shadow 0.45s ease,border-color 0.45s ease;
 }
-.why-card:hover{transform:translateY(-3px);box-shadow:0 32px 80px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.10);}
-/* client-approved palette */
-.why-card--blue  {background:#2E448F;}
-.why-card--green {background:#1F6B52;}
+/* gradient backgrounds — rich depth not flat solid */
+.why-card--blue {background:linear-gradient(145deg,#1e3080 0%,#2E448F 42%,#253a80 78%,#1a2c70 100%);}
+.why-card--green{background:linear-gradient(145deg,#145c40 0%,#1F6B52 42%,#196048 78%,#124c38 100%);}
+/* top accent shimmer line */
+.why-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:22px 22px 0 0;pointer-events:none;opacity:0.55;transition:opacity 0.45s;}
+.why-card--blue::after {background:linear-gradient(90deg,transparent 0%,rgba(160,185,255,0.65) 40%,rgba(100,140,255,0.30) 70%,transparent 100%);}
+.why-card--green::after{background:linear-gradient(90deg,transparent 0%,rgba(100,225,160,0.65) 40%,rgba(60,180,120,0.30) 70%,transparent 100%);}
+/* ambient light leak — top-right corner */
+.why-card::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;pointer-events:none;opacity:0.14;transition:opacity 0.45s;}
+.why-card--blue::before {background:radial-gradient(circle,rgba(140,165,255,1) 0%,transparent 70%);}
+.why-card--green::before{background:radial-gradient(circle,rgba(80,225,155,1) 0%,transparent 70%);}
+/* hover per-card glow */
+.why-card--blue:hover{
+  transform:translateY(-4px);
+  border-color:rgba(120,155,255,0.24);
+  box-shadow:0 40px 90px rgba(0,0,0,0.58),0 0 0 1px rgba(100,135,255,0.20),inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.why-card--blue:hover::before{opacity:0.28;}
+.why-card--blue:hover::after{opacity:1;}
+.why-card--green:hover{
+  transform:translateY(-4px);
+  border-color:rgba(80,205,145,0.24);
+  box-shadow:0 40px 90px rgba(0,0,0,0.58),0 0 0 1px rgba(60,185,120,0.20),inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.why-card--green:hover::before{opacity:0.28;}
+.why-card--green:hover::after{opacity:1;}
 /* top row */
 .why-card .sc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:18px;}
-.why-card .sc-title{font:600 clamp(18px,1.6vw,23px)/1.1 'Geist',sans-serif;letter-spacing:-0.025em;color:#fff;margin:0;flex:1;}
-.why-card .sc-arrow{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;opacity:0.92;transition:opacity 0.25s,transform 0.4s cubic-bezier(0.16,1,0.3,1);}
-.why-card .sc-arrow:hover{opacity:1;transform:translate(3px,-3px);}
-.why-card .sc-arrow svg{width:18px;height:18px;}
+.why-card .sc-title{font:300 clamp(20px,1.8vw,26px)/1.1 'Geist',sans-serif;letter-spacing:-0.02em;color:#fff;margin:0;flex:1;}
+/* glass arrow button */
+.why-card .sc-arrow{
+  width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;
+  border-radius:10px;border:1px solid rgba(255,255,255,0.20);background:rgba(255,255,255,0.09);
+  backdrop-filter:blur(8px);transition:background 0.3s,border-color 0.3s,transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.why-card .sc-arrow:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.35);transform:translate(2px,-2px);}
+.why-card .sc-arrow svg{width:16px;height:16px;}
 /* description */
-.why-card .sc-desc{font:300 12.5px/1.6 'Geist',sans-serif;color:rgba(255,255,255,0.82);margin:0;max-width:94%;}
+.why-card .sc-desc{font:300 12.5px/1.68 'Geist',sans-serif;color:rgba(255,255,255,0.60);margin:0;max-width:94%;}
 /* footer */
 .why-card .sc-foot{margin-top:auto;padding-top:22px;display:grid;grid-template-columns:1.15fr 1fr;gap:20px;}
-.why-card .sc-foot-label{font:400 11px/1 'Geist',sans-serif;color:rgba(255,255,255,0.58);margin-bottom:12px;}
-.why-card .sc-row{font:400 12px/1.5 'Geist',sans-serif;color:#fff;margin-bottom:2px;}
+.why-card .sc-foot-label{font:300 9px/1 'Geist',sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;}
+.why-card .sc-row{font:300 12px/1.6 'Geist',sans-serif;color:rgba(255,255,255,0.80);margin-bottom:2px;}
 .why-card .sc-icons{display:grid;grid-template-columns:repeat(3,30px);gap:6px;}
-.why-card .sc-ico{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:#fff;transition:background 0.25s,transform 0.35s cubic-bezier(0.16,1,0.3,1);}
-.why-card .sc-ico:hover{background:rgba(255,255,255,0.20);transform:translateY(-2px);}
+.why-card .sc-ico{
+  width:30px;height:30px;border-radius:7px;
+  background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.11);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  transition:background 0.25s,border-color 0.25s,transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.why-card .sc-ico:hover{background:rgba(255,255,255,0.20);border-color:rgba(255,255,255,0.24);transform:translateY(-2px);}
 .why-card .sc-ico svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 
 <section id="why-us">
   <div class="why-wrap">
     <div class="why-hdr">
-      <h2 class="why-h">Why Choose<br><em>Holobox</em></h2>
+      <p style="font:300 9px/1 'Geist',sans-serif;letter-spacing:0.20em;text-transform:uppercase;color:rgba(255,140,0,0.60);margin:0 0 20px;">The Tymor Advantage</p>
+      <h2 class="why-h">
+        <span id="why-hl" style="display:inline-block;">Why Choose</span><br>
+        <span id="why-hr" style="display:inline-block;"><em>Holobox</em></span>
+      </h2>
       <div class="why-social">
         <div class="why-avs">
           <div class="why-av"><img src="https://i.pravatar.cc/68?img=12" alt=""></div>
@@ -3687,7 +3929,7 @@ window.addEventListener('load', function(){
           <div class="why-av"><img src="https://i.pravatar.cc/68?img=47" alt=""></div>
           <div class="why-av"><img src="https://i.pravatar.cc/68?img=15" alt=""></div>
         </div>
-        <span class="why-rating-txt"><span class="star">★</span> 50+ deployments worldwide · 4.9/5</span>
+        <span class="why-rating-txt"><span class="star">★</span> 50+ deployments worldwide &nbsp;&mdash;&nbsp; 4.9/5</span>
       </div>
     </div>
 
@@ -3696,7 +3938,14 @@ window.addEventListener('load', function(){
       <!-- LEFT: 3-D fan carousel in framed inner card -->
       <div class="why-left">
         <div class="why-left-top">
-          <span class="why-brand">Tymor<span style="color:rgba(255,160,60,0.85);font-weight:300;margin-left:6px;letter-spacing:0.06em;">AI</span></span>
+          <div>
+            <span class="why-brand">Tymor<span style="color:rgba(255,160,60,0.85);font-weight:300;margin-left:6px;letter-spacing:0.06em;">AI</span></span>
+            <div class="why-status">
+              <span class="why-status-dot"></span>
+              <span class="why-status-txt">System Active</span>
+            </div>
+          </div>
+          <span style="font:300 8px/1 'Geist',sans-serif;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.22);">Est. 2016</span>
         </div>
         <div id="why-fan-frame">
           <span class="why-corner tl"></span>
@@ -3789,7 +4038,14 @@ window.addEventListener('load', function(){
   gsap.registerPlugin(ScrollTrigger);
 
   /* ── entrance animations ── */
-  gsap.from('.why-hdr > *',{y:36,opacity:0,stagger:0.12,duration:1.0,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'#why-us',start:'top 80%',once:true}});
+  (function(){
+    var st = {trigger:'#why-us',start:'top 78%',once:true};
+    var tl = gsap.timeline({scrollTrigger:st});
+    tl.from('.why-hdr p',  {y:24,opacity:0,duration:0.80,ease:'power3.out'}, 0)
+      .from('#why-hl',     {x:-90,opacity:0,duration:1.05,ease:'power3.out'}, 0.10)
+      .from('#why-hr',     {x: 90,opacity:0,duration:1.05,ease:'power3.out'}, 0.18)
+      .from('.why-social', {y:28, opacity:0,duration:0.90,ease:'power3.out'}, 0.38);
+  })();
   gsap.from('.why-left',{x:-70,opacity:0,duration:1.1,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'.why-body',start:'top 75%',once:true}});
   /* per-card slide-in: each card slides from right + fades, scroll-triggered individually */
   gsap.utils.toArray('.why-card').forEach(function(card,i){
@@ -3877,46 +4133,29 @@ window.addEventListener('load', function(){
   position:relative;
   overflow:hidden;
 }
-
-/* subtle top radial glow */
 #testimonials::before{
-  content:'';
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:900px;height:500px;
-  background:radial-gradient(ellipse at top,rgba(255,255,255,0.022) 0%,transparent 70%);
+  background:radial-gradient(ellipse at top,rgba(255,130,30,0.04) 0%,transparent 70%);
   pointer-events:none;
 }
 
 /* ── centered header ── */
-.tst-head{
-  max-width:560px;
-  margin:0 auto 72px;
-  text-align:center;
-  padding:0 24px;
-}
-.tst-badge{
-  display:inline-block;
-  padding:6px 20px;
-  border-radius:100px;
-  border:1px solid rgba(255,255,255,0.14);
-  background:rgba(255,255,255,0.04);
-  font:500 8.5px/1 'Geist',sans-serif;
-  letter-spacing:0.38em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.52);
-  margin-bottom:28px;
+.tst-head{max-width:560px;margin:0 auto 72px;text-align:center;padding:0 24px;}
+.tst-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:22px;
+  font:300 9px/1 'Geist',sans-serif;letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(255,140,0,0.60);
 }
 .tst-head-h{
   font:200 clamp(36px,4.8vw,64px)/1.05 'Geist',sans-serif;
-  letter-spacing:-0.04em;
-  color:#fff;
-  margin:0 0 20px;
+  letter-spacing:-0.04em;color:#fff;margin:0 0 22px;overflow:visible;
 }
-.tst-head-h strong{font-weight:600;}
+.tst-head-h strong{font-weight:200;}
 .tst-head-sub{
-  font:300 15px/1.76 'Geist',sans-serif;
-  color:rgba(255,255,255,0.64);
-  margin:0;
+  font:300 13.5px/1.72 'Geist',sans-serif;
+  color:rgba(255,255,255,0.48);margin:0;
 }
 
 /* ── 3-column wrapper ── */
@@ -3960,53 +4199,50 @@ window.addEventListener('load', function(){
 
 /* ── card ── */
 .tst-card{
-  background:#0d0d1a;
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:24px;
-  padding:36px;
-  cursor:default;
-  select:none;
-  transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1),
-             box-shadow 0.38s ease,
-             border-color 0.38s ease,
-             background 0.38s ease;
+  background:#0c0a08;
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px;padding:36px;
+  cursor:default;position:relative;overflow:hidden;
+  transition:transform 0.42s cubic-bezier(0.34,1.56,0.64,1),
+             box-shadow 0.42s ease,border-color 0.42s ease;
 }
+/* top shimmer line */
+.tst-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  border-radius:24px 24px 0 0;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,160,60,0.30) 35%,rgba(255,120,40,0.15) 65%,transparent 100%);
+  opacity:0.6;transition:opacity 0.42s;
+}
+.tst-card:hover::before{opacity:1;}
 .tst-card:hover{
-  transform:scale(1.03) translateY(-8px);
-  box-shadow:0 28px 60px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.08);
-  border-color:rgba(255,255,255,0.20);
-  background:#111128;
+  transform:scale(1.025) translateY(-6px);
+  box-shadow:0 32px 70px rgba(0,0,0,0.70),0 0 0 1px rgba(255,160,60,0.12),inset 0 1px 0 rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.16);
 }
 
 /* quote text */
 .tst-card-quote{
   font:300 13.5px/1.80 'Geist',sans-serif;
-  color:rgba(255,255,255,0.72);
-  margin:0 0 26px;
+  color:rgba(255,255,255,0.68);margin:0 0 26px;
 }
 
 /* author footer */
 .tst-card-author{
   display:flex;align-items:center;gap:12px;
-  padding-top:20px;
-  border-top:1px solid rgba(255,255,255,0.07);
+  padding-top:20px;border-top:1px solid rgba(255,255,255,0.07);
 }
 .tst-card-avatar{
-  width:40px;height:40px;border-radius:50%;
-  object-fit:cover;flex-shrink:0;
-  border:2px solid rgba(255,255,255,0.12);
-  transition:border-color 0.35s ease;
+  width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.12);transition:border-color 0.35s ease;
 }
-.tst-card:hover .tst-card-avatar{
-  border-color:rgba(255,140,0,0.40);
-}
+.tst-card:hover .tst-card-avatar{border-color:rgba(255,140,0,0.50);}
 .tst-card-name{
-  font:600 12.5px/1.2 'Geist',sans-serif;
-  color:#fff;display:block;margin-bottom:4px;
+  font:400 12.5px/1.2 'Geist',sans-serif;
+  color:#fff;display:block;margin-bottom:5px;
 }
 .tst-card-role{
-  font:300 10.5px/1.3 'Geist',sans-serif;
-  color:rgba(255,255,255,0.42);display:block;
+  font:300 10px/1.3 'Geist',sans-serif;
+  color:rgba(255,255,255,0.38);display:block;letter-spacing:0.02em;
 }
 </style>
 
@@ -4014,7 +4250,11 @@ window.addEventListener('load', function(){
 
   <!-- Header -->
   <div class="tst-head">
-    <h2 class="tst-head-h">Trusted by <strong>Innovators</strong></h2>
+    <p class="tst-eyebrow">Client Stories</p>
+    <h2 class="tst-head-h">
+      <span id="tst-hl" style="display:inline-block;">Trusted by</span><br>
+      <strong id="tst-hr" style="display:inline-block;">Innovators</strong>
+    </h2>
     <p class="tst-head-sub">Operators across retail, hospitality, aviation, and healthcare share what deploying Holobox technology means for their audiences.</p>
   </div>
 
@@ -4031,7 +4271,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&auto=format&q=80" alt="James Al-Rashid">
             <div>
               <span class="tst-card-name">James Al-Rashid</span>
-              <span class="tst-card-role">Head of Innovation · Emaar Retail Group</span>
+              <span class="tst-card-role">Head of Innovation &nbsp;&mdash;&nbsp;Emaar Retail Group</span>
             </div>
           </div>
         </div>
@@ -4042,7 +4282,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&auto=format&q=80" alt="Ryan Nakamura">
             <div>
               <span class="tst-card-name">Ryan Nakamura</span>
-              <span class="tst-card-role">Events Director · Apex Exhibitions</span>
+              <span class="tst-card-role">Events Director &nbsp;&mdash;&nbsp;Apex Exhibitions</span>
             </div>
           </div>
         </div>
@@ -4053,7 +4293,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&auto=format&q=80" alt="Dr. Omar Bassam">
             <div>
               <span class="tst-card-name">Dr. Omar Bassam</span>
-              <span class="tst-card-role">Head of Patient Experience · MedCity Dubai</span>
+              <span class="tst-card-role">Head of Patient Experience &nbsp;&mdash;&nbsp;MedCity Dubai</span>
             </div>
           </div>
         </div>
@@ -4064,7 +4304,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&auto=format&q=80" alt="Julia Crawford">
             <div>
               <span class="tst-card-name">Julia Crawford</span>
-              <span class="tst-card-role">Registrar · Meridian University</span>
+              <span class="tst-card-role">Registrar &nbsp;&mdash;&nbsp;Meridian University</span>
             </div>
           </div>
         </div>
@@ -4082,7 +4322,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&auto=format&q=80" alt="Dr. Sarah Chen">
             <div>
               <span class="tst-card-name">Dr. Sarah Chen</span>
-              <span class="tst-card-role">Director of Digital Experience · London Science Museum</span>
+              <span class="tst-card-role">Director of Digital Experience &nbsp;&mdash;&nbsp;London Science Museum</span>
             </div>
           </div>
         </div>
@@ -4093,7 +4333,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&auto=format&q=80" alt="Layla Mansoor">
             <div>
               <span class="tst-card-name">Layla Mansoor</span>
-              <span class="tst-card-role">GM Operations · The Address Hotels</span>
+              <span class="tst-card-role">GM Operations &nbsp;&mdash;&nbsp;The Address Hotels</span>
             </div>
           </div>
         </div>
@@ -4104,7 +4344,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&h=80&fit=crop&auto=format&q=80" alt="Priya Walia">
             <div>
               <span class="tst-card-name">Priya Walia</span>
-              <span class="tst-card-role">Digital Transformation Lead · Gulf Capital</span>
+              <span class="tst-card-role">Digital Transformation Lead &nbsp;&mdash;&nbsp;Gulf Capital</span>
             </div>
           </div>
         </div>
@@ -4115,7 +4355,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&auto=format&q=80" alt="David Kim">
             <div>
               <span class="tst-card-name">David Kim</span>
-              <span class="tst-card-role">CEO · Luxe Brand Holdings</span>
+              <span class="tst-card-role">CEO &nbsp;&mdash;&nbsp;Luxe Brand Holdings</span>
             </div>
           </div>
         </div>
@@ -4133,7 +4373,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&auto=format&q=80" alt="Michael Torres">
             <div>
               <span class="tst-card-name">Michael Torres</span>
-              <span class="tst-card-role">CTO · Singapore Technologies</span>
+              <span class="tst-card-role">CTO &nbsp;&mdash;&nbsp;Singapore Technologies</span>
             </div>
           </div>
         </div>
@@ -4144,7 +4384,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&auto=format&q=80" alt="Fatima Al-Hashimi">
             <div>
               <span class="tst-card-name">Fatima Al-Hashimi</span>
-              <span class="tst-card-role">VP Customer Experience · Emirates Airport Services</span>
+              <span class="tst-card-role">VP Customer Experience &nbsp;&mdash;&nbsp;Emirates Airport Services</span>
             </div>
           </div>
         </div>
@@ -4155,7 +4395,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&auto=format&q=80" alt="Khalid Al-Ameri">
             <div>
               <span class="tst-card-name">Khalid Al-Ameri</span>
-              <span class="tst-card-role">Smart City Director · Abu Dhabi Municipality</span>
+              <span class="tst-card-role">Smart City Director &nbsp;&mdash;&nbsp;Abu Dhabi Municipality</span>
             </div>
           </div>
         </div>
@@ -4166,7 +4406,7 @@ window.addEventListener('load', function(){
             <img class="tst-card-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&auto=format&q=80" alt="Aisha Patel">
             <div>
               <span class="tst-card-name">Aisha Patel</span>
-              <span class="tst-card-role">Head of Marketing · TechFusion Hub</span>
+              <span class="tst-card-role">Head of Marketing &nbsp;&mdash;&nbsp;TechFusion Hub</span>
             </div>
           </div>
         </div>
@@ -4195,12 +4435,14 @@ window.addEventListener('load', function(){
 
   gsap.registerPlugin(ScrollTrigger);
 
-  /* header stagger in */
-  gsap.from('.tst-head > *', {
-    y:40, opacity:0, stagger:0.12, duration:1.0, ease:'power3.out',
-    immediateRender:false,
-    scrollTrigger:{ trigger:'#testimonials', start:'top 84%', once:true }
-  });
+  /* header split-word entrance */
+  (function(){
+    var tl = gsap.timeline({scrollTrigger:{trigger:'#testimonials',start:'top 82%',once:true}});
+    tl.from('.tst-eyebrow', {y:20,opacity:0,duration:0.75,ease:'power3.out'}, 0)
+      .from('#tst-hl',      {x:-80,opacity:0,duration:1.0,ease:'power3.out'}, 0.10)
+      .from('#tst-hr',      {x: 80,opacity:0,duration:1.0,ease:'power3.out'}, 0.16)
+      .from('.tst-head-sub',{y:24, opacity:0,duration:0.85,ease:'power3.out'}, 0.34);
+  })();
 
   /* columns rise in with stagger */
   gsap.from('.tst-col', {
@@ -4216,19 +4458,23 @@ window.addEventListener('load', function(){
 <style>
 #cube-sec{background:#000;border-top:1px solid rgba(255,255,255,0.06);padding:96px 0;}
 .cube-wrap{max-width:1300px;margin:0 auto;padding:0 64px;}
-.cube-hdr{text-align:center;margin-bottom:64px;}
-.cube-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:100px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.055);backdrop-filter:blur(14px);font:300 9px/1 'Geist',sans-serif;letter-spacing:0.40em;text-transform:uppercase;color:rgba(255,255,255,0.60);margin-bottom:22px;}
-.cube-h{font:300 clamp(62px,9vw,110px)/0.90 'Geist',sans-serif;letter-spacing:-0.05em;color:#fff;margin:0;}
-.cube-h em{color:rgba(255,255,255,0.38);font-style:normal;}
+.cube-hdr{text-align:center;margin-bottom:60px;}
+.cube-eyebrow{font:300 9px/1 'Geist',sans-serif;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,140,0,0.60);margin-bottom:20px;}
+.cube-h{font:300 clamp(42px,5.5vw,72px)/0.92 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;margin:0;overflow:visible;}
+.cube-h em{
+  font-style:normal;
+  background:linear-gradient(135deg,#ffffff 0%,rgba(255,210,160,0.95) 50%,rgba(255,120,40,0.90) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
 .cube-body{display:grid;grid-template-columns:1.05fr 0.95fr;gap:80px;align-items:center;}
 
 /* ── scene ── */
 .cube-scene-wrap{display:flex;align-items:center;justify-content:center;position:relative;height:440px;}
 .cube-ambient{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:360px;height:360px;
-  background:radial-gradient(ellipse,rgba(255,255,255,0.055) 0%,transparent 62%);
-  border-radius:50%;filter:blur(32px);pointer-events:none;
+  width:380px;height:380px;
+  background:radial-gradient(ellipse,rgba(255,130,30,0.09) 0%,rgba(100,60,200,0.04) 50%,transparent 70%);
+  border-radius:50%;filter:blur(36px);pointer-events:none;
 }
 #cube-scene{
   perspective:980px;perspective-origin:50% 44%;
@@ -4282,7 +4528,7 @@ window.addEventListener('load', function(){
   z-index:3;
 }
 /* face text content — above image */
-.cf-tag{font:500 8px/1 'Geist',sans-serif;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.50);margin-bottom:18px;position:relative;z-index:2;}
+.cf-tag{font:300 8px/1 'Geist',sans-serif;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:18px;position:relative;z-index:2;}
 .cf-num{font:200 clamp(38px,5vw,60px)/1 'Geist',sans-serif;letter-spacing:-0.04em;color:#fff;position:relative;z-index:2;text-shadow:0 2px 20px rgba(0,0,0,0.8);}
 .cf-sub{font:300 11px/1.65 'Geist',sans-serif;color:rgba(255,255,255,0.55);margin-top:14px;text-align:center;max-width:200px;position:relative;z-index:2;}
 /* spinning indicator ring around scene */
@@ -4309,50 +4555,59 @@ window.addEventListener('load', function(){
 }
 .cface-img{-webkit-user-drag:none;user-drag:none;}
 
-/* ── premium solid-color capability cards (right) ─ matches site spec-card style ── */
+/* ── premium capability cards (right) ── */
 .cube-feats{display:flex;flex-direction:column;gap:14px;}
 .cf-card{
   border-radius:18px;padding:22px 24px 20px;
   position:relative;overflow:hidden;
   cursor:default;display:flex;gap:18px;align-items:flex-start;
-  border:1px solid rgba(255,255,255,0.07);
-  box-shadow:0 20px 50px rgba(0,0,0,0.40),inset 0 1px 0 rgba(255,255,255,0.07);
-  transition:transform 0.5s cubic-bezier(0.16,1,0.3,1),box-shadow 0.5s ease;
-  will-change:transform;
+  border:1px solid rgba(255,255,255,0.09);
+  box-shadow:0 20px 50px rgba(0,0,0,0.42),inset 0 1px 0 rgba(255,255,255,0.09);
+  transition:transform 0.45s cubic-bezier(0.16,1,0.3,1),box-shadow 0.45s ease,border-color 0.45s ease;
 }
-.cf-card:hover{transform:translateY(-3px);box-shadow:0 28px 70px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.10);}
-.cf-card-ico{
-  width:42px;height:42px;flex-shrink:0;
-  border-radius:11px;
-  background:rgba(255,255,255,0.10);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;z-index:1;
-}
+.cf-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:18px 18px 0 0;pointer-events:none;opacity:0.50;transition:opacity 0.45s;}
+.cf-card::before{content:'';position:absolute;top:-50px;right:-50px;width:140px;height:140px;border-radius:50%;pointer-events:none;opacity:0.14;transition:opacity 0.45s;}
+.cf-card:hover{transform:translateY(-4px);}
+.cf-card:hover::after{opacity:1;}
+.cf-card:hover::before{opacity:0.26;}
+.cf-card-ico{width:42px;height:42px;flex-shrink:0;border-radius:11px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
 .cf-card-body{flex:1;position:relative;z-index:1;min-width:0;}
-.cf-card-title{font:600 14px/1.2 'Geist',sans-serif;letter-spacing:-0.02em;color:#fff;margin-bottom:7px;}
-.cf-card-desc{font:300 12px/1.65 'Geist',sans-serif;color:rgba(255,255,255,0.78);margin:0;}
-.cf-card-badge{
-  display:inline-flex;align-items:center;gap:8px;margin-top:12px;
-  font:400 9.5px/1 'Geist',sans-serif;letter-spacing:0.06em;text-transform:uppercase;
-  color:rgba(255,255,255,0.55);
-}
-.cf-card-badge::before{
-  content:'';width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.45);
-}
-/* solid premium color variants (same family as .spec-card) */
-.cf-card--purple {background:#4F47BB;}
-.cf-card--cyan   {background:#2E448F;}
-.cf-card--amber  {background:#B85420;}
-.cf-card--emerald{background:#1F6B52;}
-/* icons inherit white — keep chips uniform; remove old glow overrides via plain white */
-.cf-card .cf-card-ico svg *{stroke:#fff !important;opacity:0.92;}
+.cf-card-title{font:400 13.5px/1.2 'Geist',sans-serif;letter-spacing:-0.01em;color:#fff;margin-bottom:8px;}
+.cf-card-desc{font:300 11.5px/1.65 'Geist',sans-serif;color:rgba(255,255,255,0.60);margin:0;}
+.cf-card-badge{display:inline-flex;align-items:center;gap:7px;margin-top:11px;font:300 9px/1 'Geist',sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.42);}
+.cf-card-badge::before{content:'';width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.38);flex-shrink:0;}
+/* gradient backgrounds */
+.cf-card--purple {background:linear-gradient(145deg,#3b3595 0%,#4F47BB 42%,#4540b0 78%,#332e9a 100%);}
+.cf-card--cyan   {background:linear-gradient(145deg,#1e3080 0%,#2E448F 42%,#253a80 78%,#1a2c70 100%);}
+.cf-card--amber  {background:linear-gradient(145deg,#8f3c15 0%,#B85420 42%,#a84a1c 78%,#7a3012 100%);}
+.cf-card--emerald{background:linear-gradient(145deg,#145c40 0%,#1F6B52 42%,#196048 78%,#124c38 100%);}
+/* shimmer lines per color */
+.cf-card--purple::after {background:linear-gradient(90deg,transparent 0%,rgba(180,160,255,0.65) 40%,rgba(130,110,255,0.30) 70%,transparent 100%);}
+.cf-card--cyan::after   {background:linear-gradient(90deg,transparent 0%,rgba(160,185,255,0.65) 40%,rgba(100,140,255,0.30) 70%,transparent 100%);}
+.cf-card--amber::after  {background:linear-gradient(90deg,transparent 0%,rgba(255,170,90,0.65)  40%,rgba(255,130,50,0.30)  70%,transparent 100%);}
+.cf-card--emerald::after{background:linear-gradient(90deg,transparent 0%,rgba(100,225,160,0.65) 40%,rgba(60,180,120,0.30)  70%,transparent 100%);}
+/* light leaks per color */
+.cf-card--purple::before {background:radial-gradient(circle,rgba(180,155,255,1) 0%,transparent 70%);}
+.cf-card--cyan::before   {background:radial-gradient(circle,rgba(140,165,255,1) 0%,transparent 70%);}
+.cf-card--amber::before  {background:radial-gradient(circle,rgba(255,160,80,1)  0%,transparent 70%);}
+.cf-card--emerald::before{background:radial-gradient(circle,rgba(80,225,155,1)  0%,transparent 70%);}
+/* hover glow per color */
+.cf-card--purple:hover {border-color:rgba(150,130,255,0.22);box-shadow:0 28px 70px rgba(0,0,0,0.58),0 0 0 1px rgba(130,110,255,0.18),inset 0 1px 0 rgba(255,255,255,0.12);}
+.cf-card--cyan:hover   {border-color:rgba(120,155,255,0.22);box-shadow:0 28px 70px rgba(0,0,0,0.58),0 0 0 1px rgba(100,135,255,0.18),inset 0 1px 0 rgba(255,255,255,0.12);}
+.cf-card--amber:hover  {border-color:rgba(255,130,60,0.22); box-shadow:0 28px 70px rgba(0,0,0,0.58),0 0 0 1px rgba(255,110,40,0.18), inset 0 1px 0 rgba(255,255,255,0.12);}
+.cf-card--emerald:hover{border-color:rgba(80,205,145,0.22); box-shadow:0 28px 70px rgba(0,0,0,0.58),0 0 0 1px rgba(60,185,120,0.18), inset 0 1px 0 rgba(255,255,255,0.12);}
+.cf-card .cf-card-ico svg *{stroke:#fff !important;opacity:0.90;}
 </style>
 
 <section id="cube-sec">
   <div class="cube-wrap">
 
     <div class="cube-hdr">
-      <h2 class="cube-h">The Engine Behind<br><em>Every Deployment</em></h2>
+      <p class="cube-eyebrow">Platform Architecture</p>
+      <h2 class="cube-h">
+        <span id="cube-hl" style="display:inline-block;">The Engine Behind</span><br>
+        <em id="cube-hr" style="display:inline-block;">Every Deployment</em>
+      </h2>
     </div>
 
     <div class="cube-body">
@@ -4419,7 +4674,7 @@ window.addEventListener('load', function(){
       <!-- RIGHT: premium 3-D capability cards -->
       <div class="cube-feats">
 
-        <!-- 1 · Neural Persona Engine — purple -->
+        <!-- 1 &nbsp;&mdash;&nbsp;Neural Persona Engine — purple -->
         <div class="cf-card cf-card--purple">
           <div class="cf-card-ico">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -4433,11 +4688,11 @@ window.addEventListener('load', function(){
           <div class="cf-card-body">
             <div class="cf-card-title">Neural Persona Engine</div>
             <div class="cf-card-desc">Proprietary transformer architecture trained on human interaction patterns for context-aware, personality-consistent conversation at scale.</div>
-            <div class="cf-card-badge">AI · Language Model</div>
+            <div class="cf-card-badge">AI &nbsp;&mdash;&nbsp;Language Model</div>
           </div>
         </div>
 
-        <!-- 2 · Computer Vision — cyan -->
+        <!-- 2 &nbsp;&mdash;&nbsp;Computer Vision — cyan -->
         <div class="cf-card cf-card--cyan">
           <div class="cf-card-ico">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -4450,11 +4705,11 @@ window.addEventListener('load', function(){
           <div class="cf-card-body">
             <div class="cf-card-title">Computer Vision + Depth Sensing</div>
             <div class="cf-card-desc">4K camera array fused with LiDAR depth data enables real-time person detection, gaze tracking, and spatial awareness without cloud round-trips.</div>
-            <div class="cf-card-badge">Vision · LiDAR</div>
+            <div class="cf-card-badge">Vision &nbsp;&mdash;&nbsp;LiDAR</div>
           </div>
         </div>
 
-        <!-- 3 · Edge Deployment — amber -->
+        <!-- 3 &nbsp;&mdash;&nbsp;Edge Deployment — amber -->
         <div class="cf-card cf-card--amber">
           <div class="cf-card-ico">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -4468,11 +4723,11 @@ window.addEventListener('load', function(){
           <div class="cf-card-body">
             <div class="cf-card-title">Edge Deployment Architecture</div>
             <div class="cf-card-desc">All inference runs on-device. No mandatory cloud dependency means GDPR-compliant operation in air-gapped and restricted environments.</div>
-            <div class="cf-card-badge">On-Device · GDPR</div>
+            <div class="cf-card-badge">On-Device &nbsp;&mdash;&nbsp;GDPR</div>
           </div>
         </div>
 
-        <!-- 4 · Enterprise API — emerald -->
+        <!-- 4 &nbsp;&mdash;&nbsp;Enterprise API — emerald -->
         <div class="cf-card cf-card--emerald">
           <div class="cf-card-ico">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -4487,7 +4742,7 @@ window.addEventListener('load', function(){
           <div class="cf-card-body">
             <div class="cf-card-title">Enterprise Integration API</div>
             <div class="cf-card-desc">REST + WebSocket API with pre-built connectors for Salesforce, SAP, ServiceNow, and custom CMS systems. Full webhook support for event-driven workflows.</div>
-            <div class="cf-card-badge">REST · WebSocket</div>
+            <div class="cf-card-badge">REST &nbsp;&mdash;&nbsp;WebSocket</div>
           </div>
         </div>
 
@@ -4501,12 +4756,13 @@ window.addEventListener('load', function(){
 (function(){
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ── entrance ── */
-  gsap.from('.cube-hdr > *', {
-    y:36, opacity:0, stagger:0.12, duration:1.0, ease:'power3.out',
-    immediateRender:false,
-    scrollTrigger:{trigger:'#cube-sec', start:'top 80%', once:true}
-  });
+  /* ── entrance — split-word heading ── */
+  (function(){
+    var tl = gsap.timeline({scrollTrigger:{trigger:'#cube-sec',start:'top 80%',once:true}});
+    tl.from('.cube-eyebrow', {y:20,opacity:0,duration:0.75,ease:'power3.out'}, 0)
+      .from('#cube-hl',      {x:-80,opacity:0,duration:1.0,ease:'power3.out'}, 0.10)
+      .from('#cube-hr',      {x: 80,opacity:0,duration:1.0,ease:'power3.out'}, 0.16);
+  })();
   /* cube spins in from nothing */
   gsap.fromTo('#cube',
     {rotateY:-180, scale:0, opacity:0},
@@ -4599,12 +4855,12 @@ window.addEventListener('load', function(){
   display:grid;
   grid-template-columns:repeat(5,1fr);
   grid-template-rows:repeat(2,1fr);
-  gap:5px;padding:5px;
+  gap:4px;padding:4px;
 }
-.cta-gi{position:relative;overflow:hidden;border-radius:10px;}
+.cta-gi{position:relative;overflow:hidden;border-radius:14px;}
 .cta-gi img{
   width:100%;height:100%;object-fit:cover;display:block;
-  filter:brightness(0.32) saturate(0.55) contrast(1.10);
+  filter:brightness(0.44) saturate(0.48) contrast(1.05) sepia(0.12);
   will-change:transform;
   animation:cta-drift 24s ease-in-out infinite alternate;
 }
@@ -4627,12 +4883,13 @@ window.addEventListener('load', function(){
   0%   {transform:scale(1.14) translate(2%,-2%);}
   100% {transform:scale(1.06) translate(-2%,3%);}
 }
-/* dark centre veil: edges dark, middle slightly lighter so text pops */
+/* dark veil — edges darken, warm amber bloom behind text, top/bottom fade */
 #cta-veil{
   position:absolute;inset:0;z-index:1;
   background:
-    radial-gradient(ellipse 65% 55% at 50% 50%,rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.72) 100%),
-    linear-gradient(to bottom,rgba(0,0,0,0.38) 0%,transparent 28%,transparent 72%,rgba(0,0,0,0.38) 100%);
+    radial-gradient(ellipse 55% 50% at 50% 50%,rgba(255,90,0,0.06) 0%,transparent 65%),
+    radial-gradient(ellipse 70% 60% at 50% 50%,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.78) 100%),
+    linear-gradient(to bottom,rgba(0,0,0,0.52) 0%,transparent 22%,transparent 78%,rgba(0,0,0,0.52) 100%);
 }
 
 /* ── the two bars ── */
@@ -4651,11 +4908,13 @@ window.addEventListener('load', function(){
 /* thin accent lines at the split edge — visible while bars are opening */
 #cta-bar-t::after{
   content:'';position:absolute;bottom:0;left:7%;right:7%;
-  height:1px;background:rgba(255,255,255,0.16);
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,160,60,0.35) 30%,rgba(255,160,60,0.35) 70%,transparent);
 }
 #cta-bar-b::before{
   content:'';position:absolute;top:0;left:7%;right:7%;
-  height:1px;background:rgba(255,255,255,0.16);
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,160,60,0.35) 30%,rgba(255,160,60,0.35) 70%,transparent);
 }
 
 /* ── text content ── */
@@ -4665,47 +4924,66 @@ window.addEventListener('load', function(){
   pointer-events:none;/* re-enabled on buttons below */
 }
 .cta-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font:500 10px/1 'Geist',sans-serif;
-  letter-spacing:0.14em;text-transform:uppercase;
-  color:rgba(255,255,255,0.48);margin:0 auto 38px;
+  display:inline-flex;align-items:center;gap:12px;
+  font:300 9px/1 'Geist',sans-serif;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(255,160,60,0.75);margin:0 auto 40px;
 }
 .cta-eyebrow::before,.cta-eyebrow::after{
-  content:'';width:28px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.30),transparent);
+  content:'';width:32px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,160,60,0.40),transparent);
 }
 .cta-h{
-  font:200 clamp(56px,9.5vw,120px)/0.87 'Geist',sans-serif;
-  letter-spacing:-0.055em;color:#fff;margin:0 0 62px;
+  font:200 clamp(52px,8.5vw,108px)/0.88 'Geist',sans-serif;
+  letter-spacing:-0.055em;color:#fff;margin:0 0 60px;overflow:visible;
 }
 /* per-line curtain wrap — overflow:hidden clips the sliding text */
 .cta-lw{display:block;overflow:hidden;}
-.cta-l{display:block;} /* y driven by GSAP */
+.cta-l{display:block;}
 .cta-l em{font-style:normal;color:rgba(255,255,255,0.32);}
 /* action row */
 .cta-acts{
-  display:flex;align-items:center;justify-content:center;gap:22px;
+  display:flex;align-items:center;justify-content:center;gap:24px;
   pointer-events:auto;
 }
+/* primary button — white pill with shimmer sweep on hover */
+@keyframes cta-shimmer{from{left:-80%}to{left:130%}}
 .cta-btn-p{
   display:inline-flex;align-items:center;gap:10px;
-  padding:15px 36px;border-radius:60px;
+  padding:16px 38px;border-radius:60px;
   background:#fff;color:#000;
-  font:500 10px/1 'Geist',sans-serif;
-  letter-spacing:0.18em;text-transform:uppercase;
+  font:400 9.5px/1 'Geist',sans-serif;
+  letter-spacing:0.20em;text-transform:uppercase;
   text-decoration:none;white-space:nowrap;
-  transition:background .30s,transform .30s;
+  position:relative;overflow:hidden;
+  box-shadow:0 2px 20px rgba(255,255,255,0.10);
+  transition:transform .38s cubic-bezier(0.16,1,0.3,1),box-shadow .38s ease;
 }
-.cta-btn-p:hover{background:rgba(255,255,255,.86);transform:scale(1.04);}
+.cta-btn-p::before{
+  content:'';position:absolute;top:0;left:-80%;
+  width:50%;height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.55) 50%,transparent 100%);
+  transform:skewX(-18deg);pointer-events:none;
+  opacity:0;transition:opacity 0.1s;
+}
+.cta-btn-p:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(255,255,255,0.22);
+}
+.cta-btn-p:hover::before{
+  opacity:1;
+  animation:cta-shimmer 0.65s ease forwards;
+}
+/* secondary link */
 .cta-btn-s{
-  font:400 10px/1 'Geist',sans-serif;
-  letter-spacing:0.18em;text-transform:uppercase;
-  color:rgba(255,255,255,0.40);text-decoration:none;
-  border-bottom:1px solid rgba(255,255,255,0.18);padding-bottom:3px;
+  font:300 9.5px/1 'Geist',sans-serif;
+  letter-spacing:0.20em;text-transform:uppercase;
+  color:rgba(255,255,255,0.55);text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,0.22);padding-bottom:4px;
   white-space:nowrap;
-  transition:color .30s,border-color .30s;
+  transition:color .35s,border-color .35s,letter-spacing .35s;
 }
-.cta-btn-s:hover{color:#fff;border-color:rgba(255,255,255,.48);}
+.cta-btn-s:hover{color:#fff;border-color:rgba(255,255,255,0.55);letter-spacing:0.26em;}
 </style>
 
 <section id="cta-sec">
@@ -5361,24 +5639,14 @@ window.addEventListener('load', function(){
   border-radius: var(--r-lg) !important;
 }
 
-/* ── Unified BADGE / EYEBROW (all sections look identical) ── */
-.proc-badge,
-.why-eyebrow,
-.cube-eyebrow,
-.tst-badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px;
-  padding: 6px 16px !important;
-  border-radius: var(--r-pill) !important;
-  border: 1px solid var(--c-border-s) !important;
-  background: var(--c-surface-1) !important;
-  backdrop-filter: blur(14px);
-  font: 400 var(--fs-label)/1 'Geist', sans-serif !important;
-  letter-spacing: 0.36em !important;
-  text-transform: uppercase !important;
-  color: var(--t-2) !important;
-  margin-bottom: 24px !important;
+/* ── Unified section eyebrow — plain orange text, no pill ── */
+.proc-badge, .cube-eyebrow, .tst-eyebrow {
+  font: 300 9px/1 'Geist', sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,140,0,0.60);
+  margin-bottom: 20px;
+  display: block;
 }
 
 /* ── Unified SECTION HEADING (one type scale site-wide) ── */
@@ -5395,8 +5663,11 @@ window.addEventListener('load', function(){
 .proc-head-h strong,
 .tst-head-h strong,
 .csi-h strong {
-  font-weight: 600 !important;
-  color: var(--t-1) !important;
+  font-weight: 200 !important;
+  background: linear-gradient(135deg,#ffffff 0%,rgba(255,210,160,0.95) 50%,rgba(255,120,40,0.90) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 /* ── Unified SECTION SUBHEADING ── */

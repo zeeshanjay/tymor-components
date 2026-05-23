@@ -2,9 +2,9 @@
   "cleanUrls": true,
   "redirects": [
     {
-      "source": "/luxury-hero-preview",
-      "destination": "/wireframe",
-      "permanent": true
+      "source": "/",
+      "destination": "/tymor",
+      "permanent": false
     }
   ]
 }

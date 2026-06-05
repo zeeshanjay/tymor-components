@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -29,6 +29,8 @@ export default function Hero({ show }: { show: boolean }) {
     return () => ctx.revert();
   }, []);
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
       ref={rootRef}
@@ -44,8 +46,6 @@ export default function Hero({ show }: { show: boolean }) {
         pointerEvents: "none",
       }}
     >
-      {/* Landscape, person, flares + eye transition all render in the WebGL Scene. */}
-
       {/* Scroll cue */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -54,31 +54,113 @@ export default function Hero({ show }: { show: boolean }) {
         className="font-mono"
         style={{
           position: "absolute",
-          bottom: "48px",
+          bottom: "28px", // pushed lower
           textAlign: "center",
           fontSize: "0.65rem",
           letterSpacing: "0.12em",
           color: "#ffffff",
           textTransform: "uppercase",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          pointerEvents: "auto", // enable mouse interaction
         }}
       >
-        Scroll to discover
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        <span style={{ fontSize: "0.58rem", opacity: 0.65, letterSpacing: "0.18em" }}>
+          Scroll to discover
+        </span>
+        
+        {/* Expanding button on hover */}
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           style={{
-            margin: "14px auto 0",
-            width: 30,
-            height: 30,
-            borderRadius: 8,
-            border: "1px solid rgba(217,207,230,0.22)",
+            margin: "12px auto 0",
+            height: 48, // slightly larger
+            borderRadius: 10,
+            border: "1.2px solid rgba(255, 255, 255, 0.16)",
+            background: "rgba(10, 6, 18, 0.65)",
+            backdropFilter: "blur(8px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            cursor: "pointer",
+            padding: isHovered ? "0 6px 0 18px" : "0 6px",
+            gap: isHovered ? "14px" : "0px",
+            transition: "width 0.4s cubic-bezier(0.25, 1, 0.5, 1), padding 0.4s cubic-bezier(0.25, 1, 0.5, 1), gap 0.4s ease, border-color 0.3s",
+            overflow: "hidden",
+            width: isHovered ? "154px" : "48px",
+            boxShadow: isHovered ? "0 0 15px rgba(255, 255, 255, 0.08)" : "none",
           }}
         >
-          <span style={{ color: "#5fe9ff", fontSize: "0.7rem" }}>&#8595;</span>
-        </motion.div>
+          {/* Hover Text */}
+          <span
+            style={{
+              fontSize: "0.58rem",
+              fontWeight: 700,
+              letterSpacing: "0.26em",
+              color: "#ffffff",
+              whiteSpace: "nowrap",
+              opacity: isHovered ? 1 : 0,
+              width: isHovered ? "auto" : 0,
+              transition: "opacity 0.3s ease 0.05s, width 0.3s ease",
+              display: "block",
+            }}
+          >
+            REACH US
+          </span>
+
+          {/* Rounded square container with premium morphing circle */}
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 7,
+              background: "rgba(0, 0, 0, 0.85)", // dark square
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="30" height="30" viewBox="0 0 100 100" style={{ display: "block" }}>
+              <defs>
+                <filter id="liquid-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur" />
+                  <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" result="noise">
+                    <animate attributeName="baseFrequency" dur="10s" values="0.04;0.058;0.04" repeatCount="indefinite" />
+                  </feTurbulence>
+                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="displaced" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <style>{`
+                @keyframes rotateRing {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+              `}</style>
+              <g filter="url(#liquid-glow)">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="32"
+                  stroke="rgba(255, 255, 255, 0.88)"
+                  strokeWidth="3.5"
+                  fill="none"
+                  strokeDasharray="95 55"
+                  style={{
+                    transformOrigin: '50px 50px',
+                    animation: 'rotateRing 10s linear infinite',
+                  }}
+                />
+              </g>
+            </svg>
+          </div>
+        </div>
       </motion.div>
 
 

@@ -9,7 +9,7 @@ export default function Nav({ show }: { show: boolean }) {
   const [glitchX, setGlitchX] = useState(0);
   const [activeSection, setActiveSection] = useState(0);
   const [hoveredSection, setHoveredSection] = useState<number | null>(null);
-  const sections = ["INTRO", "SOLUTIONS", "ENGINE"];
+  const sections = ["INTRO", "SOLUTIONS", "INDUSTRIES"];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,15 +92,21 @@ export default function Nav({ show }: { show: boolean }) {
         }}
       >
         <div
-          className="font-mono"
           style={{
-            fontSize: "0.95rem",
-            fontWeight: 600,
-            letterSpacing: "0.18em",
-            color: "#f2ecff",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          TYMOR <span style={{ color: "#5fe9ff" }}>AI</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="TYMOR"
+            style={{
+              height: "24px",
+              width: "auto",
+              display: "block",
+            }}
+          />
         </div>
 
         <button
@@ -249,14 +255,14 @@ export default function Nav({ show }: { show: boolean }) {
             {/* Highlighted active segment (animates position smoothly) */}
             <motion.div
               animate={{
-                y: activeSection * 34, // SECTION_HEIGHT (20px) + SECTION_GAP (14px) = 34px
+                y: activeSection * 42, // SECTION_HEIGHT (18px) + SECTION_GAP (24px) = 42px
               }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
               style={{
                 position: "absolute",
-                top: "58px", // Center is 76px relative to top of 220px line, so top = 76 - 18 = 58px
+                top: "52px", // Centered relative to buttons container offset
                 width: "2px",
-                height: "36px", // Snug height for the active line segment
+                height: "32px", // Snug height for the active line segment
                 background: "#ffffff",
                 boxShadow: "0 0 10px rgba(255, 255, 255, 0.3)",
               }}
@@ -265,12 +271,12 @@ export default function Nav({ show }: { show: boolean }) {
             {/* Highlighted active marker dot (animates position smoothly) */}
             <motion.div
               animate={{
-                y: activeSection * 34,
+                y: activeSection * 42,
               }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
               style={{
                 position: "absolute",
-                top: "73px", // Center is 76px, so top = 76 - 3 = 73px
+                top: "65px", // Centered relative to buttons container offset
                 width: "6px",
                 height: "6px",
                 borderRadius: "50%",
@@ -285,8 +291,8 @@ export default function Nav({ show }: { show: boolean }) {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "14px", // Tight gap matching sidewave
-              alignItems: "flex-start", // Shapes each block perfectly around its text width!
+              gap: "24px", // Increased gap for more whitespace
+              alignItems: "flex-start",
               pointerEvents: "auto",
             }}
           >
@@ -301,11 +307,11 @@ export default function Nav({ show }: { show: boolean }) {
                   onMouseLeave={() => setHoveredSection(null)}
                   className="font-mono"
                   style={{
-                    height: "20px", // Extremely small height wrapping words tightly
-                    padding: "0 8px", // Minimal white spacing around text (horizontal padding)
-                    fontSize: "0.58rem", // Smaller elegant font size
+                    height: "18px", // Smaller height wrapping words tightly
+                    padding: "0 8px",
+                    fontSize: "0.50rem", // Smaller elegant font size
                     fontWeight: 700,
-                    letterSpacing: "0.12em", // Small letters spacing
+                    letterSpacing: "0.24em", // Increased letter-spacing
                     borderRadius: "2px",
                     display: "flex",
                     alignItems: "center",
